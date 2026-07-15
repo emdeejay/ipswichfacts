@@ -89,8 +89,27 @@ def format_ymd(ymd: str | None) -> str:
     return ymd
 
 
-# Language in a project's status/what_to_expect that implies road impact.
-_TRAFFIC_IMPACT_RE = re.compile(r"clos(?:ed|ure)|detour|traffic control|lane", re.I)
+# Classify a project's traffic impact from Council's own status wording.
+# Tiered so the homepage can flag and order by actual interruption; bare
+# "clos"/"lane" matching is deliberately avoided ("park closures" and
+# "four-lane standard" are not road impacts).
+_IMPACT_TIERS = [
+    (3, "Road closure", re.compile(
+        r"full road closure|road closures?|closed to (?:all )?traffic|full closure", re.I)),
+    (2, "Lane closures / detours", re.compile(
+        r"lane closures?|lanes? (?:closed|reduced)|closure of [^.]{0,40}lane|detour", re.I)),
+    (1, "Traffic control", re.compile(r"traffic control", re.I)),
+]
+
+
+def classify_traffic_impact(p) -> tuple[int, str | None]:
+    """(severity, label) from a project's status + what_to_expect; (0, None)
+    when Council's wording describes no traffic interruption."""
+    text = " ".join(filter(None, [p.get("status"), p.get("what_to_expect")]))
+    for severity, label, rx in _IMPACT_TIERS:
+        if rx.search(text):
+            return severity, label
+    return 0, None
 
 
 def _truncate(s: str | None, n: int) -> str:
@@ -411,24 +430,29 @@ def render_index(projects, closures, meetings, graph) -> str:
     # e.g. Gordon Street was closed for three months while the dashboard
     # showed nothing. Surface under-construction projects with traffic
     # language from the Civic Projects source alongside the live feed.
-    works = [
-        p for p in projects
-        if p.get("phase") == "Under Construction"
-        and _TRAFFIC_IMPACT_RE.search(" ".join(filter(None, [p.get("status"), p.get("what_to_expect")])))
-    ]
+    works = []
+    for p in projects:
+        if p.get("phase") != "Under Construction":
+            continue
+        severity, label = classify_traffic_impact(p)
+        if severity:
+            works.append((severity, label, p))
     works_html = ""
     if works:
+        works.sort(key=lambda w: (-w[0], w[2].get("name") or ""))
         rows = "".join(
-            f'<tr><td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
+            f'<tr><td><span class="impact-{sev}">{h(label)}</span></td>'
+            f'<td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
             f'<td>{h(p.get("suburb"))}</td>'
             f'<td>{h(_truncate(p.get("status"), 160))}</td></tr>'
-            for p in sorted(works, key=lambda p: p.get("name") or "")
+            for sev, label, p in works
         )
         works_html = (
             "<h2>Construction works with traffic impacts</h2>"
             "<p class='meta'>From the Civic Projects map — construction closures "
-            "don't always appear in the live dashboard above.</p>"
-            "<table class='data'><thead><tr><th>Project</th><th>Suburb</th>"
+            "don't always appear in the live dashboard above. Impact wording is "
+            "Council's own.</p>"
+            "<table class='data'><thead><tr><th>Impact</th><th>Project</th><th>Suburb</th>"
             f"<th>Status</th></tr></thead><tbody>{rows}</tbody></table>"
         )
 
@@ -1112,6 +1136,9 @@ h2 { border-bottom: 1px solid var(--line); padding-bottom: 0.25rem; margin-top: 
 .phases li:hover { border-color: var(--accent); }
 a[class^="phase-"] { text-decoration: none; }
 .muted { color: var(--muted); font-size: 0.9rem; }
+.impact-3 { background: #fde8e8; color: #a51212; padding: 0.15rem 0.55rem; border-radius: 3px; font-size: 0.8rem; white-space: nowrap; }
+.impact-2 { background: #fff4e5; color: #b34700; padding: 0.15rem 0.55rem; border-radius: 3px; font-size: 0.8rem; white-space: nowrap; }
+.impact-1 { background: #f0f0f0; color: #555; padding: 0.15rem 0.55rem; border-radius: 3px; font-size: 0.8rem; white-space: nowrap; }
 .councillors { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 1rem; }
 .councillors li { border: 1px solid var(--line); border-radius: 6px; padding: 0.75rem 1rem; min-width: 16rem; }
 .biglist { column-count: 2; column-gap: 2rem; list-style: none; padding: 0; }
