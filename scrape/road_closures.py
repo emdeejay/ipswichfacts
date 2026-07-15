@@ -73,9 +73,8 @@ def _flatten_impact(impact: Any) -> str | None:
         )
         if what and where:
             what = f"{what} ({where})"
-        parts = [p for p in (what or where or None, impact.get("delay")) if p]
-        if parts:
-            return " — ".join(parts)
+        parts = [p for p in (what or where or None, known(impact.get("delay"))) if p]
+        return " — ".join(parts) if parts else None
     return json.dumps(impact, ensure_ascii=False)
 
 
