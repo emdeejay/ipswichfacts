@@ -5,10 +5,10 @@
 Add a data source. The architecture is designed so this is the main path of growth. See `CLAUDE.md` → "How to add a new data source". The current backlog, roughly in priority order:
 
 1. Council meeting agendas + minutes from `ipswich.infocouncil.biz` — the most valuable source, because it's where decisions actually happen.
-2. Capital Works Program PDFs — funding-source attribution per project across financial years, cost escalation over budget cycles.
-3. Ipswich First media releases via the WordPress REST API — trivial.
-4. Councillor profile pages — fills out the division → councillor → contact resolution.
-5. Shape Your Ipswich consultation records — quieter but useful.
+2. Ipswich First media releases via the WordPress REST API — trivial.
+3. Councillor profile pages — fills out the division → councillor → contact resolution.
+4. Shape Your Ipswich consultation records — quieter but useful.
+5. Older Capital Works Program cycles (2021-2022, 2022-2023) — the current parser can't do their layout reliably; see docs/notes.md.
 
 ## Ground rules
 

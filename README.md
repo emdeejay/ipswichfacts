@@ -2,7 +2,7 @@
 
 Public Ipswich City Council data — projects, closures, mentions — joined up and made searchable, then published as a plain static site so Google can index the joined view.
 
-Status: **working prototype**. Four data sources plumbed end-to-end (Civic Projects + live road closures + Council meeting agendas/minutes + Ipswich First media releases). Everything else on the roadmap is a bolt-on that follows the same shape.
+Status: **working prototype**. Five data sources plumbed end-to-end (Civic Projects + live road closures + Council meeting agendas/minutes + Ipswich First media releases + Capital Works Program budgets). Everything else on the roadmap is a bolt-on that follows the same shape.
 
 ## What it is
 
@@ -15,7 +15,7 @@ Each page ships as pre-rendered HTML so Google can index it directly. A small cl
 ```
 git clone <your-repo> ipswichfacts
 cd ipswichfacts
-make install       # pip install httpx
+make install       # pip install httpx + pdfplumber
 make sample        # build the site from the checked-in sample data
 make serve         # open http://localhost:8000
 ```
@@ -37,6 +37,7 @@ make serve
 | Live road impacts (QLDTraffic proxy) | `https://traffic.ipswich.qld.gov.au/dashboard/tmrRoadData` | Bare array of GeoJSON Features, double-JSON-encoded | Real-time |
 | Council meetings (agendas + minutes) | `https://ipswich.infocouncil.biz/` index → `Open/YYYY/MM/*_WEB.htm` framesets | ~100 meetings/year, per-item text + resolutions; 2020–2025 archive committed in `data/archive/` | Daily (current year); archive scraped once |
 | Ipswich First media releases | `https://www.ipswichfirst.com.au/wp-json/wp/v2/posts` (WordPress REST API) | ~4,900 posts back to 2017, plain-text body + categories; 2017–2025 archive committed in `data/archive/` | Daily (current year); archive scraped once |
+| Capital Works Programs | One PDF per budget cycle, linked from `.../Corporate-Publications/Budget-YYYY-YYYY`; parsed with `pdfplumber` | ~380–470 projects/cycle with funding by financial year; 2023-2024 → 2026-2027 committed in `data/capital_works/` (2026-27 marks funded years with ● instead of amounts) | Yearly (`make backfill-capworks` when the new budget drops) |
 
 Endpoints were discovered by inspecting the Council apps' network traffic; both return plain JSON (once double-decoded for the traffic feed) and can be scraped with `httpx`.
 
@@ -44,7 +45,6 @@ Endpoints were discovered by inspecting the Council apps' network traffic; both 
 
 Same shape as above, just more sources:
 
-- **Capital Works Programs** — annual PDFs at stable URLs under `ipswich.qld.gov.au/.../budget/*/annual-plan/*.pdf`. Parse the schedule tables with `camelot` or `pdfplumber` to get per-project funding by financial year.
 - **Shape Your Ipswich** — Granicus EngagementHQ. HTML scrape per project page.
 
 Add each as a new file in `scrape/`, extend the `build_site.py` graph to consume it, generate more page templates. No architectural changes required.
@@ -55,12 +55,13 @@ Add each as a new file in `scrape/`, extend the `build_site.py` graph to consume
 ipswichfacts/
 ├── README.md                        # you are here
 ├── Makefile                         # make sample | scrape | build | serve
-├── requirements.txt                 # just httpx
+├── requirements.txt                 # httpx + pdfplumber
 ├── scrape/
 │   ├── civic_projects.py            # Civic Projects Map JSON → data/projects.json
 │   ├── road_closures.py             # Traffic dashboard feeds → data/closures.json
 │   ├── council_meetings.py          # infocouncil business papers → data/meetings.json
 │   ├── ipswich_first.py             # Ipswich First WP REST API → data/news.json
+│   ├── capital_works.py             # Capital Works Program PDFs → data/capital_works/
 │   └── extract_mentions.py          # gazetteer-based place-name NER
 ├── build/
 │   └── build_site.py                # emits site/ from data/*.json
@@ -70,6 +71,7 @@ ipswichfacts/
 │   │   ├── closures.json            # 5 real active closures observed 15 Jul 2026
 │   │   ├── meetings.json            # 3 real meetings observed 15 Jul 2026
 │   │   └── news.json                # 5 real Ipswich First posts observed 15 Jul 2026
+│   ├── capital_works/               # committed: one file per budget cycle (2023-2024 → 2026-2027)
 │   ├── projects.json                # (generated) full projects dump
 │   ├── closures.json                # (generated) snapshot of active impacts
 │   ├── meetings.json                # (generated) full meetings dump (current year)
@@ -82,12 +84,14 @@ ipswichfacts/
 Every entity gets its own URL:
 
 - `/` — search + summary + active closures
-- `/project/<slug>/` — one page per project (title, description, status, dates, division, links, related streets/suburbs)
+- `/project/<slug>/` — one page per project (title, description, status, dates, division, links, related streets/suburbs, capital works funding per budget cycle)
 - `/street/<slug>/` — every project, closure and Council meeting mention on that street
 - `/suburb/<slug>/` — every project, closure and Council meeting mention in that suburb
 - `/meeting/<slug>/` — one page per Council meeting (per-item text, resolutions, links back to the business paper)
 - `/news/<slug>/` — one page per Ipswich First media release (plain-text body, categories, link back to the original article)
 - `/news/` — news index (two most recent years, plus per-year pages `/news/YYYY/` for older articles)
+- `/capital-works/` — every Capital Works Program by budget cycle: program totals and grand totals
+- `/capital-works/<cycle>/` — one page per budget cycle: every project row with funding by financial year, linked to project pages and to the exact PDF page
 - `/division/<n>/` — each Council division: its two councillors (with contacts) and every project in the division
 - `/councillors/` — the Mayor and all eight councillors
 - `/projects/`, `/suburbs/`, `/streets/`, `/meetings/` — index pages

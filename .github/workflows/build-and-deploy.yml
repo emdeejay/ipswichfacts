@@ -31,6 +31,8 @@ jobs:
       - name: Install
         run: pip install -r requirements.txt
 
+      # Capital works (data/capital_works/) is committed, not scraped here:
+      # budgets change once a year — see `make backfill-capworks`.
       - name: Scrape
         run: |
           python -m scrape.civic_projects --out data/projects.json

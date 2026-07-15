@@ -6,6 +6,7 @@ Reads:
     data/closures.json      (from scrape.road_closures)
     data/meetings.json      (from scrape.council_meetings)
     data/news.json          (from scrape.ipswich_first)
+    data/capital_works/capworks-*.json  (from scrape.capital_works, committed)
 
 Writes:
     site/index.html
@@ -14,6 +15,8 @@ Writes:
     site/street/<slug>/index.html
     site/meeting/<slug>/index.html
     site/news/<slug>/index.html
+    site/capital-works/index.html
+    site/capital-works/<cycle>/index.html
     site/data/projects.json         (client widget data)
     site/data/closures.json
     site/data/meetings.json         (slim: no item text)
@@ -92,6 +95,21 @@ def format_ymd(ymd: str | None) -> str:
     return ymd
 
 
+def fmt_fy(fy: str | None) -> str:
+    """'2025-2026' -> '2025–2026' (en dash, as Council prints it)."""
+    return (fy or "").replace("-", "–")
+
+
+def fmt_kdollars(k: int | None) -> str:
+    """Format an amount given in $'000: 1200 -> $1.2M, 450 -> $450k."""
+    if k is None:
+        return "—"
+    if k >= 1000:
+        s = f"{k / 1000:,.1f}".rstrip("0").rstrip(".")
+        return f"${s}M"
+    return f"${k}k"
+
+
 # Classify a project's traffic impact from Council's own status wording.
 # Tiered so the homepage can flag and order by actual interruption; bare
 # "clos"/"lane" matching is deliberately avoided ("park closures" and
@@ -137,7 +155,7 @@ def dedupe(items: list[Any], key) -> list[Any]:
 # Load
 
 
-def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
+def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
     projects = json.loads((inp / "projects.json").read_text())
     closures_path = inp / "closures.json"
     closures = json.loads(closures_path.read_text()) if closures_path.exists() else {"closures": []}
@@ -175,7 +193,15 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
     cr_path = inp / "councillors.json"
     councillors = json.loads(cr_path.read_text()).get("councillors", []) if cr_path.exists() else []
 
-    return projects, closures, meetings, news, councillors
+    # Capital Works Programs: committed one file per budget cycle
+    # (scrape/capital_works.py, re-run each June/July when the new budget
+    # drops — budgets don't change during the year). Newest cycle first.
+    capworks = [
+        json.loads(f.read_text())
+        for f in sorted((inp / "capital_works").glob("capworks-*.json"), reverse=True)
+    ] if (inp / "capital_works").exists() else []
+
+    return projects, closures, meetings, news, councillors, capworks
 
 
 def _assign_meeting_slugs(meetings: list[dict[str, Any]]) -> None:
@@ -267,7 +293,7 @@ def _normalise_type(t: str) -> str:
 # Build the entity graph
 
 
-def build_graph(projects, closures, meetings, news) -> dict[str, Any]:
+def build_graph(projects, closures, meetings, news, capworks) -> dict[str, Any]:
     streets_set: set[str] = set()
     suburbs_set: set[str] = set()
 
@@ -395,7 +421,63 @@ def build_graph(projects, closures, meetings, news) -> dict[str, Any]:
         news_suburbs[post["slug"]] = p_suburbs
         streets_set.update(p_streets)
 
+    # Capital Works rows ↔ projects: capital works names are close to the
+    # Civic Projects map names. Match on the full normalised name first
+    # (keeps stages distinct), then fall back to the stage-stripped core
+    # where that core identifies exactly one project.
+    def _stage_tag(name):
+        m = re.search(r"\b(stage|phase)\s*\d+[a-z]?\b", _norm(name))
+        return m.group(0) if m else None
+
+    proj_by_norm: dict[str, str] = {}
+    proj_stage: dict[str, str | None] = {}
+    for p in projects:
+        proj_by_norm.setdefault(_norm(p.get("name")), p["slug"])
+        proj_stage[p["slug"]] = _stage_tag(p.get("name"))
+    core_owners: dict[str, set[str]] = defaultdict(set)
+    for p in projects:
+        c = _name_core(p.get("name"))
+        if len(c) >= 12:
+            core_owners[c].add(p["slug"])
+    proj_by_core = {c: next(iter(s)) for c, s in core_owners.items() if len(s) == 1}
+
+    project_capworks: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    capworks_rows = 0
+    capworks_matched = 0
+    for cw in capworks:
+        for prog in cw.get("programs", []):
+            for row in prog.get("rows", []):
+                capworks_rows += 1
+                n = _norm(row.get("project"))
+                c = _name_core(row.get("project"))
+                pslug = proj_by_norm.get(n)
+                if not pslug and len(c) >= 12:
+                    # Stage-stripped fallback — but never bridge two
+                    # *different* explicit stages ("… Stage 1" must not
+                    # land on the "… Stage 2" project page).
+                    cand = proj_by_core.get(c)
+                    if cand:
+                        rstage = _stage_tag(row.get("project"))
+                        pstage = proj_stage.get(cand)
+                        if not (rstage and pstage and rstage != pstage):
+                            pslug = cand
+                row["project_slug"] = pslug
+                if pslug:
+                    capworks_matched += 1
+                    project_capworks[pslug].append(
+                        {
+                            "cycle": cw.get("cycle"),
+                            "fy_columns": cw.get("fy_columns", []),
+                            "amounts_published": cw.get("amounts_published"),
+                            "source_url": cw.get("source_url"),
+                            "section": prog.get("section"),
+                            "row": row,
+                        }
+                    )
+
     return {
+        "project_capworks": dict(project_capworks),
+        "capworks_match": (capworks_matched, capworks_rows),
         "streets": sorted(streets_set),
         "suburbs": sorted(suburbs_set),
         "project_streets": project_streets,
@@ -483,7 +565,7 @@ def _support_html() -> str:
     )
 
 
-def render_index(projects, closures, meetings, news, graph) -> str:
+def render_index(projects, closures, meetings, news, graph, capworks) -> str:
     by_phase: dict[str, int] = defaultdict(int)
     for p in projects:
         by_phase[p.get("phase") or "Unknown"] += 1
@@ -495,6 +577,19 @@ def render_index(projects, closures, meetings, news, graph) -> str:
     )
 
     active_closures = [c for c in closures.get("closures", []) if c.get("status") != "Archived"]
+
+    # Stat tile for the newest capital works cycle's three-year grand total.
+    capworks_tile = ""
+    if capworks:
+        cw = capworks[0]
+        gt = (cw.get("grand_total") or {}).get("total")
+        if gt is not None:
+            span = _capworks_span(cw.get("fy_columns", []))
+            short_span = f"{span[:4]}–{span[-2:]}"
+            capworks_tile = (
+                f'<li><a href="/capital-works/"><b>{h(fmt_kdollars(gt))}</b>'
+                f"<span>Capital program {h(short_span)}</span></a></li>"
+            )
 
     closure_html = ""
     if active_closures:
@@ -556,6 +651,7 @@ def render_index(projects, closures, meetings, news, graph) -> str:
     <li><b>{len(active_closures)}</b><span>Active road impacts</span></li>
     <li><b>{len(meetings.get('meetings', []))}</b><span>Council meetings indexed</span></li>
     <li><b>{len(news.get('posts', []))}</b><span>Ipswich First articles</span></li>
+    {capworks_tile}
   </ul>
 
   <h2>Projects by phase of work</h2>
@@ -568,7 +664,7 @@ def render_index(projects, closures, meetings, news, graph) -> str:
 
 <section>
   <h2>Explore</h2>
-  <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a> · <a href="/news/">Ipswich First news</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
+  <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a> · <a href="/news/">Ipswich First news</a> · <a href="/capital-works/">Capital works funding</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
 </section>
 
 {_support_html()}
@@ -578,6 +674,61 @@ def render_index(projects, closures, meetings, news, graph) -> str:
         description="Live road closures, civic projects, and Council decisions for Ipswich, Queensland — all in one place, searchable, cross-referenced.",
         path="/",
         body=body,
+    )
+
+
+def _capworks_span(fy_columns: list[str]) -> str:
+    """['2025-2026','2026-2027','2027-2028'] -> '2025–2028'."""
+    if not fy_columns:
+        return ""
+    return f"{fy_columns[0][:4]}–{fy_columns[-1][-4:]}"
+
+
+def _fy_list(fys: list[str]) -> str:
+    parts = [fmt_fy(f) for f in fys]
+    if len(parts) <= 1:
+        return "".join(parts)
+    return ", ".join(parts[:-1]) + " and " + parts[-1]
+
+
+def _capworks_funding_html(slug: str, graph) -> str:
+    """'Funding (Capital Works Program)' section for a project page: one
+    entry per budget cycle in which a capital works row names this project."""
+    refs = graph.get("project_capworks", {}).get(slug, [])
+    if not refs:
+        return ""
+    blocks = []
+    for ref in refs:  # newest cycle first (load order)
+        row = ref["row"]
+        span = _capworks_span(ref["fy_columns"])
+        link = f'{h(ref["source_url"])}#page={row.get("page")}' if ref.get("source_url") else ""
+        src = f'<a href="{link}" rel="noopener">Council&nbsp;source&nbsp;↗</a>' if link else ""
+        if row.get("amounts") is not None:
+            head = "".join(f"<th>{h(fmt_fy(fy))}</th>" for fy in ref["fy_columns"])
+            cells = "".join(
+                f"<td>{h(fmt_kdollars(row['amounts'].get(fy)))}</td>" for fy in ref["fy_columns"]
+            )
+            detail = (
+                f"<table class='data'><thead><tr>{head}<th>3 Year Total</th></tr></thead>"
+                f"<tbody><tr>{cells}<td><b>{h(fmt_kdollars(row.get('total')))}</b></td></tr></tbody></table>"
+            )
+        else:
+            detail = (
+                f"<p>Funded in {h(_fy_list(row.get('funded_years') or []))} — per-project "
+                f"amounts not published in the {h(fmt_fy(ref['cycle']))} program.</p>"
+            )
+        blocks.append(
+            f"<h4>Capital Works Program {h(span)} "
+            f"<span class='muted'>({h(fmt_fy(ref['cycle']))} budget · "
+            f"{h(ref.get('section'))} · as “{h(row.get('project'))}”)</span> {src}</h4>"
+            f"{detail}"
+        )
+    return (
+        "<h3>Funding (Capital Works Program)</h3>"
+        + "".join(blocks)
+        + "<p class='muted'>Amounts are as published in Council's Capital Works Program "
+        "PDFs ($'000, multiplied out). See <a href='/capital-works/'>all capital works "
+        "programs</a>.</p>"
     )
 
 
@@ -607,6 +758,8 @@ def render_project(p, closures, graph) -> str:
 
     what = p.get("what_to_expect")
     what_html = f"<h3>What to expect</h3><p>{h(what)}</p>" if what else ""
+
+    funding_html = _capworks_funding_html(slug, graph)
 
     # Direct: meeting items that name this project. Transitive: items that
     # mention this project's streets (capped, deduped against direct).
@@ -693,6 +846,8 @@ def render_project(p, closures, graph) -> str:
       <p>{h(p.get("status"))}</p>
 
       {what_html}
+
+      {funding_html}
     </div>
     <aside class="panel">
       <h3>Division</h3>
@@ -1112,6 +1267,159 @@ def render_phase_list(phase: str, projects) -> str:
     )
 
 
+def _cw_key(s: str | None) -> str:
+    return re.sub(r" +", " ", re.sub(r"[^a-z0-9 ]", " ", (s or "").lower())).strip()
+
+
+def _cw_totals_cells(totals, fy_columns) -> str:
+    if not totals:
+        return "<td>—</td>" * (len(fy_columns) + 1)
+    cells = "".join(f"<td>{h(fmt_kdollars(totals.get(fy)))}</td>" for fy in fy_columns)
+    return cells + f"<td><b>{h(fmt_kdollars(totals.get('total')))}</b></td>"
+
+
+def render_capworks_index(capworks) -> str:
+    blocks = []
+    for cw in capworks:
+        fy_cols = cw.get("fy_columns", [])
+        span = _capworks_span(fy_cols)
+        gt = cw.get("grand_total") or {}
+        note = ""
+        if not cw.get("amounts_published"):
+            note = (
+                "<p class='meta'>This program marks which years each project is funded "
+                "(●) but does not publish per-project dollar amounts — Council publishes "
+                "dollar figures at program level only in this cycle.</p>"
+            )
+        head = "".join(f"<th>{h(fmt_fy(fy))}</th>" for fy in fy_cols)
+        rows = "".join(
+            f'<tr><td><a href="/capital-works/{h(cw.get("cycle"))}/#{slugify(p.get("section") or "section")}">'
+            f'{h(p.get("section"))}</a> <span class="muted">{h((p.get("area") or "").title())}</span></td>'
+            f"{_cw_totals_cells(p.get('totals'), fy_cols)}</tr>"
+            for p in cw.get("programs", [])
+        )
+        blocks.append(f"""
+<h2>Capital Works Program {h(span)} <span class="muted">({h(fmt_fy(cw.get('cycle')))} budget)</span></h2>
+<p>Grand total <b>{h(fmt_kdollars(gt.get('total')))}</b> over three years
+({" · ".join(f"{h(fmt_fy(fy))} {h(fmt_kdollars(gt.get(fy)))}" for fy in fy_cols)}).
+<a href="/capital-works/{h(cw.get('cycle'))}/">All {sum(len(p.get('rows', [])) for p in cw.get('programs', []))} projects</a>
+· <a href="{h(cw.get('source_url'))}" rel="noopener">Council source (PDF) ↗</a></p>
+{note}
+<table class='data'><thead><tr><th>Program</th>{head}<th>3 Year Total</th></tr></thead>
+<tbody>{rows}</tbody></table>
+""")
+
+    body = f"""
+<p class="crumbs"><a href="/">Home</a> › Capital works</p>
+<h1>Capital Works Programs</h1>
+<p class="meta">Council adopts a rolling three-year Capital Works Program with each
+annual budget. Reproduced from Council's own PDFs; source amounts are in $'000,
+shown here multiplied out. Newest program first — the same project can appear in
+several cycles as funding moves between years.</p>
+{"".join(blocks)}
+<p class="attribution">Source: Ipswich City Council Capital Works Program PDFs
+(<a href="https://www.ipswich.qld.gov.au/About-Council/Media-and-Publications/Corporate-Publications">Corporate Publications — Budget</a>), CC BY 4.0.</p>
+"""
+    return render_layout(
+        title="Capital Works Programs — where the money goes",
+        description="Ipswich City Council's three-year Capital Works Programs, cycle by cycle: every program's funding by financial year, with per-project detail.",
+        path="/capital-works/",
+        body=body,
+    )
+
+
+def render_capworks_cycle(cw, graph) -> str:
+    cycle = cw.get("cycle")
+    fy_cols = cw.get("fy_columns", [])
+    span = _capworks_span(fy_cols)
+    amounts = cw.get("amounts_published")
+    area_totals = {_cw_key(a.get("area")): a.get("totals") for a in cw.get("area_totals") or []}
+
+    note = ""
+    if not amounts:
+        note = (
+            "<p class='meta'>In this cycle Council marks which years each project is "
+            "funded (●) without publishing per-project dollar amounts; dollar figures "
+            "appear at program level only. Reproduced as published.</p>"
+        )
+
+    head = "".join(f"<th>{h(fmt_fy(fy))}</th>" for fy in fy_cols)
+    sections = []
+    prev_area = object()
+    for prog in cw.get("programs", []):
+        area = prog.get("area")
+        if area != prev_area:
+            at = area_totals.get(_cw_key(area))
+            at_html = (
+                f' <span class="muted">— total {h(fmt_kdollars(at.get("total")))}</span>'
+                if at else ""
+            )
+            sections.append(f"<h2>{h((area or '').title())}{at_html}</h2>")
+            prev_area = area
+        rows_html = []
+        for row in prog.get("rows", []):
+            pslug = row.get("project_slug")
+            name = (
+                f'<a href="/project/{h(pslug)}/">{h(row.get("project"))}</a>'
+                if pslug else h(row.get("project"))
+            )
+            if row.get("amounts") is not None:
+                cells = "".join(
+                    f"<td>{h(fmt_kdollars(row['amounts'].get(fy)))}</td>" for fy in fy_cols
+                ) + f"<td><b>{h(fmt_kdollars(row.get('total')))}</b></td>"
+            else:
+                funded = set(row.get("funded_years") or [])
+                cells = "".join(
+                    f"<td>{'●' if fy in funded else ''}</td>" for fy in fy_cols
+                ) + "<td></td>"
+            src = (
+                f'<td><a href="{h(cw.get("source_url"))}#page={row.get("page")}" '
+                f'rel="noopener">PDF&nbsp;p.{row.get("page")}&nbsp;↗</a></td>'
+            )
+            rows_html.append(
+                f"<tr><td>{name}<br><span class='muted'>{h(row.get('description'))}</span></td>"
+                f"{cells}{src}</tr>"
+            )
+        totals_row = ""
+        if prog.get("totals"):
+            totals_row = (
+                f"<tr><td><b>{h(prog.get('section'))} Total</b></td>"
+                f"{_cw_totals_cells(prog.get('totals'), fy_cols)}<td></td></tr>"
+            )
+        sections.append(f"""
+<h3 id="{slugify(prog.get('section') or 'section')}">{h(prog.get('section'))}</h3>
+<table class='data'><thead><tr><th>Project</th>{head}<th>3 Year Total</th><th>Source</th></tr></thead>
+<tbody>{"".join(rows_html)}{totals_row}</tbody></table>
+""")
+
+    gt = cw.get("grand_total") or {}
+    gt_html = ""
+    if gt:
+        gt_html = (
+            f"<h2>Grand total</h2><table class='data'><thead><tr>{head}"
+            f"<th>3 Year Total</th></tr></thead><tbody><tr>"
+            + "".join(f"<td>{h(fmt_kdollars(gt.get(fy)))}</td>" for fy in fy_cols)
+            + f"<td><b>{h(fmt_kdollars(gt.get('total')))}</b></td></tr></tbody></table>"
+        )
+
+    body = f"""
+<p class="crumbs"><a href="/">Home</a> › <a href="/capital-works/">Capital works</a> › {h(span)}</p>
+<h1>Capital Works Program {h(span)}</h1>
+<p class="meta">Adopted with the {h(fmt_fy(cycle))} budget. Source amounts are in $'000,
+shown here multiplied out. <a href="{h(cw.get('source_url'))}" rel="noopener">Council source (PDF) ↗</a></p>
+{note}
+{"".join(sections)}
+{gt_html}
+<p class="attribution">Source: <a href="{h(cw.get('source_url'))}">Ipswich City Council Capital Works Program {h(span)}</a> (CC BY 4.0).</p>
+"""
+    return render_layout(
+        title=f"Capital Works Program {span}",
+        description=f"Ipswich City Council's Capital Works Program {span}, adopted with the {fmt_fy(cycle)} budget: every project and program, by financial year.",
+        path=f"/capital-works/{cycle}/",
+        body=body,
+    )
+
+
 def _councillor_card(c) -> str:
     email_html = (
         f'<br><a href="mailto:{h(c["email"])}">{h(c["email"])}</a>' if c.get("email") else ""
@@ -1200,9 +1508,10 @@ def render_about() -> str:
   <li><a href="https://traffic.ipswich.qld.gov.au/">Road Closures dashboard</a> — live road impacts, with data from Ipswich City Council and QLDTraffic.</li>
   <li><a href="https://ipswich.infocouncil.biz/">Council business papers</a> — meeting agendas and minutes, item by item.</li>
   <li><a href="https://www.ipswichfirst.com.au/">Ipswich First</a> — Council's media releases, back to 2017.</li>
+  <li><a href="https://www.ipswich.qld.gov.au/About-Council/Media-and-Publications/Corporate-Publications">Capital Works Program PDFs</a> — per-project funding by financial year, one program per budget cycle.</li>
 </ul>
 
-<p>More sources — Capital Works Programs, Shape Your Ipswich consultations — will be added.</p>
+<p>More sources — Shape Your Ipswich consultations — will be added.</p>
 
 <h2>Licence</h2>
 <p>Council content is published under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. This site preserves attribution and links back to the Council source for every item reproduced.</p>
@@ -1227,7 +1536,7 @@ def render_about() -> str:
 # Write
 
 
-def write_site(out: Path, projects, closures, meetings, news, graph) -> list[str]:
+def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -> list[str]:
     """Write all pages. Returns the list of URL paths for sitemap."""
     # Best-effort clean (overwrites are always fine; deletion may fail on
     # read-only mounts, in which case we just overwrite in place).
@@ -1255,7 +1564,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph) -> list[str
         urls.append(path)
 
     # Landing
-    write("/", render_index(projects, closures, meetings, news, graph))
+    write("/", render_index(projects, closures, meetings, news, graph, capworks))
 
     # Projects
     write("/projects/", render_projects_list(projects))
@@ -1292,6 +1601,13 @@ def write_site(out: Path, projects, closures, meetings, news, graph) -> list[str
         write(f"/news/{y}/", render_news_year(y, news_posts))
     for p in news_posts:
         write(f"/news/{p['slug']}/", render_news_post(p, graph))
+
+    # Capital works: one index page plus one page per budget cycle. The data
+    # is committed (refreshed once a year), so these always build.
+    if capworks:
+        write("/capital-works/", render_capworks_index(capworks))
+        for cw in capworks:
+            write(f"/capital-works/{cw['cycle']}/", render_capworks_cycle(cw, graph))
 
     # Councillors + divisions
     councillors = graph.get("councillors", [])
@@ -1627,15 +1943,22 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=Path("site"))
     args = parser.parse_args()
 
-    projects, closures, meetings, news, councillors = load(args.data)
+    projects, closures, meetings, news, councillors, capworks = load(args.data)
     print(
         f"Loaded {len(projects)} projects, {len(closures.get('closures', []))} closures, "
         f"{len(meetings.get('meetings', []))} meetings, {len(news.get('posts', []))} news posts, "
-        f"{len(councillors)} councillors",
+        f"{len(councillors)} councillors, {len(capworks)} capital works cycles",
         file=sys.stderr,
     )
 
-    graph = build_graph(projects, closures, meetings, news)
+    graph = build_graph(projects, closures, meetings, news, capworks)
+    matched, total_rows = graph.get("capworks_match", (0, 0))
+    if total_rows:
+        print(
+            f"Capital works rows joined to projects: {matched}/{total_rows} "
+            f"({matched / total_rows:.0%})",
+            file=sys.stderr,
+        )
     graph["councillors"] = councillors
     by_div: dict[int, list] = defaultdict(list)
     for c in councillors:
@@ -1644,7 +1967,7 @@ def main() -> int:
     graph["councillors_by_division"] = dict(by_div)
     print(f"Extracted {len(graph['streets'])} streets, {len(graph['suburbs'])} suburbs", file=sys.stderr)
 
-    urls = write_site(args.out, projects, closures, meetings, news, graph)
+    urls = write_site(args.out, projects, closures, meetings, news, graph, capworks)
     print(f"Wrote {len(urls)} pages to {args.out}", file=sys.stderr)
     return 0
 

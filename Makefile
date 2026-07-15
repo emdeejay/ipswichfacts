@@ -1,4 +1,4 @@
-.PHONY: all install scrape build clean serve sample backfill backfill-news
+.PHONY: all install scrape build clean serve sample backfill backfill-news backfill-capworks
 
 # One-off historical meetings backfill (2020-2025). Gentle: 2s between
 # requests, ~1h total. Results are committed to data/archive/ and never
@@ -16,6 +16,17 @@ backfill-news:
 	for y in 2017 2018 2019 2020 2021 2022 2023 2024 2025; do \
 		python3 -m scrape.ipswich_first --year $$y --compact \
 			--out data/archive/news-$$y.json; \
+	done
+
+# Capital Works Programs: one PDF per budget cycle, parsed once and
+# committed to data/capital_works/ (budgets change once a year — re-run
+# each June/July when the new budget drops, adding the new cycle).
+# 2021-2022 and 2022-2023 are deliberately absent: those PDFs use an older
+# layout the parser can't do reliably (see docs/notes.md).
+backfill-capworks:
+	for c in 2023-2024 2024-2025 2025-2026 2026-2027; do \
+		python3 -m scrape.capital_works --cycle $$c --compact \
+			--out data/capital_works/capworks-$$c.json; \
 	done
 
 # One command to build from live data
