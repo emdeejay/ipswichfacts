@@ -54,6 +54,27 @@ def _fetch(client: httpx.Client, url: str) -> Any:
     return _double_decode(resp.text)
 
 
+def _flatten_impact(impact: Any) -> str | None:
+    """Upstream `impact` is a plain string on some events and a dict like
+    {direction, towards, impact_type, impact_subtype, delay} on others.
+    Flatten the dict form to a readable sentence so nothing downstream
+    ever renders a JSON blob."""
+    if impact is None or isinstance(impact, str):
+        return impact
+    if isinstance(impact, dict):
+        what = impact.get("impact_subtype") or impact.get("impact_type")
+        where = " ".join(
+            filter(None, [impact.get("direction"),
+                          f"towards {impact['towards']}" if impact.get("towards") else None])
+        )
+        if what and where:
+            what = f"{what} ({where})"
+        parts = [p for p in (what or where or None, impact.get("delay")) if p]
+        if parts:
+            return " — ".join(parts)
+    return json.dumps(impact, ensure_ascii=False)
+
+
 def _normalise_tmr(feature: dict[str, Any]) -> dict[str, Any]:
     p = feature.get("properties", {}) or {}
     road_summary = p.get("road_summary") or {}
@@ -77,7 +98,7 @@ def _normalise_tmr(feature: dict[str, Any]) -> dict[str, Any]:
         "event_type": p.get("event_type"),
         "event_subtype": p.get("event_subtype"),
         "event_due_to": p.get("event_due_to"),
-        "impact": p.get("impact"),
+        "impact": _flatten_impact(p.get("impact")),
         "priority": p.get("event_priority"),
         "description": p.get("description"),
         "advice": p.get("advice"),
@@ -95,7 +116,6 @@ def _normalise_tmr(feature: dict[str, Any]) -> dict[str, Any]:
         "url": p.get("url"),
         "web_link": p.get("web_link"),
         "coords": coords,
-        "raw": feature,
     }
 
 
@@ -106,14 +126,13 @@ def _normalise_ims(feature: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": p.get("id") or p.get("ID"),
         "source": "imsRoad",
-        # IMS field names vary; keep raw for flexibility.
+        # IMS field names vary between events; check both casings.
         "description": p.get("description") or p.get("DESCRIPTION"),
         "road_name": p.get("road_name") or p.get("ROAD_NAME"),
         "suburb": p.get("suburb") or p.get("SUBURB"),
         "start_time": p.get("start_time") or p.get("START_TIME"),
         "end_time": p.get("end_time") or p.get("END_TIME"),
         "coords": coords,
-        "raw": feature,
     }
 
 

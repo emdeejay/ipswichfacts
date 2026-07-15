@@ -252,7 +252,8 @@ def render_index(projects, closures, graph) -> str:
         by_phase[p.get("phase") or "Unknown"] += 1
 
     phase_html = "\n".join(
-        f'<li><span class="{phase_class(k)}">{h(k)}</span> <b>{v}</b></li>'
+        f'<li><a href="/projects/phase/{slugify(k)}/">'
+        f'<span class="{phase_class(k)}">{h(k)}</span> <b>{v}</b></a></li>'
         for k, v in sorted(by_phase.items(), key=lambda x: -x[1])
     )
 
@@ -481,11 +482,37 @@ def render_list(title, kind, items) -> str:
 def render_projects_list(projects) -> str:
     lis = "".join(
         f'<li><a href="/project/{p["slug"]}/">{h(p["name"])}</a> '
-        f'<span class="{phase_class(p.get("phase"))}">{h(p.get("phase"))}</span></li>'
+        f'<a href="/projects/phase/{slugify(p.get("phase") or "Unknown")}/" '
+        f'class="{phase_class(p.get("phase"))}">{h(p.get("phase"))}</a></li>'
         for p in sorted(projects, key=lambda p: (p.get("phase") or "", p.get("name") or ""))
     )
     body = f"<h1>All projects</h1><ul class='biglist'>{lis}</ul>"
     return render_layout("All projects", "Every civic project on file.", "/projects/", body)
+
+
+def render_phase_list(phase: str, projects) -> str:
+    slug = slugify(phase)
+    matching = sorted(
+        (p for p in projects if (p.get("phase") or "Unknown") == phase),
+        key=lambda p: p.get("name") or "",
+    )
+    lis = "".join(
+        f'<li><a href="/project/{p["slug"]}/">{h(p["name"])}</a>'
+        + (f' <span class="muted">{h(p.get("suburb"))}</span>' if p.get("suburb") else "")
+        for p in matching
+    )
+    body = f"""
+<p class="crumbs"><a href="/">Home</a> › <a href="/projects/">Projects</a> › {h(phase)}</p>
+<h1><span class="{phase_class(phase)}">{h(phase)}</span> projects</h1>
+<p class="meta">{len(matching)} project{"s" if len(matching) != 1 else ""} in this phase of work.</p>
+<ul class='biglist'>{lis}</ul>
+"""
+    return render_layout(
+        title=f"{phase} — Ipswich civic projects",
+        description=f"All Ipswich City Council civic projects in the '{phase}' phase of work.",
+        path=f"/projects/phase/{slug}/",
+        body=body,
+    )
 
 
 def render_about() -> str:
@@ -556,6 +583,8 @@ def write_site(out: Path, projects, closures, graph) -> list[str]:
 
     # Projects
     write("/projects/", render_projects_list(projects))
+    for phase in sorted({p.get("phase") or "Unknown" for p in projects}):
+        write(f"/projects/phase/{slugify(phase)}/", render_phase_list(phase, projects))
     for p in projects:
         write(f"/project/{p['slug']}/", render_project(p, closures, graph))
 
@@ -644,6 +673,10 @@ h2 { border-bottom: 1px solid var(--line); padding-bottom: 0.25rem; margin-top: 
 .grid span { display: block; color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem; }
 .phases { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .phases li { padding: 0.35rem 0.75rem; border: 1px solid var(--line); border-radius: 999px; }
+.phases li a { color: inherit; text-decoration: none; }
+.phases li:hover { border-color: var(--accent); }
+a[class^="phase-"] { text-decoration: none; }
+.muted { color: var(--muted); font-size: 0.9rem; }
 .biglist { column-count: 2; column-gap: 2rem; list-style: none; padding: 0; }
 .biglist li { break-inside: avoid; padding: 0.25rem 0; }
 table.data { width: 100%; border-collapse: collapse; margin: 1rem 0; }
