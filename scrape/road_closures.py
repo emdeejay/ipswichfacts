@@ -62,10 +62,14 @@ def _flatten_impact(impact: Any) -> str | None:
     if impact is None or isinstance(impact, str):
         return impact
     if isinstance(impact, dict):
-        what = impact.get("impact_subtype") or impact.get("impact_type")
+        def known(v):  # upstream uses the literal string "Unknown" for absent values
+            return v if v and str(v).lower() != "unknown" else None
+
+        what = known(impact.get("impact_subtype")) or known(impact.get("impact_type"))
+        towards = known(impact.get("towards"))
         where = " ".join(
-            filter(None, [impact.get("direction"),
-                          f"towards {impact['towards']}" if impact.get("towards") else None])
+            filter(None, [known(impact.get("direction")),
+                          f"towards {towards}" if towards else None])
         )
         if what and where:
             what = f"{what} ({where})"
