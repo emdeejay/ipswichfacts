@@ -35,7 +35,7 @@ The whole point is discoverability: the site "wins" when a resident Googles thei
 | Capital Works Programs | `ipswich.qld.gov.au/.../budget/*/annual-plan/*.pdf` | Not yet built. Extract funding tables with `camelot` or `pdfplumber`. |
 | Ipswich First media releases | `ipswichfirst.com.au/wp-json/wp/v2/posts` | Not yet built. WordPress REST API. |
 | Shape Your Ipswich consultations | `shapeyouripswich.com.au/<project-slug>` | Not yet built. Granicus EngagementHQ. HTML scrape. |
-| Councillor profiles | `ipswich.qld.gov.au/About-Council/Mayor-Councillors/*` | Not yet built. One-off HTML scrape; refresh after each election. |
+| Councillor profiles | `ipswich.qld.gov.au/About-Council/Mayor-Councillors/*` | **Working** — `scrape/councillors.py`. One-off; output committed as `data/councillors.json`. Re-run after each election (next: 2028). Feeds `/councillors/` and `/division/<n>/` pages. |
 
 ## How to add a new data source (the main growth path)
 

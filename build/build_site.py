@@ -57,14 +57,8 @@ COFFEE_LABEL = "Buy me a coffee"
 # host doesn't allow TXT records). Set to None to omit the tag.
 GOOGLE_SITE_VERIFICATION = "ECKRlA4paFCOzc3-zwWE3wORqBHl6LWTEr_8z4WblYA"
 
-COUNCILLORS = {
-    1: "Cr Pye Augustine",
-    2: "Cr Jacob Madsen",
-    3: "Cr Marnie Doyle",
-    4: "Cr Paul Tully",
-    # (Divisions 1-4 shown on the map. Full LGA has more councillors;
-    # extend when we scrape the councillor pages.)
-}
+# Councillor data comes from data/councillors.json (scrape/councillors.py,
+# one-off, committed — re-run after each election). Loaded in load().
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -121,7 +115,7 @@ def dedupe(items: list[Any], key) -> list[Any]:
 # Load
 
 
-def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
+def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
     projects = json.loads((inp / "projects.json").read_text())
     closures_path = inp / "closures.json"
     closures = json.loads(closures_path.read_text()) if closures_path.exists() else {"closures": []}
@@ -140,7 +134,12 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
     meetings["meetings"].sort(key=lambda m: (m.get("date") or "", m.get("id") or ""), reverse=True)
 
     _assign_meeting_slugs(meetings.get("meetings", []))
-    return projects, closures, meetings
+
+    # Councillors: one-off committed file, refreshed after elections.
+    cr_path = inp / "councillors.json"
+    councillors = json.loads(cr_path.read_text()).get("councillors", []) if cr_path.exists() else []
+
+    return projects, closures, meetings, councillors
 
 
 def _assign_meeting_slugs(meetings: list[dict[str, Any]]) -> None:
@@ -437,7 +436,7 @@ def render_index(projects, closures, meetings, graph) -> str:
 
 <section>
   <h2>Explore</h2>
-  <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a></p>
+  <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
 </section>
 """
     return render_layout(
@@ -451,8 +450,11 @@ def render_index(projects, closures, meetings, graph) -> str:
 def render_project(p, closures, graph) -> str:
     slug = p["slug"]
     divisions = p.get("divisions") or []
+    by_div = graph.get("councillors_by_division", {})
     div_html = ", ".join(
-        f'<a href="/division/{d}/">Division {d} — {h(COUNCILLORS.get(d, "?"))}</a>' for d in divisions
+        f'<a href="/division/{d}/">Division {d}</a>'
+        + (f' ({h(" & ".join(c["name"] for c in by_div[d]))})' if by_div.get(d) else "")
+        for d in divisions
     ) or "—"
 
     extras_html = ""
@@ -764,6 +766,83 @@ def render_phase_list(phase: str, projects) -> str:
     )
 
 
+def _councillor_card(c) -> str:
+    email_html = (
+        f'<br><a href="mailto:{h(c["email"])}">{h(c["email"])}</a>' if c.get("email") else ""
+    )
+    role_html = f' <span class="muted">{h(c["role"])}</span>' if c.get("role") != "Councillor" else ""
+    return (
+        f'<li><a href="{h(c.get("url"))}" rel="noopener"><b>{h(c.get("name"))}</b></a>'
+        f"{role_html}{email_html}</li>"
+    )
+
+
+def render_councillors(councillors) -> str:
+    mayor = [c for c in councillors if c.get("division") is None]
+    by_div: dict[int, list] = defaultdict(list)
+    for c in councillors:
+        if c.get("division") is not None:
+            by_div[c["division"]].append(c)
+
+    sections = []
+    if mayor:
+        sections.append("<h2>Mayor</h2><ul class='councillors'>"
+                        + "".join(_councillor_card(c) for c in mayor) + "</ul>")
+    for d in sorted(by_div):
+        sections.append(
+            f'<h2><a href="/division/{d}/">Division {d}</a></h2>'
+            "<ul class='councillors'>"
+            + "".join(_councillor_card(c) for c in by_div[d]) + "</ul>"
+        )
+
+    body = f"""
+<p class="crumbs"><a href="/">Home</a> › Councillors</p>
+<h1>Mayor and Councillors</h1>
+<p class="meta">Ipswich elects a Mayor city-wide and two councillors per division. Names and contacts reproduced from Council's own profiles.</p>
+{"".join(sections)}
+<p class="attribution">Source: <a href="https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors">Ipswich City Council — Mayor &amp; Councillors</a> (CC BY 4.0).</p>
+"""
+    return render_layout(
+        title="Ipswich Mayor and Councillors",
+        description="Who represents you: Ipswich City Council's Mayor and all eight divisional councillors, with contacts and the projects in each division.",
+        path="/councillors/",
+        body=body,
+    )
+
+
+def render_division(d: int, projects, graph) -> str:
+    crs = graph.get("councillors_by_division", {}).get(d, [])
+    matching = [p for p in projects if d in (p.get("divisions") or [])]
+    proj_html = ""
+    if matching:
+        rows = "".join(
+            f'<tr><td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
+            f'<td><span class="{phase_class(p.get("phase"))}">{h(p.get("phase"))}</span></td>'
+            f'<td>{h(p.get("suburb"))}</td></tr>'
+            for p in sorted(matching, key=lambda p: (p.get("phase") or "", p.get("name") or ""))
+        )
+        proj_html = (
+            f"<h2>Civic projects in Division {d} ({len(matching)})</h2>"
+            "<table class='data'><thead><tr><th>Project</th><th>Phase</th><th>Suburb</th>"
+            f"</tr></thead><tbody>{rows}</tbody></table>"
+        )
+
+    body = f"""
+<p class="crumbs"><a href="/">Home</a> › <a href="/councillors/">Councillors</a> › Division {d}</p>
+<h1>Division {d}</h1>
+<h2>Your councillors</h2>
+<ul class='councillors'>{"".join(_councillor_card(c) for c in crs)}</ul>
+{proj_html}
+<p class="attribution">Councillor details from <a href="https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors">Ipswich City Council</a>; projects from the Civic Projects Map (CC BY 4.0).</p>
+"""
+    return render_layout(
+        title=f"Ipswich Division {d} — councillors and projects",
+        description=f"Division {d} of Ipswich City Council: your two councillors and every civic project in the division.",
+        path=f"/division/{d}/",
+        body=body,
+    )
+
+
 def render_about() -> str:
     body = """
 <h1>About Ipswich Facts</h1>
@@ -853,6 +932,13 @@ def write_site(out: Path, projects, closures, meetings, graph) -> list[str]:
     write("/meetings/", render_meetings_index(meetings_list))
     for m in meetings_list:
         write(f"/meeting/{m['slug']}/", render_meeting(m, graph))
+
+    # Councillors + divisions
+    councillors = graph.get("councillors", [])
+    if councillors:
+        write("/councillors/", render_councillors(councillors))
+        for d in sorted(graph.get("councillors_by_division", {})):
+            write(f"/division/{d}/", render_division(d, projects, graph))
 
     # About
     write("/about/", render_about())
@@ -954,6 +1040,8 @@ h2 { border-bottom: 1px solid var(--line); padding-bottom: 0.25rem; margin-top: 
 .phases li:hover { border-color: var(--accent); }
 a[class^="phase-"] { text-decoration: none; }
 .muted { color: var(--muted); font-size: 0.9rem; }
+.councillors { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 1rem; }
+.councillors li { border: 1px solid var(--line); border-radius: 6px; padding: 0.75rem 1rem; min-width: 16rem; }
 .biglist { column-count: 2; column-gap: 2rem; list-style: none; padding: 0; }
 .biglist li { break-inside: avoid; padding: 0.25rem 0; }
 table.data { width: 100%; border-collapse: collapse; margin: 1rem 0; }
@@ -1123,14 +1211,20 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=Path("site"))
     args = parser.parse_args()
 
-    projects, closures, meetings = load(args.data)
+    projects, closures, meetings, councillors = load(args.data)
     print(
         f"Loaded {len(projects)} projects, {len(closures.get('closures', []))} closures, "
-        f"{len(meetings.get('meetings', []))} meetings",
+        f"{len(meetings.get('meetings', []))} meetings, {len(councillors)} councillors",
         file=sys.stderr,
     )
 
     graph = build_graph(projects, closures, meetings)
+    graph["councillors"] = councillors
+    by_div: dict[int, list] = defaultdict(list)
+    for c in councillors:
+        if c.get("division") is not None:
+            by_div[c["division"]].append(c)
+    graph["councillors_by_division"] = dict(by_div)
     print(f"Extracted {len(graph['streets'])} streets, {len(graph['suburbs'])} suburbs", file=sys.stderr)
 
     urls = write_site(args.out, projects, closures, meetings, graph)

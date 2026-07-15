@@ -46,7 +46,6 @@ Same shape as above, just more sources:
 - **Capital Works Programs** — annual PDFs at stable URLs under `ipswich.qld.gov.au/.../budget/*/annual-plan/*.pdf`. Parse the schedule tables with `camelot` or `pdfplumber` to get per-project funding by financial year.
 - **Ipswich First media releases** — WordPress. Pull via `/wp-json/wp/v2/posts?per_page=100&page=N`.
 - **Shape Your Ipswich** — Granicus EngagementHQ. HTML scrape per project page.
-- **Councillor pages** — one-off scrape of `ipswich.qld.gov.au/About-Council/Mayor-Councillors/*` so division numbers can resolve to named councillors and emails.
 
 Add each as a new file in `scrape/`, extend the `build_site.py` graph to consume it, generate more page templates. No architectural changes required.
 
@@ -84,6 +83,8 @@ Every entity gets its own URL:
 - `/street/<slug>/` — every project, closure and Council meeting mention on that street
 - `/suburb/<slug>/` — every project, closure and Council meeting mention in that suburb
 - `/meeting/<slug>/` — one page per Council meeting (per-item text, resolutions, links back to the business paper)
+- `/division/<n>/` — each Council division: its two councillors (with contacts) and every project in the division
+- `/councillors/` — the Mayor and all eight councillors
 - `/projects/`, `/suburbs/`, `/streets/`, `/meetings/` — index pages
 - `/about/` — about + attribution
 - `/data/*.json` — the widget's data files (client-side hydration)

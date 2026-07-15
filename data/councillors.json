@@ -1,0 +1,68 @@
+{
+  "scraped_at": "2026-07-15T07:48:16.434704+00:00",
+  "councillors": [
+    {
+      "name": "Mayor Teresa Harding",
+      "role": "Mayor",
+      "division": null,
+      "email": "mayor@ipswich.qld.gov.au",
+      "url": "https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors/Mayor"
+    },
+    {
+      "name": "Cr Jacob Madsen",
+      "role": "Councillor",
+      "division": 1,
+      "email": "jacob.madsen@ipswich.qld.gov.au",
+      "url": "https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors/Cr-Jacob-Madsen"
+    },
+    {
+      "name": "Cr Pye Augustine",
+      "role": "Councillor",
+      "division": 1,
+      "email": "pye.augustine@ipswich.qld.gov.au",
+      "url": "https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors/Cr-Pye-Augustine"
+    },
+    {
+      "name": "Deputy Mayor Nicole Jonic",
+      "role": "Deputy Mayor",
+      "division": 2,
+      "email": "nicole.jonic@ipswich.qld.gov.au",
+      "url": "https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors/Deputy-Mayor-Nicole-Jonic"
+    },
+    {
+      "name": "Cr Paul Tully",
+      "role": "Councillor",
+      "division": 2,
+      "email": "paul.tully@ipswich.qld.gov.au",
+      "url": "https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors/Cr-Paul-Tully"
+    },
+    {
+      "name": "Cr Andrew Antoniolli",
+      "role": "Councillor",
+      "division": 3,
+      "email": "andrewa@ipswich.qld.gov.au",
+      "url": "https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors/Cr-Andrew-Antoniolli"
+    },
+    {
+      "name": "Cr Marnie Doyle",
+      "role": "Councillor",
+      "division": 3,
+      "email": "marnie.doyle@ipswich.qld.gov.au",
+      "url": "https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors/Cr-Marnie-Doyle"
+    },
+    {
+      "name": "Cr David Martin",
+      "role": "Councillor",
+      "division": 4,
+      "email": "david.martin@ipswich.qld.gov.au",
+      "url": "https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors/Cr-David-Martin"
+    },
+    {
+      "name": "Cr Jim Madden",
+      "role": "Councillor",
+      "division": 4,
+      "email": "jim.madden@ipswich.qld.gov.au",
+      "url": "https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors/Cr-Jim-Madden"
+    }
+  ]
+}
