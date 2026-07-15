@@ -49,6 +49,18 @@ jobs:
         if: steps.meetings-cache.outputs.cache-matched-key == ''
         run: python -m scrape.council_meetings --out data/meetings.json
 
+      - name: Restore news data from daily build
+        id: news-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/news.json
+          key: news-never-matches-exactly
+          restore-keys: news-
+
+      - name: Scrape news (fallback — cache was cold)
+        if: steps.news-cache.outputs.cache-matched-key == ''
+        run: python -m scrape.ipswich_first --out data/news.json
+
       - name: Scrape closures and projects
         run: |
           python -m scrape.road_closures --out data/closures.json

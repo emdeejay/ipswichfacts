@@ -36,6 +36,7 @@ jobs:
           python -m scrape.civic_projects --out data/projects.json
           python -m scrape.road_closures --out data/closures.json
           python -m scrape.council_meetings --out data/meetings.json
+          python -m scrape.ipswich_first --out data/news.json
 
       # The hourly closures workflow reuses this instead of re-hitting
       # infocouncil every hour (that would be ~4k requests/day at Council).
@@ -44,6 +45,14 @@ jobs:
         with:
           path: data/meetings.json
           key: meetings-${{ github.run_id }}
+
+      # Same deal for Ipswich First — the hourly build reuses today's news
+      # instead of re-hitting the WordPress API every hour.
+      - name: Cache news data for hourly builds
+        uses: actions/cache/save@v4
+        with:
+          path: data/news.json
+          key: news-${{ github.run_id }}
 
       - name: Build
         run: python -m build.build_site --data data --out site

@@ -69,13 +69,22 @@ https://www.ipswich.qld.gov.au/files/assets/public/v/1/about-council/media-and-p
 
 Also linked from `About-Council/Initiatives/Works-and-Projects`. Table extraction: `camelot-py` handles the multi-column financial-year layout better than `pdfplumber` for these.
 
-### Ipswich First (WordPress) — TODO
+### Ipswich First (WordPress) — GET (scrape/ipswich_first.py)
 
 ```
 https://www.ipswichfirst.com.au/wp-json/wp/v2/posts?per_page=100&page=N
 ```
 
-Standard WP REST API. Paginate. `X-WP-TotalPages` header tells you when to stop.
+Standard WP REST API. Paginate; `x-wp-totalpages` header tells you when to stop (it reflects any active filters). Verified 15 Jul 2026: 4,922 posts, earliest 2017-07-01.
+
+- **`per_page=100` intermittently 502s** — the origin appears to time out rendering the full content of 100 posts and the gateway gives up, and the same page keeps failing on immediate retry. `per_page=50` is reliable. The scraper also backs off 5/10/20 s between retries.
+
+- **Request `&_fields=id,date,modified,slug,link,title,excerpt,content,categories`** — without it every post carries a huge `yoast_head` blob and `_links` cruft.
+- **`content.rendered` is NOT plain HTML.** The site is built with Divi, and the raw builder shortcodes come through verbatim: `[et_pb_section fb_built=&#8221;1&#8243; ...]` wrapping the real `<p>` HTML, plus a boilerplate `[et_pb_cta ...]` subscribe box at the end. Shortcode attribute quotes are entity-encoded curly quotes, so strip `\[/?et_pb_\w+[^\]]*\]` tokens *before* unescaping entities. Applies to all years (2017 through current).
+- **Titles/excerpts contain HTML entities** (`&#8230;`, `&#8217;`) — `html.unescape` everything; body text also uses `\xa0` non-breaking spaces.
+- **Date filtering**: `&after=...&before=...` (ISO, site-local time, strict comparison). Per-year scrape uses `after={Y-1}-12-31T23:59:59&before={Y+1}-01-01T00:00:00` then filters client-side by year as belt and braces.
+- **Categories** are ids; one request to `/wp-json/wp/v2/categories?per_page=100` gives the id→name map (27 categories, single page).
+- Same immutable-history pattern as meetings: `data/archive/news-YYYY.json` committed once per past year, `data/news.json` (current year) scraped daily and gitignored.
 
 ## Data-model gotchas
 

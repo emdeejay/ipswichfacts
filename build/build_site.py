@@ -5,6 +5,7 @@ Reads:
     data/projects.json      (from scrape.civic_projects)
     data/closures.json      (from scrape.road_closures)
     data/meetings.json      (from scrape.council_meetings)
+    data/news.json          (from scrape.ipswich_first)
 
 Writes:
     site/index.html
@@ -12,9 +13,11 @@ Writes:
     site/suburb/<slug>/index.html
     site/street/<slug>/index.html
     site/meeting/<slug>/index.html
+    site/news/<slug>/index.html
     site/data/projects.json         (client widget data)
     site/data/closures.json
     site/data/meetings.json         (slim: no item text)
+    site/data/news.json             (slim: slug/title/date, recent years)
     site/data/mentions.json
     site/data/streets.json
     site/data/suburbs.json
@@ -134,7 +137,7 @@ def dedupe(items: list[Any], key) -> list[Any]:
 # Load
 
 
-def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
+def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
     projects = json.loads((inp / "projects.json").read_text())
     closures_path = inp / "closures.json"
     closures = json.loads(closures_path.read_text()) if closures_path.exists() else {"closures": []}
@@ -154,11 +157,25 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
 
     _assign_meeting_slugs(meetings.get("meetings", []))
 
+    # News (Ipswich First): same live + committed-archive merge as meetings —
+    # posts are immutable once published; the live file wins on id collisions.
+    news_path = inp / "news.json"
+    news = json.loads(news_path.read_text()) if news_path.exists() else {"posts": []}
+    seen_post_ids = {p.get("id") for p in news["posts"]}
+    for arch in sorted((inp / "archive").glob("news-*.json")):
+        for p in json.loads(arch.read_text()).get("posts", []):
+            if p.get("id") not in seen_post_ids:
+                seen_post_ids.add(p.get("id"))
+                news["posts"].append(p)
+    news["posts"].sort(key=lambda p: (p.get("date") or "", p.get("id") or 0), reverse=True)
+
+    _assign_news_slugs(news.get("posts", []))
+
     # Councillors: one-off committed file, refreshed after elections.
     cr_path = inp / "councillors.json"
     councillors = json.loads(cr_path.read_text()).get("councillors", []) if cr_path.exists() else []
 
-    return projects, closures, meetings, councillors
+    return projects, closures, meetings, news, councillors
 
 
 def _assign_meeting_slugs(meetings: list[dict[str, Any]]) -> None:
@@ -171,6 +188,20 @@ def _assign_meeting_slugs(meetings: list[dict[str, Any]]) -> None:
             slug = slugify(f"{slug}-{m.get('id')}")
         taken.add(slug)
         m["slug"] = slug
+
+
+def _assign_news_slugs(posts: list[dict[str, Any]]) -> None:
+    """WordPress slugs are already kebab-case; run them through slugify
+    anyway and disambiguate collisions (including with /news/YYYY/ year
+    index pages) using the post id. Deterministic because posts are
+    processed in (date, id) order."""
+    taken: set[str] = set()
+    for p in sorted(posts, key=lambda x: (x.get("date") or "", x.get("id") or 0)):
+        slug = slugify(p.get("slug") or p.get("title") or f"post-{p.get('id')}")
+        if slug in taken or re.fullmatch(r"\d{4}", slug):
+            slug = slugify(f"{slug}-{p.get('id')}")
+        taken.add(slug)
+        p["slug"] = slug
 
 
 # ---------------------------------------------------------------------------
@@ -236,7 +267,7 @@ def _normalise_type(t: str) -> str:
 # Build the entity graph
 
 
-def build_graph(projects, closures, meetings) -> dict[str, Any]:
+def build_graph(projects, closures, meetings, news) -> dict[str, Any]:
     streets_set: set[str] = set()
     suburbs_set: set[str] = set()
 
@@ -292,7 +323,11 @@ def build_graph(projects, closures, meetings) -> dict[str, Any]:
     # Meetings: streets via the regex extractor; suburbs matched against the
     # gazetteer of suburb names already known from projects + closures
     # (deliberately no separate suburb list — see docs/notes.md).
-    suburb_ex = Extractor(streets=[], suburbs=sorted(suburbs_set))
+    # "Ipswich" is excluded from text matching: in Council prose it almost
+    # always means the LGA, not the suburb — matching it hung ~5k news items
+    # off the Ipswich suburb page. Projects/closures still set it via their
+    # explicit suburb field.
+    suburb_ex = Extractor(streets=[], suburbs=sorted(suburbs_set - {"Ipswich"}))
     meeting_streets: dict[str, list[str]] = {}
     meeting_suburbs: dict[str, list[str]] = {}
     street_meeting_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -330,6 +365,36 @@ def build_graph(projects, closures, meetings) -> dict[str, Any]:
         meeting_suburbs[m["slug"]] = sorted(m_suburbs)
         streets_set.update(m_streets)
 
+    # News posts: same street regex + suburb gazetteer over title + text,
+    # and the same normalised-name matching for direct project↔news edges.
+    news_streets: dict[str, list[str]] = {}
+    news_suburbs: dict[str, list[str]] = {}
+    street_news_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    suburb_news_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    project_news_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
+
+    for post in news.get("posts", []):
+        blob = " . ".join(filter(None, [post.get("title"), post.get("text")]))
+        p_streets = extract_streets_from_text(blob)
+        p_suburbs = [f["value"] for f in suburb_ex.find(blob) if f["kind"] == "suburb"]
+        ref = {
+            "slug": post["slug"],
+            "date": post.get("date"),
+            "title": post.get("title"),
+            "url": post.get("url"),
+        }
+        for s in p_streets:
+            street_news_items[s].append(ref)
+        for s in p_suburbs:
+            suburb_news_items[s].append(ref)
+        n_blob = _norm(blob)
+        for pslug, core in project_cores.items():
+            if core in n_blob:
+                project_news_items[pslug].append(ref)
+        news_streets[post["slug"]] = p_streets
+        news_suburbs[post["slug"]] = p_suburbs
+        streets_set.update(p_streets)
+
     return {
         "streets": sorted(streets_set),
         "suburbs": sorted(suburbs_set),
@@ -342,6 +407,11 @@ def build_graph(projects, closures, meetings) -> dict[str, Any]:
         "street_meeting_items": dict(street_meeting_items),
         "suburb_meeting_items": dict(suburb_meeting_items),
         "project_meeting_items": dict(project_meeting_items),
+        "news_streets": news_streets,
+        "news_suburbs": news_suburbs,
+        "street_news_items": dict(street_news_items),
+        "suburb_news_items": dict(suburb_news_items),
+        "project_news_items": dict(project_news_items),
     }
 
 
@@ -413,7 +483,7 @@ def _support_html() -> str:
     )
 
 
-def render_index(projects, closures, meetings, graph) -> str:
+def render_index(projects, closures, meetings, news, graph) -> str:
     by_phase: dict[str, int] = defaultdict(int)
     for p in projects:
         by_phase[p.get("phase") or "Unknown"] += 1
@@ -485,6 +555,7 @@ def render_index(projects, closures, meetings, graph) -> str:
     <li><b>{len(graph['suburbs'])}</b><span>Suburbs</span></li>
     <li><b>{len(active_closures)}</b><span>Active road impacts</span></li>
     <li><b>{len(meetings.get('meetings', []))}</b><span>Council meetings indexed</span></li>
+    <li><b>{len(news.get('posts', []))}</b><span>Ipswich First articles</span></li>
   </ul>
 
   <h2>Projects by phase of work</h2>
@@ -497,7 +568,7 @@ def render_index(projects, closures, meetings, graph) -> str:
 
 <section>
   <h2>Explore</h2>
-  <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
+  <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a> · <a href="/news/">Ipswich First news</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
 </section>
 
 {_support_html()}
@@ -555,6 +626,23 @@ def render_project(p, closures, graph) -> str:
             "<table class='data'><thead><tr><th>Item</th><th>Meeting</th><th>Source</th></tr></thead>"
             f"<tbody>{rows}</tbody></table>"
         )
+    # Direct news↔project edges: Ipswich First articles that name this
+    # project outright (same normalised-name matching as meetings).
+    news_refs = graph.get("project_news_items", {}).get(slug, [])
+    news_html = ""
+    if news_refs:
+        rows = "".join(
+            f'<tr><td><a href="/news/{r["slug"]}/">{h(r.get("title"))}</a></td>'
+            f'<td><a href="/news/{r["slug"]}/">{h(format_ymd(r.get("date")))}</a></td>'
+            f'<td><a href="{h(r.get("url"))}" rel="noopener">Source&nbsp;↗</a></td></tr>'
+            for r in sorted(news_refs, key=lambda r: r.get("date") or "", reverse=True)
+        )
+        news_html = (
+            f"<h3>In the news ({len(news_refs)})</h3>"
+            "<table class='data'><thead><tr><th>Article</th><th>Date</th><th>Source</th></tr></thead>"
+            f"<tbody>{rows}</tbody></table>"
+        )
+
     street_refs = []
     seen = set(direct_keys)
     for s in streets:
@@ -618,6 +706,7 @@ def render_project(p, closures, graph) -> str:
     </aside>
   </div>
   {meetings_html}
+  {news_html}
   {street_meetings_html}
 
   <p class="attribution">Source: <a href="{h(p.get('source_url'))}">Ipswich City Council Civic Projects Map</a> (CC BY 4.0).</p>
@@ -729,6 +818,96 @@ def render_meetings_index(meetings_list) -> str:
     )
 
 
+def render_news_post(p, graph) -> str:
+    slug = p["slug"]
+    paras = "".join(f"<p>{h(t)}</p>" for t in (p.get("text") or "").split("\n") if t)
+    cats = " · ".join(h(c) for c in p.get("categories") or [])
+    cats_html = f" · {cats}" if cats else ""
+
+    mention_links = [
+        f'<a href="/street/{slugify(s)}/">{h(s)}</a>'
+        for s in graph.get("news_streets", {}).get(slug, [])
+    ] + [
+        f'<a href="/suburb/{slugify(s)}/">{h(s)}</a>'
+        for s in graph.get("news_suburbs", {}).get(slug, [])
+    ]
+    mentions_html = (
+        f'<p class="muted">Mentions: {" · ".join(mention_links)}</p>' if mention_links else ""
+    )
+
+    body = f"""
+<article class="news-post">
+  <p class="crumbs"><a href="/">Home</a> › <a href="/news/">News</a> › {h(p.get("title"))}</p>
+  <h1>{h(p.get("title"))}</h1>
+  <p class="meta">{h(format_ymd(p.get("date")))}{cats_html}</p>
+  {paras}
+  {mentions_html}
+  <p class="attribution">Source: <a href="{h(p.get('url'))}" rel="noopener">Ipswich First (Ipswich City Council)</a> — CC BY 4.0.</p>
+  <div data-ipswichfacts-related data-news="{h(slug)}"></div>
+</article>
+"""
+    # WP excerpts here are truncated to a few words, so draw the meta
+    # description from the article text itself.
+    description = " ".join((p.get("text") or p.get("excerpt") or "").split())[:200]
+    return render_layout(
+        title=p.get("title") or "News",
+        description=description,
+        path=f"/news/{slug}/",
+        body=body,
+    )
+
+
+def _news_post_li(p) -> str:
+    return (
+        f'<li><a href="/news/{p["slug"]}/">{h(p.get("title"))}</a> '
+        f'<span class="muted">{h(format_ymd(p.get("date")))}</span></li>'
+    )
+
+
+def render_news_index(posts, recent_years, older_years) -> str:
+    recent = [p for p in posts if (p.get("date") or "")[:4] in recent_years]
+    lis = "".join(_news_post_li(p) for p in recent)
+    older_html = ""
+    if older_years:
+        links = " · ".join(
+            f'<a href="/news/{y}/">{h(y)}</a>' for y in sorted(older_years, reverse=True)
+        )
+        older_html = f"<h2>Older articles</h2><p>By year: {links}</p>"
+
+    body = f"""
+<p class="crumbs"><a href="/">Home</a> › News</p>
+<h1>Ipswich First news</h1>
+<p class="meta">Media releases republished from Ipswich First, Ipswich City Council's news site, newest first.</p>
+<ul class='biglist'>{lis}</ul>
+{older_html}
+<p class="attribution">Source: <a href="https://www.ipswichfirst.com.au/">Ipswich First (Ipswich City Council)</a> — CC BY 4.0.</p>
+"""
+    return render_layout(
+        title="Ipswich First news — Council media releases",
+        description="Every Ipswich First media release from Ipswich City Council, searchable and cross-referenced by street, suburb and project.",
+        path="/news/",
+        body=body,
+    )
+
+
+def render_news_year(year: str, posts) -> str:
+    matching = [p for p in posts if (p.get("date") or "")[:4] == year]
+    lis = "".join(_news_post_li(p) for p in matching)
+    body = f"""
+<p class="crumbs"><a href="/">Home</a> › <a href="/news/">News</a> › {h(year)}</p>
+<h1>Ipswich First news — {h(year)}</h1>
+<p class="meta">{len(matching)} article{"s" if len(matching) != 1 else ""} published in {h(year)}.</p>
+<ul class='biglist'>{lis}</ul>
+<p class="attribution">Source: <a href="https://www.ipswichfirst.com.au/">Ipswich First (Ipswich City Council)</a> — CC BY 4.0.</p>
+"""
+    return render_layout(
+        title=f"Ipswich First news from {year} — Council media releases",
+        description=f"All {len(matching)} Ipswich City Council media releases published on Ipswich First in {year}.",
+        path=f"/news/{year}/",
+        body=body,
+    )
+
+
 def render_street(name, projects, closures, graph) -> str:
     slug = slugify(name)
     matching_projects = [p for p in projects if name in graph["project_streets"].get(p["slug"], [])]
@@ -761,8 +940,9 @@ def render_street(name, projects, closures, graph) -> str:
             f"{rows}</tbody></table>"
 
     meet_html = _meeting_mentions_html(graph["street_meeting_items"].get(name, []))
+    news_html = _news_mentions_html(graph.get("street_news_items", {}).get(name, []))
 
-    empty = "" if (matching_projects or matching_closures or meet_html) else "<p>No projects, road impacts or Council meeting mentions recorded on this street.</p>"
+    empty = "" if (matching_projects or matching_closures or meet_html or news_html) else "<p>No projects, road impacts, Council meeting or news mentions recorded on this street.</p>"
 
     body = f"""
 <article>
@@ -772,6 +952,7 @@ def render_street(name, projects, closures, graph) -> str:
   {proj_html}
   {clos_html}
   {meet_html}
+  {news_html}
   {empty}
   <div data-ipswichfacts-related data-street="{h(name)}"></div>
 </article>
@@ -784,20 +965,54 @@ def render_street(name, projects, closures, graph) -> str:
     )
 
 
+# Busy entities (major roads, big suburbs) can accumulate hundreds of
+# mentions; cap the static tables so no page balloons past ~100 KB.
+_MENTIONS_CAP = 50
+
+
 def _meeting_mentions_html(refs: list[dict[str, Any]]) -> str:
     """Shared 'Council meeting mentions' section for street/suburb pages."""
     if not refs:
         return ""
+    newest = sorted(refs, key=lambda r: r.get("date") or "", reverse=True)
+    shown = newest[:_MENTIONS_CAP]
     rows = "".join(
         f'<tr><td>{h(r.get("title"))}</td>'
         f'<td><a href="/meeting/{r["slug"]}/#{h(r.get("anchor"))}">'
         f'{h(r.get("committee"))} — {h(format_ymd(r.get("date")))}</a></td></tr>'
-        for r in sorted(refs, key=lambda r: r.get("date") or "", reverse=True)
+        for r in shown
+    )
+    more = (
+        f"<p class='muted'>Showing the {len(shown)} most recent of {len(refs)} mentions.</p>"
+        if len(refs) > len(shown) else ""
     )
     return (
         f"<h2>Council meeting mentions ({len(refs)})</h2>"
         "<table class='data'><thead><tr><th>Item</th><th>Meeting</th></tr></thead>"
-        f"<tbody>{rows}</tbody></table>"
+        f"<tbody>{rows}</tbody></table>{more}"
+    )
+
+
+def _news_mentions_html(refs: list[dict[str, Any]]) -> str:
+    """Shared 'News mentions' section for street/suburb pages — same shape
+    as _meeting_mentions_html."""
+    if not refs:
+        return ""
+    newest = sorted(refs, key=lambda r: r.get("date") or "", reverse=True)
+    shown = newest[:_MENTIONS_CAP]
+    rows = "".join(
+        f'<tr><td><a href="/news/{r["slug"]}/">{h(r.get("title"))}</a></td>'
+        f'<td><a href="/news/{r["slug"]}/">{h(format_ymd(r.get("date")))}</a></td></tr>'
+        for r in shown
+    )
+    more = (
+        f"<p class='muted'>Showing the {len(shown)} most recent of {len(refs)} mentions.</p>"
+        if len(refs) > len(shown) else ""
+    )
+    return (
+        f"<h2>News mentions ({len(refs)})</h2>"
+        "<table class='data'><thead><tr><th>Article</th><th>Date</th></tr></thead>"
+        f"<tbody>{rows}</tbody></table>{more}"
     )
 
 
@@ -832,6 +1047,7 @@ def render_suburb(name, projects, closures, graph) -> str:
             f"<tbody>{rows}</tbody></table>"
 
     meet_html = _meeting_mentions_html(graph["suburb_meeting_items"].get(name, []))
+    news_html = _news_mentions_html(graph.get("suburb_news_items", {}).get(name, []))
 
     body = f"""
 <article>
@@ -840,6 +1056,7 @@ def render_suburb(name, projects, closures, graph) -> str:
   {proj_html or "<p>No projects recorded for this suburb.</p>"}
   {clos_html}
   {meet_html}
+  {news_html}
   <div data-ipswichfacts-related data-suburb="{h(name)}"></div>
 </article>
 """
@@ -982,9 +1199,10 @@ def render_about() -> str:
   <li><a href="https://maps.ipswich.qld.gov.au/civicprojects">Civic Projects Map</a> — every planned, in-progress and historic capital project.</li>
   <li><a href="https://traffic.ipswich.qld.gov.au/">Road Closures dashboard</a> — live road impacts, with data from Ipswich City Council and QLDTraffic.</li>
   <li><a href="https://ipswich.infocouncil.biz/">Council business papers</a> — meeting agendas and minutes, item by item.</li>
+  <li><a href="https://www.ipswichfirst.com.au/">Ipswich First</a> — Council's media releases, back to 2017.</li>
 </ul>
 
-<p>More sources — Capital Works Programs, Ipswich First media releases — will be added.</p>
+<p>More sources — Capital Works Programs, Shape Your Ipswich consultations — will be added.</p>
 
 <h2>Licence</h2>
 <p>Council content is published under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. This site preserves attribution and links back to the Council source for every item reproduced.</p>
@@ -1009,7 +1227,7 @@ def render_about() -> str:
 # Write
 
 
-def write_site(out: Path, projects, closures, meetings, graph) -> list[str]:
+def write_site(out: Path, projects, closures, meetings, news, graph) -> list[str]:
     """Write all pages. Returns the list of URL paths for sitemap."""
     # Best-effort clean (overwrites are always fine; deletion may fail on
     # read-only mounts, in which case we just overwrite in place).
@@ -1037,7 +1255,7 @@ def write_site(out: Path, projects, closures, meetings, graph) -> list[str]:
         urls.append(path)
 
     # Landing
-    write("/", render_index(projects, closures, meetings, graph))
+    write("/", render_index(projects, closures, meetings, news, graph))
 
     # Projects
     write("/projects/", render_projects_list(projects))
@@ -1061,6 +1279,19 @@ def write_site(out: Path, projects, closures, meetings, graph) -> list[str]:
     write("/meetings/", render_meetings_index(meetings_list))
     for m in meetings_list:
         write(f"/meeting/{m['slug']}/", render_meeting(m, graph))
+
+    # News. The /news/ index lists the two most recent years and links to
+    # per-year index pages for the rest.
+    news_posts = news.get("posts", [])
+    news_years = sorted(
+        {(p.get("date") or "")[:4] for p in news_posts if p.get("date")}, reverse=True
+    )
+    news_recent_years, news_older_years = news_years[:2], news_years[2:]
+    write("/news/", render_news_index(news_posts, news_recent_years, news_older_years))
+    for y in news_older_years:
+        write(f"/news/{y}/", render_news_year(y, news_posts))
+    for p in news_posts:
+        write(f"/news/{p['slug']}/", render_news_post(p, graph))
 
     # Councillors + divisions
     councillors = graph.get("councillors", [])
@@ -1096,6 +1327,15 @@ def write_site(out: Path, projects, closures, meetings, graph) -> list[str]:
         if (m.get("date") or "")[:4] in recent_years
     ]
     (out / "data" / "meetings.json").write_text(json.dumps(slim_meetings))
+    # Slim per-post news chunks, same recent-years rule as meetings: slug,
+    # title and date only — full text is only ever in the static pages.
+    slim_news = [
+        {"slug": p["slug"], "title": p.get("title"), "date": p.get("date")}
+        for p in news_posts
+        if (p.get("date") or "")[:4] in news_recent_years
+    ]
+    (out / "data" / "news.json").write_text(json.dumps(slim_news))
+    slim_news_slugs = {p["slug"] for p in slim_news}
     mentions = {
         "project_streets": graph["project_streets"],
         "project_suburbs": graph["project_suburbs"],
@@ -1103,6 +1343,15 @@ def write_site(out: Path, projects, closures, meetings, graph) -> list[str]:
         "closure_suburbs": graph["closure_suburbs"],
         "meeting_streets": graph["meeting_streets"],
         "meeting_suburbs": graph["meeting_suburbs"],
+        # Same slug→names pattern as meeting_streets/meeting_suburbs, limited
+        # to the posts the widget actually loads (recent years) so the
+        # payload stays small — older mentions live in the static pages.
+        "news_streets": {
+            s: v for s, v in graph["news_streets"].items() if s in slim_news_slugs
+        },
+        "news_suburbs": {
+            s: v for s, v in graph["news_suburbs"].items() if s in slim_news_slugs
+        },
     }
     (out / "data" / "mentions.json").write_text(json.dumps(mentions))
 
@@ -1239,15 +1488,16 @@ _WIDGET_JS = r"""
 const DATA_BASE = '/data';
 
 async function loadData() {
-  const [projects, streets, suburbs, mentions, closures, meetings] = await Promise.all([
+  const [projects, streets, suburbs, mentions, closures, meetings, news] = await Promise.all([
     fetch(`${DATA_BASE}/projects.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/streets.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/suburbs.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/mentions.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/closures.json`).then(r => r.json()).catch(() => ({ closures: [] })),
     fetch(`${DATA_BASE}/meetings.json`).then(r => r.json()).catch(() => []),
+    fetch(`${DATA_BASE}/news.json`).then(r => r.json()).catch(() => []),
   ]);
-  return { projects, streets, suburbs, mentions, closures, meetings };
+  return { projects, streets, suburbs, mentions, closures, meetings, news };
 }
 
 function slugify(s) {
@@ -1264,6 +1514,9 @@ function buildIndex(data) {
   for (const m of data.meetings) {
     const titles = m.items.map(i => i.title).join(' ');
     items.push({ kind: 'meeting', label: `${m.committee} — ${m.date}`, href: `/meeting/${m.slug}/`, hay: (m.committee + ' ' + m.date + ' ' + titles).toLowerCase() });
+  }
+  for (const n of data.news) {
+    items.push({ kind: 'news', label: `${n.title} — ${n.date}`, href: `/news/${n.slug}/`, hay: (n.title + ' ' + n.date).toLowerCase() });
   }
   return items;
 }
@@ -1295,6 +1548,7 @@ function mountRelated(el, data) {
   const street  = el.dataset.street;
   const suburb  = el.dataset.suburb;
   const meeting = el.dataset.meeting;
+  const news    = el.dataset.news;
 
   const meetingLabel = m => `${m.committee} — ${m.date}`;
 
@@ -1319,12 +1573,27 @@ function mountRelated(el, data) {
         items.push({ kind: 'meeting', label: meetingLabel(m), href: `/meeting/${m.slug}/` });
       }
     }
+    for (const n of data.news) {
+      const nStreets = data.mentions.news_streets[n.slug] || [];
+      const nSuburbs = data.mentions.news_suburbs[n.slug] || [];
+      if ((street && nStreets.includes(street)) || (suburb && nSuburbs.includes(suburb))) {
+        items.push({ kind: 'news', label: `${n.title} — ${n.date}`, href: `/news/${n.slug}/` });
+      }
+    }
   }
   if (meeting) {
     for (const s of data.mentions.meeting_streets[meeting] || []) {
       items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/` });
     }
     for (const s of data.mentions.meeting_suburbs[meeting] || []) {
+      items.push({ kind: 'suburb', label: s, href: `/suburb/${slugify(s)}/` });
+    }
+  }
+  if (news) {
+    for (const s of data.mentions.news_streets[news] || []) {
+      items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/` });
+    }
+    for (const s of data.mentions.news_suburbs[news] || []) {
       items.push({ kind: 'suburb', label: s, href: `/suburb/${slugify(s)}/` });
     }
   }
@@ -1358,14 +1627,15 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=Path("site"))
     args = parser.parse_args()
 
-    projects, closures, meetings, councillors = load(args.data)
+    projects, closures, meetings, news, councillors = load(args.data)
     print(
         f"Loaded {len(projects)} projects, {len(closures.get('closures', []))} closures, "
-        f"{len(meetings.get('meetings', []))} meetings, {len(councillors)} councillors",
+        f"{len(meetings.get('meetings', []))} meetings, {len(news.get('posts', []))} news posts, "
+        f"{len(councillors)} councillors",
         file=sys.stderr,
     )
 
-    graph = build_graph(projects, closures, meetings)
+    graph = build_graph(projects, closures, meetings, news)
     graph["councillors"] = councillors
     by_div: dict[int, list] = defaultdict(list)
     for c in councillors:
@@ -1374,7 +1644,7 @@ def main() -> int:
     graph["councillors_by_division"] = dict(by_div)
     print(f"Extracted {len(graph['streets'])} streets, {len(graph['suburbs'])} suburbs", file=sys.stderr)
 
-    urls = write_site(args.out, projects, closures, meetings, graph)
+    urls = write_site(args.out, projects, closures, meetings, news, graph)
     print(f"Wrote {len(urls)} pages to {args.out}", file=sys.stderr)
     return 0
 

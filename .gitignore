@@ -3,6 +3,7 @@ site/
 data/projects.json
 data/closures.json
 data/meetings.json
+data/news.json
 
 # python
 __pycache__/
