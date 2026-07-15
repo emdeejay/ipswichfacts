@@ -52,7 +52,7 @@ COFFEE_LABEL = "Buy me a coffee"
 
 # Google Search Console ownership verification (meta-tag method; the DNS
 # host doesn't allow TXT records). Set to None to omit the tag.
-GOOGLE_SITE_VERIFICATION = "spphL72r7Zo5v0FJ9FuGYf4MK-sSzroGy8WNb85qMKU"
+GOOGLE_SITE_VERIFICATION = "ECKRlA4paFCOzc3-zwWE3wORqBHl6LWTEr_8z4WblYA"
 
 COUNCILLORS = {
     1: "Cr Pye Augustine",
