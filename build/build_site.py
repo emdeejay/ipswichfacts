@@ -50,6 +50,10 @@ BASE_URL = "https://ipswichfacts.au"
 COFFEE_URL = "https://buymeacoffee.com/mdj.au"
 COFFEE_LABEL = "Buy me a coffee"
 
+# Google Search Console ownership verification (meta-tag method; the DNS
+# host doesn't allow TXT records). Set to None to omit the tag.
+GOOGLE_SITE_VERIFICATION = "spphL72r7Zo5v0FJ9FuGYf4MK-sSzroGy8WNb85qMKU"
+
 COUNCILLORS = {
     1: "Cr Pye Augustine",
     2: "Cr Jacob Madsen",
@@ -200,6 +204,10 @@ def build_graph(projects, closures) -> dict[str, Any]:
 
 def render_layout(title: str, description: str, path: str, body: str) -> str:
     canonical = f"{BASE_URL}{path}"
+    gsc_meta = (
+        f'\n<meta name="google-site-verification" content="{h(GOOGLE_SITE_VERIFICATION)}">'
+        if GOOGLE_SITE_VERIFICATION else ""
+    )
     coffee_footer = ""
     if COFFEE_URL:
         coffee_footer = (
@@ -214,7 +222,7 @@ def render_layout(title: str, description: str, path: str, body: str) -> str:
 <title>{h(title)} — Ipswich Facts</title>
 <meta name="description" content="{h(description)}">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="canonical" href="{h(canonical)}">
+<link rel="canonical" href="{h(canonical)}">{gsc_meta}
 <link rel="stylesheet" href="/css/site.css">
 <meta property="og:title" content="{h(title)}">
 <meta property="og:description" content="{h(description)}">
