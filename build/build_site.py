@@ -252,6 +252,24 @@ def build_graph(projects, closures, meetings) -> dict[str, Any]:
             closure_suburbs[cid] = c["suburb"]
             suburbs_set.add(c["suburb"])
 
+    # Direct project↔meeting edges: a meeting item that names a project
+    # outright (normalised, stage/phase suffix stripped — papers say
+    # "Redbank Plains Road Upgrade" for "... – Stage 3"). Sparse (~4% of
+    # projects) but high precision, and it's the big projects that match.
+    def _norm(s):
+        return re.sub(r" +", " ", re.sub(r"[^a-z0-9 ]", " ", (s or "").lower())).strip()
+
+    def _name_core(name):
+        n = re.sub(r"\b(stage|phase)\s*\d+[a-z]?\b", "", _norm(name))
+        return re.sub(r" +", " ", n).strip()
+
+    project_cores = {
+        p["slug"]: _name_core(p.get("name"))
+        for p in projects
+        if len(_name_core(p.get("name"))) >= 12
+    }
+    project_meeting_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
+
     # Meetings: streets via the regex extractor; suburbs matched against the
     # gazetteer of suburb names already known from projects + closures
     # (deliberately no separate suburb list — see docs/notes.md).
@@ -279,6 +297,10 @@ def build_graph(projects, closures, meetings) -> dict[str, Any]:
                 street_meeting_items[s].append(ref)
             for s in i_suburbs:
                 suburb_meeting_items[s].append(ref)
+            n_blob = _norm(blob)
+            for pslug, core in project_cores.items():
+                if core in n_blob:
+                    project_meeting_items[pslug].append(ref)
             item["streets"] = i_streets
             item["suburbs"] = i_suburbs
             m_streets.update(i_streets)
@@ -298,6 +320,7 @@ def build_graph(projects, closures, meetings) -> dict[str, Any]:
         "meeting_suburbs": meeting_suburbs,
         "street_meeting_items": dict(street_meeting_items),
         "suburb_meeting_items": dict(suburb_meeting_items),
+        "project_meeting_items": dict(project_meeting_items),
     }
 
 
@@ -474,6 +497,53 @@ def render_project(p, closures, graph) -> str:
     what = p.get("what_to_expect")
     what_html = f"<h3>What to expect</h3><p>{h(what)}</p>" if what else ""
 
+    # Direct: meeting items that name this project. Transitive: items that
+    # mention this project's streets (capped, deduped against direct).
+    direct = graph.get("project_meeting_items", {}).get(slug, [])
+    direct_keys = {(r["slug"], r.get("anchor")) for r in direct}
+    meetings_html = ""
+    if direct:
+        rows = "".join(
+            f'<tr><td>{h(r.get("title"))}</td>'
+            f'<td><a href="/meeting/{r["slug"]}/#{h(r.get("anchor"))}">'
+            f'{h(r.get("committee"))} — {h(format_ymd(r.get("date")))}</a></td></tr>'
+            for r in sorted(direct, key=lambda r: r.get("date") or "", reverse=True)
+        )
+        meetings_html = (
+            f"<h3>Discussed in Council meetings ({len(direct)})</h3>"
+            "<table class='data'><thead><tr><th>Item</th><th>Meeting</th></tr></thead>"
+            f"<tbody>{rows}</tbody></table>"
+        )
+    street_refs = []
+    seen = set(direct_keys)
+    for s in streets:
+        for r in graph.get("street_meeting_items", {}).get(s, []):
+            key = (r["slug"], r.get("anchor"))
+            if key not in seen:
+                seen.add(key)
+                street_refs.append((s, r))
+    street_meetings_html = ""
+    if street_refs:
+        street_refs.sort(key=lambda x: x[1].get("date") or "", reverse=True)
+        shown = street_refs[:15]
+        rows = "".join(
+            f'<tr><td>{h(r.get("title"))}</td>'
+            f'<td><a href="/street/{slugify(s)}/">{h(s)}</a></td>'
+            f'<td><a href="/meeting/{r["slug"]}/#{h(r.get("anchor"))}">'
+            f'{h(r.get("committee"))} — {h(format_ymd(r.get("date")))}</a></td></tr>'
+            for s, r in shown
+        )
+        more = (
+            f"<p class='muted'>Showing the {len(shown)} most recent of {len(street_refs)} — "
+            "see the street pages above for the rest.</p>"
+            if len(street_refs) > len(shown) else ""
+        )
+        street_meetings_html = (
+            f"<h3>Meeting items mentioning this project's streets</h3>"
+            "<table class='data'><thead><tr><th>Item</th><th>Street</th><th>Meeting</th></tr></thead>"
+            f"<tbody>{rows}</tbody></table>{more}"
+        )
+
     body = f"""
 <article class="project">
   <p class="crumbs"><a href="/">Home</a> › <a href="/projects/">Projects</a> › {h(p.get("name"))}</p>
@@ -501,6 +571,8 @@ def render_project(p, closures, graph) -> str:
 
   {extras_html}
   {streets_html}
+  {meetings_html}
+  {street_meetings_html}
 
   <p class="attribution">Source: <a href="{h(p.get('source_url'))}">Ipswich City Council Civic Projects Map</a> (CC BY 4.0).</p>
 
