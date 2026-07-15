@@ -1,0 +1,73 @@
+name: Hourly closures refresh
+
+# Rebuilds the site every hour with fresh traffic-feed data so the
+# "Active road impacts" table tracks the live dashboard within the hour.
+# Cheap and gentle: 3 requests at Council per run (two traffic feeds +
+# the projects JSON). Meetings data is reused from the daily build's
+# cache — infocouncil is NOT re-scraped hourly (fallback: full scrape
+# if the cache is cold, e.g. first run or cache eviction).
+
+on:
+  schedule:
+    # Hourly at :15, offset from GitHub's congested top-of-hour.
+    - cron: '15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Share the daily workflow's concurrency group so deploys queue, never race.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Restore meetings data from daily build
+        id: meetings-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/meetings.json
+          key: meetings-never-matches-exactly
+          restore-keys: meetings-
+
+      - name: Scrape meetings (fallback — cache was cold)
+        if: steps.meetings-cache.outputs.cache-matched-key == ''
+        run: python -m scrape.council_meetings --out data/meetings.json
+
+      - name: Scrape closures and projects
+        run: |
+          python -m scrape.road_closures --out data/closures.json
+          python -m scrape.civic_projects --out data/projects.json
+
+      - name: Build
+        run: python -m build.build_site --data data --out site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

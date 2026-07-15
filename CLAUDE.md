@@ -23,7 +23,7 @@ The whole point is discoverability: the site "wins" when a resident Googles thei
 
 ## Architecture in one paragraph
 
-`scrape/*.py` pull JSON from Council endpoints and write normalised JSON to `data/*.json`. `build/build_site.py` reads those JSON files, extracts street/suburb mentions via regex, builds a graph of entities, and emits one static HTML page per entity into `site/`, plus a sitemap and per-entity JSON chunks in `site/data/` that the vanilla-JS widget (`site/js/widget.js`) hydrates against for on-site search and cross-references. GitHub Actions runs the scrape + build daily and deploys to GitHub Pages.
+`scrape/*.py` pull JSON from Council endpoints and write normalised JSON to `data/*.json`. `build/build_site.py` reads those JSON files, extracts street/suburb mentions via regex, builds a graph of entities, and emits one static HTML page per entity into `site/`, plus a sitemap and per-entity JSON chunks in `site/data/` that the vanilla-JS widget (`site/js/widget.js`) hydrates against for on-site search and cross-references. Two GitHub Actions workflows deploy to GitHub Pages: the daily full run (all scrapers, caches meetings data) and an hourly closures refresh (traffic feeds + projects only; meetings come from the daily run's cache so infocouncil is never hit hourly).
 
 ## Data sources — status
 

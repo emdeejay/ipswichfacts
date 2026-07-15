@@ -37,6 +37,14 @@ jobs:
           python -m scrape.road_closures --out data/closures.json
           python -m scrape.council_meetings --out data/meetings.json
 
+      # The hourly closures workflow reuses this instead of re-hitting
+      # infocouncil every hour (that would be ~4k requests/day at Council).
+      - name: Cache meetings data for hourly builds
+        uses: actions/cache/save@v4
+        with:
+          path: data/meetings.json
+          key: meetings-${{ github.run_id }}
+
       - name: Build
         run: python -m build.build_site --data data --out site
 
