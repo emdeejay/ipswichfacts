@@ -95,6 +95,16 @@ def format_ymd(ymd: str | None) -> str:
     return ymd
 
 
+# Language in a project's status/what_to_expect that implies road impact.
+_TRAFFIC_IMPACT_RE = re.compile(r"clos(?:ed|ure)|detour|traffic control|lane", re.I)
+
+
+def _truncate(s: str | None, n: int) -> str:
+    if not s:
+        return ""
+    return s if len(s) <= n else s[: n - 1].rsplit(" ", 1)[0] + "…"
+
+
 def dedupe(items: list[Any], key) -> list[Any]:
     seen: set = set()
     out: list = []
@@ -117,6 +127,18 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
     closures = json.loads(closures_path.read_text()) if closures_path.exists() else {"closures": []}
     meetings_path = inp / "meetings.json"
     meetings = json.loads(meetings_path.read_text()) if meetings_path.exists() else {"meetings": []}
+
+    # Merge in the committed historical archive (data/archive/meetings-YYYY.json,
+    # one-off backfill — old minutes never change, so these are never re-scraped).
+    # The live file wins on id collisions.
+    seen_ids = {m.get("id") for m in meetings["meetings"]}
+    for arch in sorted((inp / "archive").glob("meetings-*.json")):
+        for m in json.loads(arch.read_text()).get("meetings", []):
+            if m.get("id") not in seen_ids:
+                seen_ids.add(m.get("id"))
+                meetings["meetings"].append(m)
+    meetings["meetings"].sort(key=lambda m: (m.get("date") or "", m.get("id") or ""), reverse=True)
+
     _assign_meeting_slugs(meetings.get("meetings", []))
     return projects, closures, meetings
 
@@ -142,9 +164,27 @@ STREET_TYPES = (
     "Highway|Hwy|Lane|Ln|Boulevard|Blvd|Court|Ct|Crescent|Cres|Close|Cl|"
     "Place|Pl|Way|Circuit|Cct|Bikeway|Motorway|Mwy|Trail"
 )
+# Name words must not themselves be street types (stops "Cobalt Street And
+# Johnson Road" matching as one street) and matches must not cross line
+# breaks (paragraph boundaries in meeting text are \n).
+_NAME_WORD = r"(?!(?:" + STREET_TYPES + r")\b)[A-Z][A-Za-z']+"
 STREET_RE = re.compile(
-    r"\b([A-Z][A-Za-z']+(?:\s+[A-Z][A-Za-z']+){0,3})\s+(" + STREET_TYPES + r")\b"
+    r"\b(" + _NAME_WORD + r"(?:[^\S\n]+" + _NAME_WORD + r"){0,3})[^\S\n]+(" + STREET_TYPES + r")\b"
 )
+
+# Leading grammar words that bleed in from sentence context ("...between
+# Cobalt Street and..."). NB "New" is NOT here — New Chum Road is real.
+_LEADING_STOPWORDS = {
+    "The", "A", "An", "And", "Or", "Of", "To", "In", "At", "On",
+    "For", "From", "Between", "With", "By", "Via", "Along", "Near",
+}
+
+# Things the regex reads as streets that aren't (courts of law, event names).
+_NOT_STREETS = {
+    "Environment Court", "Planning And Environment Court", "Supreme Court",
+    "District Court", "Magistrates Court", "Family Court", "Federal Court",
+    "High Court", "Land Court", "Garage Sale Trail",
+}
 
 
 def extract_streets_from_text(text: str | None) -> list[str]:
@@ -152,7 +192,14 @@ def extract_streets_from_text(text: str | None) -> list[str]:
         return []
     names = set()
     for m in STREET_RE.finditer(text):
-        name = f"{m.group(1)} {_normalise_type(m.group(2))}"
+        words = m.group(1).split()
+        while words and words[0] in _LEADING_STOPWORDS:
+            words.pop(0)
+        if not words:
+            continue
+        name = f"{' '.join(words)} {_normalise_type(m.group(2))}"
+        if name in _NOT_STREETS:
+            continue
         names.add(name)
     return sorted(names)
 
@@ -334,9 +381,34 @@ def render_index(projects, closures, meetings, graph) -> str:
                 f'<td>{h(c.get("event_type"))}</td>'
                 f'<td>{h(c.get("impact"))}</td></tr>'
             )
-        closure_html = "<h2>Active road impacts</h2><table class='data'>" \
+        closure_html = "<h2>Active road impacts (live traffic dashboard)</h2><table class='data'>" \
             + "<thead><tr><th>Road</th><th>Suburb</th><th>Type</th><th>Impact</th></tr></thead>" \
             + "<tbody>" + "\n".join(rows) + "</tbody></table>"
+
+    # Construction closures often never make it into the traffic dashboard —
+    # e.g. Gordon Street was closed for three months while the dashboard
+    # showed nothing. Surface under-construction projects with traffic
+    # language from the Civic Projects source alongside the live feed.
+    works = [
+        p for p in projects
+        if p.get("phase") == "Under Construction"
+        and _TRAFFIC_IMPACT_RE.search(" ".join(filter(None, [p.get("status"), p.get("what_to_expect")])))
+    ]
+    works_html = ""
+    if works:
+        rows = "".join(
+            f'<tr><td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
+            f'<td>{h(p.get("suburb"))}</td>'
+            f'<td>{h(_truncate(p.get("status"), 160))}</td></tr>'
+            for p in sorted(works, key=lambda p: p.get("name") or "")
+        )
+        works_html = (
+            "<h2>Construction works with traffic impacts</h2>"
+            "<p class='meta'>From the Civic Projects map — construction closures "
+            "don't always appear in the live dashboard above.</p>"
+            "<table class='data'><thead><tr><th>Project</th><th>Suburb</th>"
+            f"<th>Status</th></tr></thead><tbody>{rows}</tbody></table>"
+        )
 
     body = f"""
 <section class="hero">
@@ -360,6 +432,8 @@ def render_index(projects, closures, meetings, graph) -> str:
 </section>
 
 {closure_html}
+
+{works_html}
 
 <section>
   <h2>Explore</h2>
@@ -788,7 +862,11 @@ def write_site(out: Path, projects, closures, meetings, graph) -> list[str]:
     (out / "data" / "closures.json").write_text(json.dumps(closures))
     (out / "data" / "streets.json").write_text(json.dumps(graph["streets"]))
     (out / "data" / "suburbs.json").write_text(json.dumps(graph["suburbs"]))
-    # Slim per-meeting chunks for the widget — item titles only, never text.
+    # Slim per-meeting chunks for the widget — item titles only, never text,
+    # and only the two most recent years so the search payload stays small.
+    # Older meetings are still fully served as static pages and sitemapped;
+    # the widget adds interactivity, not information.
+    recent_years = sorted({(m.get("date") or "")[:4] for m in meetings_list}, reverse=True)[:2]
     slim_meetings = [
         {
             "slug": m["slug"],
@@ -800,6 +878,7 @@ def write_site(out: Path, projects, closures, meetings, graph) -> list[str]:
             ],
         }
         for m in meetings_list
+        if (m.get("date") or "")[:4] in recent_years
     ]
     (out / "data" / "meetings.json").write_text(json.dumps(slim_meetings))
     mentions = {

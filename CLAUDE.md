@@ -31,7 +31,7 @@ The whole point is discoverability: the site "wins" when a resident Googles thei
 |---|---|---|
 | Civic Projects Map | `maps.ipswich.qld.gov.au/icc/data/Projects_Infrastructure.JSON` | **Working** — `scrape/civic_projects.py` |
 | Live road impacts (Council + QLDTraffic) | `traffic.ipswich.qld.gov.au/dashboard/{imsRoad,tmrRoadData}` | **Working** — `scrape/road_closures.py`. Note both feeds are double-JSON-encoded (JSON string containing JSON). |
-| Council meeting agendas/minutes | `ipswich.infocouncil.biz/Open/YYYY/MM/{COMMITTEE}_YYYYMMDD_{AGN|MIN}_XXXX[_AT][_EXTRA]_WEB.htm` | **Working** — `scrape/council_meetings.py`. WEB.htm docs are framesets; fetch the frameset for the real BMK/paper frame names. See docs/notes.md. |
+| Council meeting agendas/minutes | `ipswich.infocouncil.biz/Open/YYYY/MM/{COMMITTEE}_YYYYMMDD_{AGN|MIN}_XXXX[_AT][_EXTRA]_WEB.htm` | **Working** — `scrape/council_meetings.py`. WEB.htm docs are framesets; fetch the frameset for the real BMK/paper frame names. See docs/notes.md. Historical years via `?year=YYYY` on the index: 2020–2025 backfilled once (`make backfill`, 2s delay) into committed `data/archive/meetings-YYYY.json` — never re-scraped; the daily cron fetches only the current year. |
 | Capital Works Programs | `ipswich.qld.gov.au/.../budget/*/annual-plan/*.pdf` | Not yet built. Extract funding tables with `camelot` or `pdfplumber`. |
 | Ipswich First media releases | `ipswichfirst.com.au/wp-json/wp/v2/posts` | Not yet built. WordPress REST API. |
 | Shape Your Ipswich consultations | `shapeyouripswich.com.au/<project-slug>` | Not yet built. Granicus EngagementHQ. HTML scrape. |

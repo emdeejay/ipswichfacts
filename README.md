@@ -35,7 +35,7 @@ make serve
 | Civic Projects (map) | `https://maps.ipswich.qld.gov.au/icc/data/Projects_Infrastructure.JSON` | ~385 GeoJSON features (~780 KB) | Daily |
 | Live road impacts (Council-managed) | `https://traffic.ipswich.qld.gov.au/dashboard/imsRoad` | GeoJSON FeatureCollection, JSON-string-wrapped, often empty | Real-time |
 | Live road impacts (QLDTraffic proxy) | `https://traffic.ipswich.qld.gov.au/dashboard/tmrRoadData` | Bare array of GeoJSON Features, double-JSON-encoded | Real-time |
-| Council meetings (agendas + minutes) | `https://ipswich.infocouncil.biz/` index → `Open/YYYY/MM/*_WEB.htm` framesets | ~57 meetings/year, ~400 agenda items, per-item text + resolutions | Daily |
+| Council meetings (agendas + minutes) | `https://ipswich.infocouncil.biz/` index → `Open/YYYY/MM/*_WEB.htm` framesets | ~100 meetings/year, per-item text + resolutions; 2020–2025 archive committed in `data/archive/` | Daily (current year); archive scraped once |
 
 Endpoints were discovered by inspecting the Council apps' network traffic; both return plain JSON (once double-decoded for the traffic feed) and can be scraped with `httpx`.
 

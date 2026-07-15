@@ -1,4 +1,13 @@
-.PHONY: all install scrape build clean serve sample
+.PHONY: all install scrape build clean serve sample backfill
+
+# One-off historical meetings backfill (2020-2025). Gentle: 2s between
+# requests, ~1h total. Results are committed to data/archive/ and never
+# re-scraped — old minutes don't change.
+backfill:
+	for y in 2020 2021 2022 2023 2024 2025; do \
+		python3 -m scrape.council_meetings --year $$y --delay 2 --compact \
+			--out data/archive/meetings-$$y.json; \
+	done
 
 # One command to build from live data
 all: scrape build

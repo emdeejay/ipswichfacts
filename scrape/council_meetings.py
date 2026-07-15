@@ -75,11 +75,11 @@ def _decode(content: bytes) -> str:
         return content.decode("utf-8", errors="replace")
 
 
-def _fetch(client: httpx.Client, url: str) -> str:
+def _fetch(client: httpx.Client, url: str, delay: float = REQUEST_DELAY) -> str:
     resp = client.get(url)
     resp.raise_for_status()
     text = _decode(resp.content)
-    time.sleep(REQUEST_DELAY)
+    time.sleep(delay)
     return text
 
 
@@ -185,12 +185,16 @@ def parse_items(bmk_html: str, paper_html: str) -> list[dict[str, Any]]:
     return items
 
 
-def scrape(limit: int = 0) -> dict[str, Any]:
+def scrape(limit: int = 0, year: int | None = None, delay: float = REQUEST_DELAY) -> dict[str, Any]:
+    """Scrape the index (current year by default; pass `year` for the
+    archive — the index accepts a plain `?year=YYYY` GET, no postback
+    needed). `delay` throttles harder for backfill runs."""
     scraped_at = datetime.now(timezone.utc).isoformat()
+    index_url = f"{BASE_URL}?year={year}" if year else BASE_URL
     with httpx.Client(
         headers={"User-Agent": USER_AGENT}, timeout=30, follow_redirects=True
     ) as client:
-        index_html = _fetch(client, BASE_URL)
+        index_html = _fetch(client, index_url, delay)
         candidates = parse_index(index_html)
         if limit:
             candidates = candidates[:limit]
@@ -202,13 +206,13 @@ def scrape(limit: int = 0) -> dict[str, Any]:
             if not source_url:
                 continue
             try:
-                frameset = _fetch(client, source_url)
+                frameset = _fetch(client, source_url, delay)
                 nav_src, paper_src = parse_frameset(frameset)
                 if not nav_src or not paper_src:
                     raise ValueError("frameset missing Navigation/Paper frames")
                 base = source_url.rsplit("/", 1)[0] + "/"
-                bmk_html = _fetch(client, base + nav_src)
-                paper_html = _fetch(client, base + paper_src)
+                bmk_html = _fetch(client, base + nav_src, delay)
+                paper_html = _fetch(client, base + paper_src, delay)
                 items = parse_items(bmk_html, paper_html)
             except Exception as e:  # noqa: BLE001 — skip one meeting, never die
                 print(f"skip {source_url}: {e}", file=sys.stderr)
@@ -234,15 +238,23 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=Path("data/meetings.json"))
     parser.add_argument("--limit", type=int, default=0,
                         help="only fetch the N most recent meetings (0 = all)")
+    parser.add_argument("--year", type=int, default=None,
+                        help="archive year to scrape (default: current year's index)")
+    parser.add_argument("--delay", type=float, default=REQUEST_DELAY,
+                        help="seconds between requests (use 2.0+ for backfill runs)")
+    parser.add_argument("--compact", action="store_true",
+                        help="write minified JSON (for committed archive files)")
     args = parser.parse_args()
 
-    print(f"Fetching meeting index from {BASE_URL} ...", file=sys.stderr)
-    snapshot = scrape(limit=args.limit)
+    print(f"Fetching meeting index from {BASE_URL} "
+          f"(year={args.year or 'current'}, delay={args.delay}s) ...", file=sys.stderr)
+    snapshot = scrape(limit=args.limit, year=args.year, delay=args.delay)
     n_items = sum(len(m["items"]) for m in snapshot["meetings"])
     print(f"Got {len(snapshot['meetings'])} meetings, {n_items} items", file=sys.stderr)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(snapshot, indent=2, ensure_ascii=False))
+    indent = None if args.compact else 2
+    args.out.write_text(json.dumps(snapshot, indent=indent, ensure_ascii=False))
     print(f"Wrote {args.out}", file=sys.stderr)
     return 0
 
