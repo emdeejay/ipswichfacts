@@ -47,7 +47,7 @@ BASE_URL = "https://ipswichfacts.au"
 
 # Tip jar. Set to None to hide the coffee link entirely. Update after you sign
 # up at buymeacoffee.com / ko-fi.com / github.com/sponsors.
-COFFEE_URL = "https://buymeacoffee.com/ipswichfacts"
+COFFEE_URL = "https://buymeacoffee.com/mdj.au"
 COFFEE_LABEL = "Buy me a coffee"
 
 COUNCILLORS = {
