@@ -458,7 +458,7 @@ def render_index(projects, closures, meetings, graph) -> str:
             f'<tr><td><span class="impact-{sev}">{h(label)}</span></td>'
             f'<td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
             f'<td>{h(p.get("suburb"))}</td>'
-            f'<td>{h(_truncate(p.get("status"), 160))}</td></tr>'
+            f'<td>{h(_truncate(p.get("status"), 320))}</td></tr>'
             for sev, label, p in works
         )
         works_html = (
@@ -596,22 +596,27 @@ def render_project(p, closures, graph) -> str:
     · Last updated: {h(format_ymd(p.get('updated')))}
   </p>
 
-  <h3>Description</h3>
-  <p>{h(p.get("description"))}</p>
+  <div class="cols">
+    <div>
+      <h3>Description</h3>
+      <p>{h(p.get("description"))}</p>
 
-  <h3>Status</h3>
-  <p>{h(p.get("status"))}</p>
+      <h3>Status</h3>
+      <p>{h(p.get("status"))}</p>
 
-  {what_html}
+      {what_html}
+    </div>
+    <aside class="panel">
+      <h3>Division</h3>
+      <p>{div_html}</p>
 
-  <h3>Division</h3>
-  <p>{div_html}</p>
+      <h3>Managed by</h3>
+      <p>{h(p.get("managed_by"))}</p>
 
-  <h3>Managed by</h3>
-  <p>{h(p.get("managed_by"))}</p>
-
-  {extras_html}
-  {streets_html}
+      {extras_html}
+      {streets_html}
+    </aside>
+  </div>
   {meetings_html}
   {street_meetings_html}
 
@@ -1144,7 +1149,9 @@ body { font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sa
 .brand { font-weight: 700; color: var(--accent); text-decoration: none; font-size: 1.15rem; }
 .site-header nav a { margin-right: 1rem; color: var(--fg); text-decoration: none; }
 .site-header nav a:hover { text-decoration: underline; }
-main { max-width: 950px; margin: 0 auto; padding: 1.5rem; }
+main { max-width: 1280px; margin: 0 auto; padding: 1.5rem; }
+/* Prose stays readable; tables and grids get the full width. */
+article > p, section > p, .meeting-item p { max-width: 75ch; }
 h1 { font-size: 1.75rem; margin-top: 0; }
 h2 { border-bottom: 1px solid var(--line); padding-bottom: 0.25rem; margin-top: 2rem; }
 .hero { padding: 2rem 0; }
@@ -1169,9 +1176,13 @@ a[class^="phase-"] { text-decoration: none; }
 .impact-1 { background: #f0f0f0; color: #555; padding: 0.15rem 0.55rem; border-radius: 3px; font-size: 0.8rem; white-space: nowrap; }
 .councillors { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 1rem; }
 .councillors li { border: 1px solid var(--line); border-radius: 6px; padding: 0.75rem 1rem; min-width: 16rem; }
-.biglist { column-count: 2; column-gap: 2rem; list-style: none; padding: 0; }
+.biglist { columns: 18rem; column-gap: 2rem; list-style: none; padding: 0; }
 .biglist li { break-inside: avoid; padding: 0.25rem 0; }
 table.data { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+@media (max-width: 720px) {
+  table.data { display: block; overflow-x: auto; }
+  main { padding: 1rem; }
+}
 table.data th, table.data td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--line); font-size: 0.95rem; }
 table.data th { color: var(--muted); font-weight: 600; }
 [class^="phase-"] { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 3px; font-size: 0.8rem; }
@@ -1197,6 +1208,12 @@ table.data th { color: var(--muted); font-weight: 600; }
 .support { border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.25rem;
            margin: 2rem 0; background: #fffdf2; }
 .support p { margin: 0.4rem 0; }
+.cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 2.5rem; }
+.panel { border: 1px solid var(--line); border-radius: 8px; padding: 0.25rem 1.25rem 1rem;
+         background: #fff; align-self: start; }
+.panel h3 { font-size: 0.95rem; margin-bottom: 0.35rem; }
+.panel ul { margin: 0.25rem 0; padding-left: 1.1rem; }
+@media (max-width: 900px) { .cols { grid-template-columns: 1fr; gap: 0; } }
 .coffee-btn { display: inline-block; padding: 0.5rem 1rem; background: #ffdd00;
   color: #1a1a1a; border-radius: 6px; text-decoration: none;
   font-weight: 600; border: 1px solid #d4b800; }
