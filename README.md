@@ -1,0 +1,134 @@
+# Ipswich Facts
+
+Public Ipswich City Council data — projects, closures, mentions — joined up and made searchable, then published as a plain static site so Google can index the joined view.
+
+Status: **working prototype**. Two data sources plumbed end-to-end (Civic Projects + live road closures). Everything else on the roadmap is a bolt-on that follows the same shape.
+
+## What it is
+
+Ipswich Council publishes a lot of information across half a dozen unconnected systems. A resident who wants to know "what's happening on my street, who approved it, when, and how much is it costing" currently has to open five tabs and reconstruct the picture themselves. Ipswich Facts pulls the raw data from Council's own systems, joins it by street/suburb/project, and republishes it as a single searchable site with a page per entity.
+
+Each page ships as pre-rendered HTML so Google can index it directly. A small client-side widget hydrates against JSON files for live filtering and drill-down.
+
+## Quick start
+
+```
+git clone <your-repo> ipswichfacts
+cd ipswichfacts
+make install       # pip install httpx
+make sample        # build the site from the checked-in sample data
+make serve         # open http://localhost:8000
+```
+
+To build from live Council data (requires network):
+
+```
+make scrape        # pull projects + closures from Ipswich Council
+make build         # generate the site
+make serve
+```
+
+## Data sources verified end-to-end
+
+| Source | Endpoint | Records | Refresh |
+|---|---|---|---|
+| Civic Projects (map) | `https://maps.ipswich.qld.gov.au/icc/data/Projects_Infrastructure.JSON` | ~385 GeoJSON features (~780 KB) | Daily |
+| Live road impacts (Council-managed) | `https://traffic.ipswich.qld.gov.au/dashboard/imsRoad` | GeoJSON FeatureCollection, JSON-string-wrapped, often empty | Real-time |
+| Live road impacts (QLDTraffic proxy) | `https://traffic.ipswich.qld.gov.au/dashboard/tmrRoadData` | Bare array of GeoJSON Features, double-JSON-encoded | Real-time |
+
+Endpoints were discovered by inspecting the Council apps' network traffic; both return plain JSON (once double-decoded for the traffic feed) and can be scraped with `httpx`.
+
+## Roadmap (not yet built)
+
+Same shape as above, just more sources:
+
+- **Council meetings** — `ipswich.infocouncil.biz` publishes static per-meeting HTML pages under a predictable URL pattern (`/Open/YYYY/MM/{COMMITTEE}_YYYYMMDD_{AGN|MIN}_XXXX_AT.htm`). Attachments are PDFs in a parallel `_files/` folder. Crawl the meeting index; extract per-agenda-item text; join on street/project mentions.
+- **Capital Works Programs** — annual PDFs at stable URLs under `ipswich.qld.gov.au/.../budget/*/annual-plan/*.pdf`. Parse the schedule tables with `camelot` or `pdfplumber` to get per-project funding by financial year.
+- **Ipswich First media releases** — WordPress. Pull via `/wp-json/wp/v2/posts?per_page=100&page=N`.
+- **Shape Your Ipswich** — Granicus EngagementHQ. HTML scrape per project page.
+- **Councillor pages** — one-off scrape of `ipswich.qld.gov.au/About-Council/Mayor-Councillors/*` so division numbers can resolve to named councillors and emails.
+
+Add each as a new file in `scrape/`, extend the `build_site.py` graph to consume it, generate more page templates. No architectural changes required.
+
+## Project layout
+
+```
+ipswichfacts/
+├── README.md                        # you are here
+├── Makefile                         # make sample | scrape | build | serve
+├── requirements.txt                 # just httpx
+├── scrape/
+│   ├── civic_projects.py            # Civic Projects Map JSON → data/projects.json
+│   ├── road_closures.py             # Traffic dashboard feeds → data/closures.json
+│   └── extract_mentions.py          # gazetteer-based place-name NER
+├── build/
+│   └── build_site.py                # emits site/ from data/*.json
+├── data/
+│   ├── sample/                      # committed sample data so the site builds without network
+│   │   ├── projects.json            # 14 real projects observed via Council's map
+│   │   └── closures.json            # 5 real active closures observed 15 Jul 2026
+│   ├── projects.json                # (generated) full projects dump
+│   └── closures.json                # (generated) snapshot of active impacts
+└── site/                            # (generated) shippable static site
+```
+
+## Site structure
+
+Every entity gets its own URL:
+
+- `/` — search + summary + active closures
+- `/project/<slug>/` — one page per project (title, description, status, dates, division, links, related streets/suburbs)
+- `/street/<slug>/` — every project and closure on that street
+- `/suburb/<slug>/` — every project and closure in that suburb
+- `/projects/`, `/suburbs/`, `/streets/` — index pages
+- `/about/` — about + attribution
+- `/data/*.json` — the widget's data files (client-side hydration)
+- `/sitemap.xml`, `/robots.txt` — SEO plumbing
+
+63 pages from 14 sample projects and 5 closures. Scaled to the full dataset that's approximately 800 pages, well within any free-tier host's file limits.
+
+## Tip jar
+
+There's a "Buy me a coffee" link in the footer and a support section on the About page. Configure it at the top of `build/build_site.py`:
+
+```python
+COFFEE_URL = "https://buymeacoffee.com/your-handle"
+COFFEE_LABEL = "Buy me a coffee"
+```
+
+Set `COFFEE_URL = None` to hide it entirely. Buy Me a Coffee, Ko-fi (0% platform fee for the basic tier), and GitHub Sponsors all work.
+
+## Hosting
+
+Zero-cost options:
+
+- **Cloudflare Pages** — free tier, brotli, watch the 20K file limit
+- **GitHub Pages** — free for public repos, no file limit
+- **Netlify** — free tier fine at this volume
+
+Deployment is a matter of `git push` → build via a GitHub Actions workflow → publish the `site/` directory. See `.github/workflows/build-and-deploy.yml` — it scrapes fresh data and redeploys daily on a cron, plus on every push to `main`. Enable it in the repo settings under **Settings → Pages → Source: GitHub Actions**.
+
+Note: pages use root-relative URLs, so the site must be served from a domain root (a custom domain, or a `<user>.github.io` root repo) — it will not render correctly from a `github.io/<repo>/` subpath.
+
+## Licence and attribution
+
+- Council data is published under [CC BY 4.0](https://www.ipswich.qld.gov.au/About-Council/Media-and-Publications/Corporate-Publications/Legal-Disclaimer-and-Copyright-Notice).
+- Every page in the generated site attributes the Council source with a direct link back.
+- This project's own code: MIT.
+- Site framing: "Unofficial. Council's own systems are the source of truth." on every page footer.
+
+## Design notes
+
+- **Static-first.** All content is baked into HTML at build time so Google indexes every entity. The widget adds interactivity but not information — a JS-disabled browser still sees the full content.
+- **Widget-hydrated.** ~500-line vanilla-JS widget (no framework, no build step) hydrates against chunked JSON in `/data/`. Search runs in the browser.
+- **Faithful to Council data.** No editorial. Records are reproduced verbatim with attribution.
+- **Cheap to maintain.** Scrapers are small, idempotent, and independent — if one breaks the others keep updating. Total cost floor is a domain (~$15/year).
+
+## Anti-goals
+
+- Not a comments platform. Not a submissions channel. Not a place for editorial spin. Not a Council watchdog blog. If those exist they should live on separate domains.
+- Not a replacement for PlanningAlerts — DA data is out of scope; link out.
+
+## Contact
+
+If Ipswich City Council's digital team wants to talk about the scraping, cadence, or attribution, open an issue on the repo.

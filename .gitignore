@@ -1,0 +1,23 @@
+# generated
+site/
+data/projects.json
+data/closures.json
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+
+# editors
+.vscode/
+.idea/
+.DS_Store
+
+# claude code — personal settings (project settings.json is committed)
+.claude/settings.local.json
+.claude/todo.md
+.claude/history.md
+.claude/**/*.local.md
