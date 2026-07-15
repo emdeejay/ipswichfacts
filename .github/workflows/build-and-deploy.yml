@@ -35,6 +35,7 @@ jobs:
         run: |
           python -m scrape.civic_projects --out data/projects.json
           python -m scrape.road_closures --out data/closures.json
+          python -m scrape.council_meetings --out data/meetings.json
 
       - name: Build
         run: python -m build.build_site --data data --out site

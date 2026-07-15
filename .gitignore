@@ -2,6 +2,7 @@
 site/
 data/projects.json
 data/closures.json
+data/meetings.json
 
 # python
 __pycache__/

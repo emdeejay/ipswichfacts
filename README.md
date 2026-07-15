@@ -2,7 +2,7 @@
 
 Public Ipswich City Council data — projects, closures, mentions — joined up and made searchable, then published as a plain static site so Google can index the joined view.
 
-Status: **working prototype**. Two data sources plumbed end-to-end (Civic Projects + live road closures). Everything else on the roadmap is a bolt-on that follows the same shape.
+Status: **working prototype**. Three data sources plumbed end-to-end (Civic Projects + live road closures + Council meeting agendas/minutes). Everything else on the roadmap is a bolt-on that follows the same shape.
 
 ## What it is
 
@@ -35,6 +35,7 @@ make serve
 | Civic Projects (map) | `https://maps.ipswich.qld.gov.au/icc/data/Projects_Infrastructure.JSON` | ~385 GeoJSON features (~780 KB) | Daily |
 | Live road impacts (Council-managed) | `https://traffic.ipswich.qld.gov.au/dashboard/imsRoad` | GeoJSON FeatureCollection, JSON-string-wrapped, often empty | Real-time |
 | Live road impacts (QLDTraffic proxy) | `https://traffic.ipswich.qld.gov.au/dashboard/tmrRoadData` | Bare array of GeoJSON Features, double-JSON-encoded | Real-time |
+| Council meetings (agendas + minutes) | `https://ipswich.infocouncil.biz/` index → `Open/YYYY/MM/*_WEB.htm` framesets | ~57 meetings/year, ~400 agenda items, per-item text + resolutions | Daily |
 
 Endpoints were discovered by inspecting the Council apps' network traffic; both return plain JSON (once double-decoded for the traffic feed) and can be scraped with `httpx`.
 
@@ -42,7 +43,6 @@ Endpoints were discovered by inspecting the Council apps' network traffic; both 
 
 Same shape as above, just more sources:
 
-- **Council meetings** — `ipswich.infocouncil.biz` publishes static per-meeting HTML pages under a predictable URL pattern (`/Open/YYYY/MM/{COMMITTEE}_YYYYMMDD_{AGN|MIN}_XXXX_AT.htm`). Attachments are PDFs in a parallel `_files/` folder. Crawl the meeting index; extract per-agenda-item text; join on street/project mentions.
 - **Capital Works Programs** — annual PDFs at stable URLs under `ipswich.qld.gov.au/.../budget/*/annual-plan/*.pdf`. Parse the schedule tables with `camelot` or `pdfplumber` to get per-project funding by financial year.
 - **Ipswich First media releases** — WordPress. Pull via `/wp-json/wp/v2/posts?per_page=100&page=N`.
 - **Shape Your Ipswich** — Granicus EngagementHQ. HTML scrape per project page.
@@ -60,15 +60,18 @@ ipswichfacts/
 ├── scrape/
 │   ├── civic_projects.py            # Civic Projects Map JSON → data/projects.json
 │   ├── road_closures.py             # Traffic dashboard feeds → data/closures.json
+│   ├── council_meetings.py          # infocouncil business papers → data/meetings.json
 │   └── extract_mentions.py          # gazetteer-based place-name NER
 ├── build/
 │   └── build_site.py                # emits site/ from data/*.json
 ├── data/
 │   ├── sample/                      # committed sample data so the site builds without network
 │   │   ├── projects.json            # 14 real projects observed via Council's map
-│   │   └── closures.json            # 5 real active closures observed 15 Jul 2026
+│   │   ├── closures.json            # 5 real active closures observed 15 Jul 2026
+│   │   └── meetings.json            # 3 real meetings observed 15 Jul 2026
 │   ├── projects.json                # (generated) full projects dump
-│   └── closures.json                # (generated) snapshot of active impacts
+│   ├── closures.json                # (generated) snapshot of active impacts
+│   └── meetings.json                # (generated) full meetings dump (current year)
 └── site/                            # (generated) shippable static site
 ```
 
@@ -78,14 +81,15 @@ Every entity gets its own URL:
 
 - `/` — search + summary + active closures
 - `/project/<slug>/` — one page per project (title, description, status, dates, division, links, related streets/suburbs)
-- `/street/<slug>/` — every project and closure on that street
-- `/suburb/<slug>/` — every project and closure in that suburb
-- `/projects/`, `/suburbs/`, `/streets/` — index pages
+- `/street/<slug>/` — every project, closure and Council meeting mention on that street
+- `/suburb/<slug>/` — every project, closure and Council meeting mention in that suburb
+- `/meeting/<slug>/` — one page per Council meeting (per-item text, resolutions, links back to the business paper)
+- `/projects/`, `/suburbs/`, `/streets/`, `/meetings/` — index pages
 - `/about/` — about + attribution
 - `/data/*.json` — the widget's data files (client-side hydration)
 - `/sitemap.xml`, `/robots.txt` — SEO plumbing
 
-63 pages from 14 sample projects and 5 closures. Scaled to the full dataset that's approximately 800 pages, well within any free-tier host's file limits.
+78 pages from 14 sample projects, 5 closures and 3 meetings. Scaled to the full dataset that's approximately 1,000 pages, well within any free-tier host's file limits.
 
 ## Tip jar
 

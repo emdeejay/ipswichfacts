@@ -45,24 +45,19 @@ Feature properties on tmrRoadData: `id, status, published, source, url, event_ty
 
 Scrape cadence: every 15–30 min for closures is plenty. Nothing changes second-by-second at the LGA level.
 
-### Council Business Papers — TODO
+### Council Business Papers — GET (scrape/council_meetings.py)
 
 `https://ipswich.infocouncil.biz/`
 
-- Meeting index at `/` (with filters for Meeting type, Year, Month).
-- Per-meeting page: `/Open/YYYY/MM/{COMMITTEE_CODE}_YYYYMMDD_{AGN|MIN}_XXXX_AT.htm`.
-- Attachments: `/open/YYYY/MM/{committee}_YYYYMMDD_{agn|min}_XXXX_at_files/*_attachment_XXXXX_X.pdf`.
-- Full-text search endpoint exists (`SearchResults.aspx`) but is powered by Cludo. Prefer crawling the meeting index and extracting text from HTML+PDFs ourselves — avoids being rate-limited by a third-party search service.
+- Meeting index at `/` lists the current year. Rows are `<tr class="bpsGridMenuItem">` / `bpsGridMenuAltItem`; each row has `bpsGridDate` (e.g. `30 Jun 2026<br>…`), `bpsGridCommittee` (full committee name), and doc links wrapped in a redirector: `RedirectToDoc.aspx?URL=Open/YYYY/MM/{FILE}`. The `Open/...` path fetches fine directly.
+- Doc filename grammar: `{CODE}_{YYYYMMDD}_{AGN|MIN|MAT|ATT}_{ID}{SUFFIXES}_WEB.htm` where suffixes seen include `_AT`, `_SUP` (supplementary), `_EXTRA` (extraordinary meetings), `_EXCLUDED`. Same committee code (e.g. `CO`) covers both ordinary and extraordinary meetings — the `bpsGridCommittee` cell disambiguates ("Council" vs "Extraordinary Council"), so build the code→name mapping per row, don't hardcode.
+- A `*_WEB.htm` doc is a **frameset**, not content. Frame `Navigation` → `{...}_BMK.HTM` (nav/bookmarks), frame `Paper` → the actual paper HTML. **Do not derive the inner names by stripping suffixes** — MIN inner names drop `_AT` but AGN inner names keep it (`CO_20260226_AGN_3996_AT.HTM`). Fetch the frameset and read the frame `src` attributes.
+- BMK frame: one `<a class='bpsNavigationListItem' href='...#ANCHOR' title='...'>` per agenda item. Item anchors start `PDF2_ReportName_` (papers prepared in advance, including `_N_*` variants) **or `PDF2_NewItem_`** (items raised in the meeting — advisory committees sometimes have *only* these). Ignore `PDF2_Resolution_*` (procedural: leave of absence, meeting-cancelled notes), `PDF1_Contents`, and `bpsNavigationDetail` links. The `title` attribute is cleaner than inner text (which can contain tabs/entities). A handful of meetings legitimately have zero items (cancelled meetings whose minutes are a single procedural resolution).
+- Paper frame: Word-filtered HTML (MsoNormal soup), declared `charset=windows-1252` in a meta tag — sniff the meta, don't trust httpx's default decode. Item anchors are `<a name="PDF2_ReportName_...">` and the tag can be **split across lines** (`<a\n  name="..."`), so match with `\s+`. Text between one ReportName anchor and the next is that item's content. Resolutions are paragraphs containing "Moved by" / "Seconded by".
+- MAT/ATT docs are attachments (skip in v1); `_SUP` docs are supplementary papers (skip in v1). Minutes supersede agendas — prefer MIN over AGN when both exist.
+- Full-text search endpoint exists (`SearchResults.aspx`) but is powered by Cludo. Prefer crawling the meeting index and extracting text from HTML ourselves — avoids being rate-limited by a third-party search service.
 
-Committee codes observed:
-```
-CO      Council
-IPAAC   Infrastructure, Planning and Assets Committee
-GIW     Growth Infrastructure and Waste Committee (historical)
-GC      Governance Committee (historical)
-FGC     Finance and Governance Committee
-...     (see the filter dropdown on the meeting index)
-```
+Committee codes observed 2026 (full names come from the index table): AAC, CASCC, CBWS, CO, EACDC, ESC, FAGCC, IPAAC, LCSAC, MAC, RAC, SRAC.
 
 ### Capital Works Program PDF — TODO
 

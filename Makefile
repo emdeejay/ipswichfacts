@@ -9,6 +9,7 @@ install:
 scrape:
 	python3 -m scrape.civic_projects --out data/projects.json
 	python3 -m scrape.road_closures --out data/closures.json
+	python3 -m scrape.council_meetings --out data/meetings.json
 
 build:
 	python3 -m build.build_site --data data --out site
@@ -17,6 +18,7 @@ build:
 sample:
 	cp data/sample/projects.json data/projects.json
 	cp data/sample/closures.json data/closures.json
+	cp data/sample/meetings.json data/meetings.json
 	python3 -m build.build_site --data data --out site
 
 serve:
@@ -24,4 +26,4 @@ serve:
 
 clean:
 	rm -rf site/*
-	rm -f data/projects.json data/closures.json
+	rm -f data/projects.json data/closures.json data/meetings.json
