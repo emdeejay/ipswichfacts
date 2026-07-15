@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2026-07-15T06:16:45.488051+00:00",
+  "scraped_at": "2026-07-15T10:06:59.523317+00:00",
   "meetings": [
     {
       "id": "4002",
@@ -8,6 +8,7 @@
       "date": "2026-06-30",
       "doc_type": "MIN",
       "source_url": "https://ipswich.infocouncil.biz/Open/2026/06/CO_20260630_MIN_4002_EXTRA_WEB.htm",
+      "paper_url": "https://ipswich.infocouncil.biz/Open/2026/06/CO_20260630_MIN_4002_EXTRA.HTM",
       "items": [
         {
           "anchor": "PDF2_NewItem_N_1",
@@ -60,6 +61,7 @@
       "date": "2026-06-25",
       "doc_type": "MIN",
       "source_url": "https://ipswich.infocouncil.biz/Open/2026/06/CO_20260625_MIN_4000_WEB.htm",
+      "paper_url": "https://ipswich.infocouncil.biz/Open/2026/06/CO_20260625_MIN_4000.HTM",
       "items": [
         {
           "anchor": "PDF2_ReportName_N_1",
@@ -304,6 +306,7 @@
       "date": "2026-06-18",
       "doc_type": "AGN",
       "source_url": "https://ipswich.infocouncil.biz/Open/2026/06/AAC_20260618_AGN_4204_AT_WEB.htm",
+      "paper_url": "https://ipswich.infocouncil.biz/Open/2026/06/AAC_20260618_AGN_4204_AT.HTM",
       "items": [
         {
           "anchor": "PDF2_ReportName_21889",

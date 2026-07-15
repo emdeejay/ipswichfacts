@@ -311,6 +311,8 @@ def build_graph(projects, closures, meetings) -> dict[str, Any]:
                 "date": m.get("date"),
                 "title": item.get("title"),
                 "anchor": item.get("anchor"),
+                "paper_url": m.get("paper_url"),
+                "source_url": m.get("source_url"),
             }
             for s in i_streets:
                 street_meeting_items[s].append(ref)
@@ -356,9 +358,9 @@ def render_layout(title: str, description: str, path: str, body: str) -> str:
     coffee_footer = ""
     if COFFEE_URL:
         coffee_footer = (
-            f'<p class="coffee">This is a volunteer project. If it saved you '
-            f'time, <a href="{h(COFFEE_URL)}" rel="noopener">'
-            f'☕ {h(COFFEE_LABEL)}</a>.</p>'
+            f'<p class="coffee">This is a volunteer project. If it saved you time — '
+            f'<a class="coffee-btn" href="{h(COFFEE_URL)}" rel="noopener">'
+            f'☕ {h(COFFEE_LABEL)}</a></p>'
         )
     return f"""<!doctype html>
 <html lang="en-AU">
@@ -397,6 +399,18 @@ def render_layout(title: str, description: str, path: str, body: str) -> str:
 </body>
 </html>
 """
+
+
+def _support_html() -> str:
+    if not COFFEE_URL:
+        return ""
+    return (
+        '<section class="support">'
+        "<p>Ipswich Facts is one volunteer and zero ads. If it saved you a trip "
+        "through five Council tabs, you can keep it running:</p>"
+        f'<p><a class="coffee-btn" href="{h(COFFEE_URL)}" rel="noopener">☕ {h(COFFEE_LABEL)}</a></p>'
+        "</section>"
+    )
 
 
 def render_index(projects, closures, meetings, graph) -> str:
@@ -485,6 +499,8 @@ def render_index(projects, closures, meetings, graph) -> str:
   <h2>Explore</h2>
   <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
 </section>
+
+{_support_html()}
 """
     return render_layout(
         title="Ipswich Council data, joined up",
@@ -528,14 +544,15 @@ def render_project(p, closures, graph) -> str:
     meetings_html = ""
     if direct:
         rows = "".join(
-            f'<tr><td>{h(r.get("title"))}</td>'
+            f'<tr><td><a href="/meeting/{r["slug"]}/#{h(r.get("anchor"))}">{h(r.get("title"))}</a></td>'
             f'<td><a href="/meeting/{r["slug"]}/#{h(r.get("anchor"))}">'
-            f'{h(r.get("committee"))} — {h(format_ymd(r.get("date")))}</a></td></tr>'
+            f'{h(r.get("committee"))} — {h(format_ymd(r.get("date")))}</a></td>'
+            f'<td><a href="{h(_council_item_url(r, r))}" rel="noopener">Council&nbsp;source&nbsp;↗</a></td></tr>'
             for r in sorted(direct, key=lambda r: r.get("date") or "", reverse=True)
         )
         meetings_html = (
             f"<h3>Discussed in Council meetings ({len(direct)})</h3>"
-            "<table class='data'><thead><tr><th>Item</th><th>Meeting</th></tr></thead>"
+            "<table class='data'><thead><tr><th>Item</th><th>Meeting</th><th>Source</th></tr></thead>"
             f"<tbody>{rows}</tbody></table>"
         )
     street_refs = []
@@ -614,6 +631,17 @@ def render_project(p, closures, graph) -> str:
 DOC_TYPE_LABELS = {"MIN": "Minutes", "AGN": "Agenda"}
 
 
+def _council_item_url(m, item_or_ref) -> str:
+    """Deep link into Council's own paper document at this item's anchor.
+    Falls back to the frameset page for records scraped before paper_url
+    existed."""
+    paper = m.get("paper_url") if isinstance(m, dict) else None
+    anchor = item_or_ref.get("anchor")
+    if paper and anchor:
+        return f"{paper}#{anchor}"
+    return m.get("source_url") or paper or ""
+
+
 def render_meeting(m, graph) -> str:
     slug = m["slug"]
     doc_label = DOC_TYPE_LABELS.get(m.get("doc_type"), m.get("doc_type"))
@@ -639,7 +667,7 @@ def render_meeting(m, graph) -> str:
     {res_html}
     {paras}
     {mentions_html}
-    <p class="muted"><a href="{h(m.get('source_url'))}" rel="noopener">View this item in the Council {h(doc_label.lower())}</a></p>
+    <p class="muted"><a href="{h(_council_item_url(m, item))}" rel="noopener">View this item in the Council {h(doc_label.lower())}</a></p>
   </section>""")
 
     body = f"""
@@ -1165,7 +1193,10 @@ table.data th { color: var(--muted); font-weight: 600; }
 .site-footer { max-width: 950px; margin: 3rem auto 2rem; padding: 1.5rem;
                font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--line); }
 .site-footer a { color: var(--accent); }
-.site-footer .coffee { margin-top: 0.6rem; font-size: 0.9rem; }
+.site-footer .coffee { margin-top: 1rem; font-size: 1rem; }
+.support { border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.25rem;
+           margin: 2rem 0; background: #fffdf2; }
+.support p { margin: 0.4rem 0; }
 .coffee-btn { display: inline-block; padding: 0.5rem 1rem; background: #ffdd00;
   color: #1a1a1a; border-radius: 6px; text-decoration: none;
   font-weight: 600; border: 1px solid #d4b800; }

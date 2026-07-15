@@ -225,6 +225,10 @@ def scrape(limit: int = 0, year: int | None = None, delay: float = REQUEST_DELAY
                     "date": rec["date"],
                     "doc_type": doc_type,
                     "source_url": source_url,
+                    # The paper frame accepts the item anchors directly
+                    # (the frameset URL doesn't), enabling deep links like
+                    # {paper_url}#PDF2_ReportName_123 into Council's own doc.
+                    "paper_url": base + paper_src,
                     "items": items,
                 }
             )
