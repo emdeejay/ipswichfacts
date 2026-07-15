@@ -63,6 +63,31 @@ COFFEE_LABEL = "Buy me a coffee"
 # host doesn't allow TXT records). Set to None to omit the tag.
 GOOGLE_SITE_VERIFICATION = "ECKRlA4paFCOzc3-zwWE3wORqBHl6LWTEr_8z4WblYA"
 
+# Sanity floors for --strict (used by CI before deploying).
+#
+# Every scraper parses HTML or PDFs that Council can change without notice.
+# An HTTP error raises and fails the workflow, which is safe — but a silent
+# change (200 OK, different markup) makes a parser match nothing, and the
+# per-item "skip and continue" resilience then yields a complete but EMPTY
+# dataset. Publishing that would delete thousands of indexed pages and keep
+# the old ones out of Google for weeks.
+#
+# These are floors, not targets: Council's published record doesn't shrink by
+# half overnight, so anything under them means a parser broke, not that the
+# data went away. Raise them as the archives grow; keep generous headroom so
+# a genuine quiet week never trips the build.
+MIN_EXPECTED = {
+    "projects": 200,          # ~385 live on the map
+    "meetings": 400,          # 598 in the committed archive alone
+    "meeting_items": 3000,    # ~4,700 — guards against meetings-with-no-items
+    "news": 4000,             # 4,922 posts, 2017-present
+    "capital_works_rows": 1000,  # 1,745 across four cycles
+    "councillors": 9,         # Mayor + 8; fixed until the 2028 election
+    "streets": 300,           # ~1,371 extracted; the joins are the whole point
+}
+# Deliberately NOT floored: closures. An empty traffic dashboard is a real,
+# common state (imsRoad is often empty), not a parser failure.
+
 # Councillor data comes from data/councillors.json (scrape/councillors.py,
 # one-off, committed — re-run after each election). Loaded in load().
 
@@ -1937,10 +1962,27 @@ function mountRelated(el, data) {
 # Entry point
 
 
+def check_data_sanity(counts: dict[str, int]) -> list[str]:
+    """Return a list of failures where a dataset fell below its floor.
+    See MIN_EXPECTED for why this exists."""
+    return [
+        f"{name}: got {counts[name]}, expected at least {floor}"
+        for name, floor in MIN_EXPECTED.items()
+        if name in counts and counts[name] < floor
+    ]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", type=Path, default=Path("data"))
     parser.add_argument("--out", type=Path, default=Path("site"))
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="fail instead of writing the site if any dataset looks broken "
+             "(implausibly small). Used by CI so a silently-empty scrape can "
+             "never overwrite a good deploy.",
+    )
     args = parser.parse_args()
 
     projects, closures, meetings, news, councillors, capworks = load(args.data)
@@ -1966,6 +2008,28 @@ def main() -> int:
             by_div[c["division"]].append(c)
     graph["councillors_by_division"] = dict(by_div)
     print(f"Extracted {len(graph['streets'])} streets, {len(graph['suburbs'])} suburbs", file=sys.stderr)
+
+    if args.strict:
+        counts = {
+            "projects": len(projects),
+            "meetings": len(meetings.get("meetings", [])),
+            "meeting_items": sum(len(m.get("items", [])) for m in meetings.get("meetings", [])),
+            "news": len(news.get("posts", [])),
+            "capital_works_rows": total_rows,
+            "councillors": len(councillors),
+            "streets": len(graph["streets"]),
+        }
+        failures = check_data_sanity(counts)
+        if failures:
+            print(
+                "REFUSING TO BUILD — a data source looks broken, not empty:\n  "
+                + "\n  ".join(failures)
+                + "\n\nA scraper is probably matching nothing after an upstream change."
+                "\nThe live site keeps its last good deploy. Fix the scraper, or"
+                "\nadjust MIN_EXPECTED in build/build_site.py if the drop is real.",
+                file=sys.stderr,
+            )
+            return 1
 
     urls = write_site(args.out, projects, closures, meetings, news, graph, capworks)
     print(f"Wrote {len(urls)} pages to {args.out}", file=sys.stderr)

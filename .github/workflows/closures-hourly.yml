@@ -67,7 +67,9 @@ jobs:
           python -m scrape.civic_projects --out data/projects.json
 
       - name: Build
-        run: python -m build.build_site --data data --out site
+        # --strict: see build-and-deploy.yml. Matters most here — this runs
+        # 24x/day unattended.
+        run: python -m build.build_site --data data --out site --strict
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

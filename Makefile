@@ -1,4 +1,9 @@
-.PHONY: all install scrape build clean serve sample backfill backfill-news backfill-capworks
+.PHONY: all install test scrape build clean serve sample backfill
+
+# Parser tests — offline, run against saved Council responses in
+# tests/fixtures/. CI gates the deploy on these.
+test:
+	python3 -m pytest tests/ -q backfill-news backfill-capworks
 
 # One-off historical meetings backfill (2020-2025). Gentle: 2s between
 # requests, ~1h total. Results are committed to data/archive/ and never
@@ -33,7 +38,7 @@ backfill-capworks:
 all: scrape build
 
 install:
-	python3 -m pip install -r requirements.txt
+	python3 -m pip install -r requirements.txt -r requirements-dev.txt
 
 scrape:
 	python3 -m scrape.civic_projects --out data/projects.json

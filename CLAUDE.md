@@ -49,6 +49,7 @@ The whole point is discoverability: the site "wins" when a resident Googles thei
 3. Extend `site/js/widget.js` to include the new entity type in `buildIndex()` and `mountRelated()`.
 4. Add an entry to the "Data sources — status" table in this file. Flip status to Working.
 5. Update `.github/workflows/build-and-deploy.yml` to include the new scrape step.
+6. Add parser tests in `tests/` with a trimmed real response in `tests/fixtures/`, and a floor in `MIN_EXPECTED` (`build/build_site.py`) so a silently-empty scrape can't reach production. See "Don't publish a gutted site" below.
 
 ## Repo layout
 
@@ -81,6 +82,29 @@ make build         # regenerate site/ from data/
 make serve         # local preview at http://localhost:8000
 make clean         # wipe generated site and data (keeps data/sample)
 ```
+
+## Don't publish a gutted site
+
+The dangerous failure here is not a crash. Every scraper parses HTML or PDFs
+Council can restructure without notice; an HTTP error raises and fails the
+workflow (safe — the last good deploy stays up), but a *silent* change (200 OK,
+different markup) makes a parser match nothing. Because the scrapers skip bad
+items rather than dying, that yields a complete-looking, empty dataset — and a
+build that cheerfully replaces thousands of indexed pages with nothing. Google
+then de-indexes them for weeks.
+
+Two defences, keep both working:
+
+1. **`--strict`** (both workflows use it): `MIN_EXPECTED` in `build/build_site.py`
+   sets a floor per dataset. Below it, the build refuses to write anything and
+   exits 1. Floors are deliberately generous — they detect breakage, not
+   fluctuation. Raise them as the archives grow. Closures are deliberately
+   un-floored: an empty traffic dashboard is a real state.
+2. **`tests/`** (`make test`, and CI gates the deploy on it): parsers pinned
+   against trimmed real responses in `tests/fixtures/`. For the capital works
+   PDFs the arithmetic assertions matter most — if x-column clustering drifts,
+   amounts land in the wrong financial year and look plausible; they stop
+   summing to Council's printed totals, and the tests catch it.
 
 ## Coding notes
 

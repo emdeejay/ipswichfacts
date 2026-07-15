@@ -18,7 +18,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Parser tests run before anything touches the network. They pin the
+  # scrapers against saved Council responses, so an upstream markup change
+  # (or our own regression) fails here instead of quietly publishing an
+  # empty site. Cheap: no network, ~1s.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - run: python -m pytest tests/ -q
+
   build:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +73,9 @@ jobs:
           key: news-${{ github.run_id }}
 
       - name: Build
-        run: python -m build.build_site --data data --out site
+        # --strict: refuse to publish if a scraper silently returned nothing
+        # (upstream markup change). Failing here keeps the last good deploy.
+        run: python -m build.build_site --data data --out site --strict
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
