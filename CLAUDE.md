@@ -145,6 +145,24 @@ Two defences, keep both working:
    amounts land in the wrong financial year and look plausible; they stop
    summing to Council's printed totals, and the tests catch it.
 
+## Payload discipline
+
+"The widget adds interactivity, not information" (invariant 1) is a budget, not
+a slogan. Only pages that actually offer search fetch anything — 7,272 of 7,274
+pages download no JSON at all. There used to be a "Related" panel on every
+entity page; measured against the pre-rendered HTML it offered **zero** links
+the page didn't already have, while forcing every visitor to download the whole
+dataset. If a widget can't add something the static page lacks, it shouldn't
+exist.
+
+The `/data/*.json` files stay published as an open-data API regardless of
+whether pages fetch them — the cost was the request, not the file.
+
+Search covers the two most recent years by default; `meetings-archive.json` and
+`news-archive.json` (back to 2017, ~260 KB gzipped) load only when the reader
+clicks "Also search older records". Don't put the archive in the default
+payload to save a click.
+
 ## Accessibility
 
 The search box is the site's primary control, so it carries a real `<label>`

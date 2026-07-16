@@ -275,6 +275,19 @@ def save_registry(inp: Path, registry: dict[str, Any]) -> None:
     (inp / REGISTRY_FILE).write_text(json.dumps(registry, indent=1, sort_keys=True) + "\n")
 
 
+# Ipswich First's "what's on" listings: "December 10: Trivia Night". They name
+# a street only because the venue is on it. Both signals are required — the
+# title format AND the bare 'Now' category — because 'Now' alone is the site's
+# default (3,527 of 4,900 posts) and would sweep up real stories like "Mayor
+# supports USQ funding calls".
+_WHATS_ON_TITLE_RE = re.compile(r"^[A-Z][a-z]+ \d{1,2}:\s")
+
+
+def _is_whats_on_listing(post: dict[str, Any]) -> bool:
+    cats = sorted(post.get("categories") or [])
+    return bool(_WHATS_ON_TITLE_RE.match(post.get("title") or "")) and cats == ["Now"]
+
+
 def _norm(s: str | None) -> str:
     """Loose name key: lowercase, punctuation and runs of space flattened.
     Council writes the same thing three different ways across systems."""
@@ -556,10 +569,17 @@ def build_graph(projects, closures, meetings, news, capworks) -> dict[str, Any]:
             "title": post.get("title"),
             "url": post.get("url"),
         }
+        # What's-on listings mention a street only as a venue address ("December
+        # 10: Trivia Night"), so they'd bury the two items about the street under
+        # fifty about trivia. They keep their own pages and stay searchable —
+        # they're just not cross-referenced as news *about* that street.
+        listing = _is_whats_on_listing(post)
         for s in p_streets:
-            street_news_items[s].append(ref)
+            if not listing:
+                street_news_items[s].append(ref)
         for s in p_suburbs:
-            suburb_news_items[s].append(ref)
+            if not listing:
+                suburb_news_items[s].append(ref)
         n_blob = _norm(blob)
         for pslug, core in project_cores.items():
             if core in n_blob:
@@ -1036,7 +1056,6 @@ def render_project(p, closures, graph) -> str:
 
   <p class="attribution">Source: <a href="{h(p.get('source_url'))}">Ipswich City Council Civic Projects Map</a> (CC BY 4.0).</p>
 
-  <div data-ipswichfacts-related data-project="{h(slug)}"></div>
 </article>
 """
     return render_layout(
@@ -1099,7 +1118,6 @@ def render_meeting(m, graph) -> str:
   </p>
   {"".join(sections) or '<p>No agenda items in this document — see the Council source for the full paper (some meetings are cancelled or record only procedural resolutions).</p>'}
   <p class="attribution">Source: <a href="{h(m.get('source_url'))}">Ipswich City Council meeting {h(doc_label.lower())}</a> (CC BY 4.0).</p>
-  <div data-ipswichfacts-related data-meeting="{h(slug)}"></div>
 </article>
 """
     first_item = (m.get("items") or [{}])[0].get("title") or ""
@@ -1168,7 +1186,6 @@ def render_news_post(p, graph) -> str:
   {paras}
   {mentions_html}
   <p class="attribution">Source: <a href="{h(p.get('url'))}" rel="noopener">Ipswich First (Ipswich City Council)</a> — CC BY 4.0.</p>
-  <div data-ipswichfacts-related data-news="{h(slug)}"></div>
 </article>
 """
     # WP excerpts here are truncated to a few words, so draw the meta
@@ -1280,7 +1297,6 @@ def render_street(name, projects, closures, graph) -> str:
   {news_html}
   {empty}
   {_planningalerts_html(name)}
-  <div data-ipswichfacts-related data-street="{h(name)}"></div>
 </article>
 """
     return render_layout(
@@ -1403,7 +1419,6 @@ def render_suburb(name, projects, closures, graph) -> str:
   {meet_html}
   {news_html}
   {_planningalerts_html(name)}
-  <div data-ipswichfacts-related data-suburb="{h(name)}"></div>
 </article>
 """
     return render_layout(
@@ -2291,6 +2306,23 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
         if (m.get("date") or "")[:4] in recent_years
     ]
     (out / "data" / "meetings.json").write_text(json.dumps(slim_meetings))
+    # Everything older, in a file the widget only fetches if the reader asks
+    # for it. Default search stays small; the history is one click away rather
+    # than a tax on every visitor.
+    archive_meetings = [
+        {
+            "slug": m["slug"],
+            "committee": m.get("committee"),
+            "date": m.get("date"),
+            "items": [
+                {"title": i.get("title"), "anchor": i.get("anchor")}
+                for i in m.get("items", [])
+            ],
+        }
+        for m in meetings_list
+        if (m.get("date") or "")[:4] not in recent_years
+    ]
+    (out / "data" / "meetings-archive.json").write_text(json.dumps(archive_meetings))
     # Slim per-post news chunks, same recent-years rule as meetings: slug,
     # title and date only — full text is only ever in the static pages.
     slim_news = [
@@ -2299,6 +2331,12 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
         if (p.get("date") or "")[:4] in news_recent_years
     ]
     (out / "data" / "news.json").write_text(json.dumps(slim_news))
+    archive_news = [
+        {"slug": p["slug"], "title": p.get("title"), "date": p.get("date")}
+        for p in news_posts
+        if (p.get("date") or "")[:4] not in news_recent_years
+    ]
+    (out / "data" / "news-archive.json").write_text(json.dumps(archive_news))
     slim_news_slugs = {p["slug"] for p in slim_news}
     mentions = {
         "project_streets": graph["project_streets"],
@@ -2321,7 +2359,18 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
 
     # ---- CSS / JS ----
     (out / "css" / "site.css").write_text(_CSS)
-    (out / "js" / "widget.js").write_text(_WIDGET_JS)
+    # Label the archive button with the actual span of what it loads.
+    archive_years = sorted(
+        {(m.get("date") or "")[:4] for m in archive_meetings}
+        | {(p.get("date") or "")[:4] for p in archive_news}
+    )
+    archive_from = (
+        f"{archive_years[0]}\u2013{archive_years[-1]}" if len(archive_years) > 1
+        else (archive_years[0] if archive_years else "older")
+    )
+    (out / "js" / "widget.js").write_text(
+        _WIDGET_JS.replace("__ARCHIVE_FROM__", archive_from)
+    )
 
     # ---- Sitemap + robots ----
     (out / "sitemap.xml").write_text(_sitemap(urls))
@@ -2484,27 +2533,36 @@ table.funding td a:hover { text-decoration: underline; }
 [data-ipswichfacts-search] .results a:hover { background: #f5f5f5; }
 [data-ipswichfacts-search] .results .kind { color: var(--muted); font-size: 0.8rem;
   text-transform: uppercase; letter-spacing: 0.03em; }
-[data-ipswichfacts-related] { margin-top: 2rem; padding: 1rem; background: #f8f8f8;
-  border-radius: 6px; }
-[data-ipswichfacts-related] h3 { margin: 0 0 0.5rem; }
-[data-ipswichfacts-related] ul { margin: 0; padding-left: 1.5rem; }
+.archive-toggle { margin: 0.5rem 0 0; font-size: 0.85rem; }
+.linklike { background: none; border: 0; padding: 0; font: inherit;
+            color: var(--accent); text-decoration: underline; cursor: pointer; }
+.linklike:disabled { color: var(--muted); cursor: default; text-decoration: none; }
 """
 
 _WIDGET_JS = r"""
-// Ipswich Facts search + related-items widget. No framework, no build step.
+// Ipswich Facts search widget. No framework, no build step.
+//
+// Only pages offering search load any data. There used to be a "Related"
+// panel on every entity page, which meant every page fetched the whole
+// dataset — to render links the pre-rendered HTML already contained. The
+// widget adds interactivity, not information (CLAUDE.md), and that one added
+// neither.
 const DATA_BASE = '/data';
+// Year span of the opt-in archive, substituted at build time.
+const ARCHIVE_FROM = '__ARCHIVE_FROM__';
 
 async function loadData() {
-  const [projects, streets, suburbs, mentions, closures, meetings, news] = await Promise.all([
+  // Only what the search index actually reads. mentions.json and closures.json
+  // are still published as open data under /data/ — they're just not something
+  // a visitor should download to type in a search box.
+  const [projects, streets, suburbs, meetings, news] = await Promise.all([
     fetch(`${DATA_BASE}/projects.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/streets.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/suburbs.json`).then(r => r.json()),
-    fetch(`${DATA_BASE}/mentions.json`).then(r => r.json()),
-    fetch(`${DATA_BASE}/closures.json`).then(r => r.json()).catch(() => ({ closures: [] })),
     fetch(`${DATA_BASE}/meetings.json`).then(r => r.json()).catch(() => []),
     fetch(`${DATA_BASE}/news.json`).then(r => r.json()).catch(() => []),
   ]);
-  return { projects, streets, suburbs, mentions, closures, meetings, news };
+  return { projects, streets, suburbs, meetings, news };
 }
 
 function slugify(s) {
@@ -2542,11 +2600,35 @@ function mountSearch(el, index) {
     <div class="results" id="if-search-results" role="listbox"
          aria-label="Search results" hidden></div>
     <p class="sr-status visually-hidden" role="status" aria-live="polite"></p>
+    <p class="archive-toggle"><button type="button" class="linklike">
+      Also search older records (${ARCHIVE_FROM})</button></p>
   `;
   const input = el.querySelector('input');
   const results = el.querySelector('.results');
-
   const status = el.querySelector('.sr-status');
+  const archiveBtn = el.querySelector('.archive-toggle button');
+
+  // The archive is ~1.1 MB of meeting and article titles back to 2017 —
+  // useful, but not something to charge every visitor for. Fetch it only when
+  // asked, then fold it into the live index and re-run the current query.
+  archiveBtn.addEventListener('click', async () => {
+    archiveBtn.disabled = true;
+    archiveBtn.textContent = 'Loading older records…';
+    try {
+      const [meetings, news] = await Promise.all([
+        fetch(`${DATA_BASE}/meetings-archive.json`).then(r => r.json()),
+        fetch(`${DATA_BASE}/news-archive.json`).then(r => r.json()),
+      ]);
+      index.push(...buildIndex({ projects: [], streets: [], suburbs: [], meetings, news }));
+      archiveBtn.parentElement.innerHTML =
+        `<span class="muted">Older records (${ARCHIVE_FROM}) are included in search.</span>`;
+      status.textContent = 'Older records added to search.';
+      input.dispatchEvent(new Event('input'));
+    } catch (e) {
+      archiveBtn.disabled = false;
+      archiveBtn.textContent = 'Older records failed to load — try again';
+    }
+  });
 
   input.addEventListener('input', () => {
     const q = input.value.trim().toLowerCase();
@@ -2574,76 +2656,14 @@ function mountSearch(el, index) {
   });
 }
 
-function mountRelated(el, data) {
-  const project = el.dataset.project;
-  const street  = el.dataset.street;
-  const suburb  = el.dataset.suburb;
-  const meeting = el.dataset.meeting;
-  const news    = el.dataset.news;
-
-  const meetingLabel = m => `${m.committee} — ${m.date}`;
-
-  let items = [];
-  if (project) {
-    const streets = data.mentions.project_streets[project] || [];
-    for (const s of streets) items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/` });
-    const p = data.projects.find(x => x.slug === project);
-    if (p && p.suburb) items.push({ kind: 'suburb', label: p.suburb, href: `/suburb/${slugify(p.suburb)}/` });
-  }
-  if (street || suburb) {
-    for (const p of data.projects) {
-      const streets = data.mentions.project_streets[p.slug] || [];
-      if ((street && streets.includes(street)) || (suburb && p.suburb === suburb)) {
-        items.push({ kind: 'project', label: p.name, href: `/project/${p.slug}/` });
-      }
-    }
-    for (const m of data.meetings) {
-      const mStreets = data.mentions.meeting_streets[m.slug] || [];
-      const mSuburbs = data.mentions.meeting_suburbs[m.slug] || [];
-      if ((street && mStreets.includes(street)) || (suburb && mSuburbs.includes(suburb))) {
-        items.push({ kind: 'meeting', label: meetingLabel(m), href: `/meeting/${m.slug}/` });
-      }
-    }
-    for (const n of data.news) {
-      const nStreets = data.mentions.news_streets[n.slug] || [];
-      const nSuburbs = data.mentions.news_suburbs[n.slug] || [];
-      if ((street && nStreets.includes(street)) || (suburb && nSuburbs.includes(suburb))) {
-        items.push({ kind: 'news', label: `${n.title} — ${n.date}`, href: `/news/${n.slug}/` });
-      }
-    }
-  }
-  if (meeting) {
-    for (const s of data.mentions.meeting_streets[meeting] || []) {
-      items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/` });
-    }
-    for (const s of data.mentions.meeting_suburbs[meeting] || []) {
-      items.push({ kind: 'suburb', label: s, href: `/suburb/${slugify(s)}/` });
-    }
-  }
-  if (news) {
-    for (const s of data.mentions.news_streets[news] || []) {
-      items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/` });
-    }
-    for (const s of data.mentions.news_suburbs[news] || []) {
-      items.push({ kind: 'suburb', label: s, href: `/suburb/${slugify(s)}/` });
-    }
-  }
-
-  if (!items.length) { el.remove(); return; }
-  el.innerHTML = '<h3>Related</h3><ul>' +
-    items.slice(0, 20).map(i => `<li><span class="kind">${i.kind}</span> <a href="${i.href}">${i.label}</a></li>`).join('') +
-    '</ul>';
-}
 
 (async () => {
   const searchEls = document.querySelectorAll('[data-ipswichfacts-search]');
-  const relatedEls = document.querySelectorAll('[data-ipswichfacts-related]');
-  if (!searchEls.length && !relatedEls.length) return;
+  if (!searchEls.length) return;
 
   const data = await loadData();
   const index = buildIndex(data);
   searchEls.forEach(el => mountSearch(el, index));
-  relatedEls.forEach(el => mountRelated(el, data));
 })();
 """
 
