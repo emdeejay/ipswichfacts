@@ -44,6 +44,7 @@ import re
 import shutil
 import sys
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -182,6 +183,98 @@ def _truncate(s: str | None, n: int) -> str:
     return s if len(s) <= n else s[: n - 1].rsplit(" ", 1)[0] + "…"
 
 
+# ---------------------------------------------------------------------------
+# URL registry — slugs are assigned once and never change
+#
+# CLAUDE.md: "Don't rename URL slugs once published — they get indexed by
+# Google." Slugs derive from Council-supplied names, so without this a rename
+# upstream silently moves a page and 404s the URL Google indexed.
+#
+# The fix isn't redirects, it's not moving in the first place: every entity has
+# a stable id of Council's own (projects carry a per-feature ID, meetings a
+# document id, news a WordPress post id), so we pin id -> slug on first sight
+# and keep it forever. A renamed project keeps its URL and just changes its
+# title, which is what we want.
+#
+# This also fixes collisions. Council's map publishes several distinct works
+# with identical names — seven separate "Redbank Plains Road- Road Resurfacing"
+# jobs across three suburbs — which all slugified to one URL and overwrote each
+# other. Colliding entities get a stable discriminator (suburb, then Council's
+# id), never a positional counter, which would reshuffle on every scrape.
+#
+# The registry is committed (data/url_registry.json) and only the daily
+# workflow updates it. It is append-mostly: entries are never rewritten.
+
+REGISTRY_FILE = "url_registry.json"
+
+
+def load_registry(inp: Path) -> dict[str, Any]:
+    p = inp / REGISTRY_FILE
+    if p.exists():
+        return json.loads(p.read_text())
+    return {
+        "version": 1,
+        "note": (
+            "Published URL slugs, pinned to Council's own stable ids. Assigned "
+            "once, never changed — these URLs are indexed. Updated by the daily "
+            "build; commit changes. See build/build_site.py."
+        ),
+        "entities": {},
+    }
+
+
+def _pick_slug(base: str, hints: list[str | None], key: str, taken: set[str]) -> str:
+    """First free slug from: the bare name, then name+hint (e.g. suburb), then
+    name+Council's id. Every candidate is derived from stable data, so the same
+    entity resolves to the same slug on every build."""
+    candidates = [base]
+    candidates += [f"{base}-{hint}" for hint in hints if hint]
+    candidates.append(f"{base}-{key}")
+    for cand in candidates:
+        s = slugify(cand)
+        if s and s not in taken:
+            return s
+    n = 2
+    while slugify(f"{base}-{key}-{n}") in taken:
+        n += 1
+    return slugify(f"{base}-{key}-{n}")
+
+
+def assign_stable_slugs(
+    registry: dict[str, Any],
+    kind: str,
+    items: list[dict[str, Any]],
+    id_fn,
+    base_fn,
+    hint_fn=lambda it: [],
+    today: str = "",
+) -> bool:
+    """Set item['slug'] from the registry, minting a stable one on first sight.
+    Returns True if the registry gained entries. Items are processed in id
+    order so assignment never depends on feed ordering."""
+    reg = registry.setdefault("entities", {}).setdefault(kind, {})
+    taken = {v["slug"] for v in reg.values()}
+    changed = False
+    for it in sorted(items, key=lambda x: str(id_fn(x))):
+        key = str(id_fn(it))
+        if not key or key == "None":
+            continue  # no stable id: fall back to whatever the scraper set
+        known = reg.get(key)
+        if known:
+            it["slug"] = known["slug"]
+            continue
+        slug = _pick_slug(slugify(base_fn(it)), hint_fn(it), key, taken)
+        reg[key] = {"slug": slug, "first_seen": today}
+        taken.add(slug)
+        it["slug"] = slug
+        changed = True
+    return changed
+
+
+def save_registry(inp: Path, registry: dict[str, Any]) -> None:
+    (inp / REGISTRY_FILE).write_text(json.dumps(registry, indent=1, sort_keys=True) + "\n")
+
+
 def _norm(s: str | None) -> str:
     """Loose name key: lowercase, punctuation and runs of space flattened.
     Council writes the same thing three different ways across systems."""
@@ -229,7 +322,6 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
                 meetings["meetings"].append(m)
     meetings["meetings"].sort(key=lambda m: (m.get("date") or "", m.get("id") or ""), reverse=True)
 
-    _assign_meeting_slugs(meetings.get("meetings", []))
 
     # News (Ipswich First): same live + committed-archive merge as meetings —
     # posts are immutable once published; the live file wins on id collisions.
@@ -243,7 +335,36 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
                 news["posts"].append(p)
     news["posts"].sort(key=lambda p: (p.get("date") or "", p.get("id") or 0), reverse=True)
 
-    _assign_news_slugs(news.get("posts", []))
+
+    # Pin URLs. Slugs come from Council-supplied names, which change; ids
+    # don't. Assign once, keep forever — see the URL registry section above.
+    registry = load_registry(inp)
+    today = datetime.now(timezone.utc).date().isoformat()
+    changed = False
+    changed |= assign_stable_slugs(
+        registry, "project", projects,
+        id_fn=lambda p: p.get("id"),
+        base_fn=lambda p: p.get("name") or "project",
+        # Council publishes several distinct works under one name (seven
+        # "Redbank Plains Road- Road Resurfacing" jobs); suburb separates most,
+        # Council's feature id settles the rest.
+        hint_fn=lambda p: [p.get("suburb")],
+        today=today,
+    )
+    changed |= assign_stable_slugs(
+        registry, "meeting", meetings.get("meetings", []),
+        id_fn=lambda m: m.get("id"),
+        base_fn=lambda m: f"{m.get('committee') or m.get('committee_code')}-{m.get('date')}",
+        today=today,
+    )
+    changed |= assign_stable_slugs(
+        registry, "news", news.get("posts", []),
+        id_fn=lambda p: p.get("id"),
+        base_fn=lambda p: p.get("slug") or p.get("title") or "post",
+        today=today,
+    )
+    if changed:
+        save_registry(inp, registry)
 
     # Councillors: one-off committed file, refreshed after elections.
     cr_path = inp / "councillors.json"
@@ -260,30 +381,7 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
     return projects, closures, meetings, news, councillors, capworks
 
 
-def _assign_meeting_slugs(meetings: list[dict[str, Any]]) -> None:
-    """Slug = committee-name-YYYY-MM-DD; disambiguate collisions with the
-    meeting id. Deterministic because the scraper sorts by (date, id)."""
-    taken: set[str] = set()
-    for m in sorted(meetings, key=lambda x: (x.get("date") or "", x.get("id") or "")):
-        slug = slugify(f"{m.get('committee') or m.get('committee_code')}-{m.get('date')}")
-        if slug in taken:
-            slug = slugify(f"{slug}-{m.get('id')}")
-        taken.add(slug)
-        m["slug"] = slug
 
-
-def _assign_news_slugs(posts: list[dict[str, Any]]) -> None:
-    """WordPress slugs are already kebab-case; run them through slugify
-    anyway and disambiguate collisions (including with /news/YYYY/ year
-    index pages) using the post id. Deterministic because posts are
-    processed in (date, id) order."""
-    taken: set[str] = set()
-    for p in sorted(posts, key=lambda x: (x.get("date") or "", x.get("id") or 0)):
-        slug = slugify(p.get("slug") or p.get("title") or f"post-{p.get('id')}")
-        if slug in taken or re.fullmatch(r"\d{4}", slug):
-            slug = slugify(f"{slug}-{p.get('id')}")
-        taken.add(slug)
-        p["slug"] = slug
 
 
 # ---------------------------------------------------------------------------
@@ -1966,6 +2064,37 @@ def render_division(d: int, projects, graph) -> str:
     )
 
 
+def render_404() -> str:
+    """GitHub Pages serves /404.html for any unmatched path on a custom domain.
+
+    Slugs are pinned (see the URL registry), so pages don't move — but Council
+    does retire projects, links rot, and people mistype. Landing them on search
+    rather than a dead end is the difference between a lost visit and a found
+    answer.
+    """
+    body = """
+<h1>That page isn't here</h1>
+<p>It may have been a project Council has since retired, a mistyped address, or
+a link from somewhere that's out of date.</p>
+<p>Search for a street, suburb, project, meeting or article:</p>
+<div data-ipswichfacts-search></div>
+<h2>Or start from here</h2>
+<p><a href="/">Home</a> · <a href="/projects/">All projects</a> ·
+<a href="/streets/">All streets</a> · <a href="/suburbs/">All suburbs</a> ·
+<a href="/meetings/">Council meetings</a> · <a href="/news/">Ipswich First news</a> ·
+<a href="/capital-works/">Capital works</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
+<p class="muted">If you followed a link from this site to get here, that's a bug —
+please <a href="{ISSUES_URL_PLACEHOLDER}" rel="noopener">report it</a>.</p>
+"""
+    body = body.replace("{ISSUES_URL_PLACEHOLDER}", h(ISSUES_URL))
+    return render_layout(
+        title="Page not found",
+        description="That page isn't here — search Ipswich Facts for a street, suburb, project, meeting or article.",
+        path="/404.html",
+        body=body,
+    )
+
+
 def render_about() -> str:
     body = """
 <h1>About Ipswich Facts</h1>
@@ -2163,6 +2292,9 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
 
     # ---- Sitemap + robots ----
     (out / "sitemap.xml").write_text(_sitemap(urls))
+    # 404: written directly, not via write() — it must not enter the sitemap.
+    (out / "404.html").write_text(render_404())
+
     (out / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {BASE_URL}/sitemap.xml\n"
     )

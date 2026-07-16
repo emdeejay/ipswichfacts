@@ -9,7 +9,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # contents: write — the build mints URL slugs for new projects/meetings/news
+  # and commits them back to data/url_registry.json so they stay pinned.
+  contents: write
   pages: write
   id-token: write
 
@@ -76,6 +78,22 @@ jobs:
         # --strict: refuse to publish if a scraper silently returned nothing
         # (upstream markup change). Failing here keeps the last good deploy.
         run: python -m build.build_site --data data --out site --strict
+
+      # A new project/meeting/article gets its slug minted on first sight. That
+      # assignment must persist, or a later build could mint a different one and
+      # move a URL Google has indexed. Only this daily job writes the registry;
+      # the hourly closures job reads it.
+      - name: Commit newly assigned URL slugs
+        run: |
+          if git diff --quiet -- data/url_registry.json; then
+            echo "no new slugs"
+          else
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/url_registry.json
+            git commit -m "Pin URL slugs for new entities [skip ci]"
+            git push
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
