@@ -54,6 +54,11 @@ from scrape.extract_mentions import Extractor
 
 BASE_URL = "https://ipswichfacts.au"
 
+# Where corrections go. Every money figure on this site invites people —
+# including Council — to report an error, so this must always resolve.
+REPO_URL = "https://github.com/emdeejay/ipswichfacts"
+ISSUES_URL = f"{REPO_URL}/issues"
+
 # Tip jar. Set to None to hide the coffee link entirely. Update after you sign
 # up at buymeacoffee.com / ko-fi.com / github.com/sponsors.
 COFFEE_URL = "https://buymeacoffee.com/mdj.au"
@@ -624,6 +629,7 @@ def render_index(projects, closures, meetings, news, graph, capworks) -> str:
 
     # Stat tile for the newest capital works cycle's three-year grand total.
     capworks_tile = ""
+    capworks_note = ""
     if capworks:
         cw = capworks[0]
         gt = (cw.get("grand_total") or {}).get("total")
@@ -633,6 +639,13 @@ def render_index(projects, closures, meetings, news, graph, capworks) -> str:
             capworks_tile = (
                 f'<li><a href="/capital-works/"><b>{h(fmt_kdollars(gt))}</b>'
                 f"<span>Capital program {h(short_span)}</span></a></li>"
+            )
+            # Any dollar figure carries its caveat, even a headline one.
+            capworks_note = (
+                '<p class="muted">Capital program total is as published in '
+                f'Council\'s Capital Works Program {h(span)}, extracted '
+                'automatically from the PDF — <a href="/capital-works/">see the '
+                "figures and their sources</a>.</p>"
             )
 
     closure_html = ""
@@ -697,6 +710,7 @@ def render_index(projects, closures, meetings, news, graph, capworks) -> str:
     <li><b>{len(news.get('posts', []))}</b><span>Ipswich First articles</span></li>
     {capworks_tile}
   </ul>
+  {capworks_note}
 
   <h2>Projects by phase of work</h2>
   <ul class="phases">{phase_html}</ul>
@@ -774,6 +788,7 @@ def _capworks_funding_html(slug: str, graph) -> str:
         "<h3>Funding (Capital Works Program)</h3>"
         + "".join(blocks)
         + matrix
+        + money_disclaimer(revisions=bool(matrix))
         + "<p class='muted'>Amounts are as published in Council's Capital Works Program "
         "PDFs ($'000, multiplied out). See <a href='/capital-works/'>all capital works "
         "programs</a>.</p>"
@@ -1368,6 +1383,7 @@ def render_capworks_index(capworks) -> str:
 annual budget. Reproduced from Council's own PDFs; source amounts are in $'000,
 shown here multiplied out. Newest program first — the same project can appear in
 several cycles as funding moves between years.</p>
+{money_disclaimer()}
 {"".join(blocks)}
 <p class="attribution">Source: Ipswich City Council Capital Works Program PDFs
 (<a href="https://www.ipswich.qld.gov.au/About-Council/Media-and-Publications/Corporate-Publications">Corporate Publications — Budget</a>), CC BY 4.0.</p>
@@ -1460,8 +1476,10 @@ def render_capworks_cycle(cw, graph) -> str:
 <p class="meta">Adopted with the {h(fmt_fy(cycle))} budget. Source amounts are in $'000,
 shown here multiplied out. <a href="{h(cw.get('source_url'))}" rel="noopener">Council source (PDF) ↗</a></p>
 {note}
+{money_disclaimer()}
 {"".join(sections)}
 {gt_html}
+{money_disclaimer()}
 <p class="attribution">Source: <a href="{h(cw.get('source_url'))}">Ipswich City Council Capital Works Program {h(span)}</a> (CC BY 4.0).</p>
 """
     return render_layout(
@@ -1802,7 +1820,9 @@ it appears on. Amounts are compared only within the same financial year — a
 program's three-year total covers a different window each cycle, so comparing
 totals would be meaningless. Column heads are the program (budget) year; <span
 class="cell-outside">·</span> means that year fell outside that program's window.</p>
+{money_disclaimer(revisions=True)}
 {"".join(blocks) or "<p>No differences found.</p>"}
+{money_disclaimer(revisions=True)}
 <p class="attribution">Source: Ipswich City Council Capital Works Programs (CC BY 4.0).
 See <a href="/capital-works/">all programs</a>.</p>
 """
@@ -1811,6 +1831,59 @@ See <a href="/capital-works/">all programs</a>.</p>
         description="Where Ipswich City Council published different amounts for the same project and the same financial year in successive Capital Works Programs.",
         path="/capital-works/revisions/",
         body=body,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Money disclaimer
+#
+# Required on every page that prints a dollar figure. Two distinct risks, and
+# the second is the serious one:
+#
+# 1. We might be wrong. Amounts are lifted out of PDFs by clustering words on
+#    x/y positions. Tests check the arithmetic, but a misread is possible, and
+#    a misread number attached to a named project is a false statement about
+#    Council's spending.
+#
+# 2. We might imply something we haven't shown. Setting two figures side by
+#    side invites the reader to infer mismanagement — and figures change
+#    between programs for entirely ordinary reasons (re-phasing, scope,
+#    staging, escalation, line items split or merged). Reporting the change is
+#    faithful; letting it insinuate is not. Project pages also name the
+#    division's councillors, and while an Australian council itself cannot sue
+#    for defamation, individuals can. So we say plainly that a change is not
+#    evidence of wrongdoing.
+#
+# Keep this on any new page that shows money. tests/test_disclaimers.py
+# enforces it on the renderers.
+
+
+def money_disclaimer(revisions: bool = False) -> str:
+    """Standard note for pages showing dollar figures. Pass revisions=True on
+    pages that compare figures across programs, which adds the 'this is normal'
+    paragraph."""
+    why = ""
+    if revisions:
+        why = (
+            "<p>Published figures change between programs for ordinary reasons: "
+            "work is re-phased across financial years, scope is refined, stages "
+            "are split or merged, costs escalate, or grant funding shifts. "
+            "<b>A changed figure is not evidence of error, waste, or wrongdoing</b> "
+            "by Council, by any councillor, or by any Council officer, and nothing "
+            "here should be read as suggesting otherwise. This site reports what "
+            "each document says and nothing more.</p>"
+        )
+    return (
+        '<aside class="disclaimer">'
+        "<p><b>About these figures.</b> They are extracted automatically from "
+        "Council's published PDFs and reproduced without adjustment. Automated "
+        "extraction can misread a table, and this site is not an official record "
+        "of Council's budget — <b>check the linked Council source before relying "
+        "on any number here</b>.</p>"
+        f"{why}"
+        f'<p>Spotted a figure that looks wrong? <a href="{h(ISSUES_URL)}" '
+        'rel="noopener">Report it</a> and it will be corrected or removed.</p>'
+        "</aside>"
     )
 
 
@@ -1910,13 +1983,29 @@ def render_about() -> str:
 <h2>Licence</h2>
 <p>Council content is published under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. This site preserves attribution and links back to the Council source for every item reproduced.</p>
 
-<h2>Bugs, gaps, suggestions</h2>
-<p>Open an issue on the project's GitHub repository.</p>
+<h2>Bugs, gaps, corrections</h2>
+<p>This site is assembled by software from Council's own published data, and
+software misreads things. If a figure, date, or cross-reference here is wrong —
+or if you're from Council and want something changed — please
+<a href="{ISSUES_URL_PLACEHOLDER}" rel="noopener">open an issue</a>
+and it will be corrected or removed. The code is
+<a href="{REPO_URL_PLACEHOLDER}" rel="noopener">public</a>.</p>
+
+<h2>Figures and money</h2>
+<p>Dollar amounts come from Council's Capital Works Program PDFs, extracted
+automatically and reproduced without adjustment. They are not an official record
+of Council's budget — always check the linked Council source. Where this site
+shows that a figure changed between programs, that is a comparison of Council's
+own published documents; funding is re-phased, re-scoped and re-staged as a
+matter of routine, and a change is not evidence of error or wrongdoing by
+Council or anyone in it.</p>
 
 <h2>Support the project</h2>
 <p>Ipswich Facts is run by one person in their spare time. Hosting is free and there are no ads — if the site's saved you a phone call or a trip through five Council tabs, a coffee keeps the lights on and the caffeine flowing.</p>
 <p><a class="coffee-btn" href="{COFFEE_URL_PLACEHOLDER}" rel="noopener">☕ {COFFEE_LABEL_PLACEHOLDER}</a></p>
 """
+    body = body.replace("{ISSUES_URL_PLACEHOLDER}", h(ISSUES_URL))
+    body = body.replace("{REPO_URL_PLACEHOLDER}", h(REPO_URL))
     if COFFEE_URL:
         body = body.replace("{COFFEE_URL_PLACEHOLDER}", h(COFFEE_URL))
         body = body.replace("{COFFEE_LABEL_PLACEHOLDER}", h(COFFEE_LABEL))
@@ -2168,6 +2257,12 @@ table.data th { color: var(--muted); font-weight: 600; }
 .support { border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.25rem;
            margin: 2rem 0; background: #fffdf2; }
 .support p { margin: 0.4rem 0; }
+/* Money disclaimer — required wherever a dollar figure appears. */
+.disclaimer { border: 1px solid #e6ddc4; background: #fffdf5; border-radius: 6px;
+              padding: 0.75rem 1rem; margin: 1.25rem 0; font-size: 0.85rem;
+              color: #4a4433; max-width: none; }
+.disclaimer p { margin: 0.4rem 0; max-width: 80ch; }
+.disclaimer a { color: var(--accent); }
 /* Funding matrix: same financial year as published in successive programs. */
 table.funding th { font-weight: 600; color: var(--fg); white-space: nowrap; }
 table.funding td { text-align: right; font-variant-numeric: tabular-nums; }

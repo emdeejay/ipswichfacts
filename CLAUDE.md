@@ -103,6 +103,21 @@ Two rules, both load-bearing:
    reader does themselves; the moment we editorialise it belongs on another
    domain.
 
+**Every page showing a figure we extracted must carry `money_disclaimer()`**
+(`tests/test_disclaimers.py` enforces it on the renderers). Pages that compare
+figures across programs pass `revisions=True`, which adds the paragraph stating
+that a change is not evidence of error or wrongdoing — that paragraph is the
+point, not boilerplate. Two of Council's numbers side by side invite an
+inference we have not evidenced; project pages also name the division's
+councillors, and while an Australian council cannot itself sue for defamation,
+individuals can.
+
+The line: figures **we extract or compare** (capital works, funding matrix) get
+the disclaimer. Council's own prose that happens to contain a dollar figure
+(news articles, meeting minutes) does not — that's verbatim quotation, already
+attributed and linked to source, and blanketing 2,000+ news pages with a
+disclaimer would only devalue it where it matters.
+
 Also: never render compared amounts with `fmt_kdollars` — it rounds, so
 $2,450k and $2,500k both print "$2.5M" and a real revision looks like our bug.
 `fmt_dollars_exact` exists for this and a test enforces it.
