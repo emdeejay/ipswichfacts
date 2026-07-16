@@ -676,14 +676,15 @@ def render_layout(title: str, description: str, path: str, body: str) -> str:
 <meta property="og:site_name" content="Ipswich Facts">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <a href="/" class="brand">Ipswich Facts</a>
-  <nav>
+  <nav aria-label="Main">
     <a href="/">Search</a>
     <a href="/about/">About</a>
   </nav>
 </header>
-<main>
+<main id="main">
 {body}
 </main>
 <footer class="site-footer">
@@ -1276,6 +1277,7 @@ def render_street(name, projects, closures, graph) -> str:
   {meet_html}
   {news_html}
   {empty}
+  {_planningalerts_html(name)}
   <div data-ipswichfacts-related data-street="{h(name)}"></div>
 </article>
 """
@@ -1290,6 +1292,25 @@ def render_street(name, projects, closures, graph) -> str:
 # Busy entities (major roads, big suburbs) can accumulate hundreds of
 # mentions; cap the static tables so no page balloons past ~100 KB.
 _MENTIONS_CAP = 50
+
+PLANNINGALERTS_URL = "https://www.planningalerts.org.au/"
+
+
+def _planningalerts_html(what: str) -> str:
+    """Invariant 7: PlanningAlerts owns development applications — we don't
+    scrape or republish them. The other half of that invariant is actually
+    pointing people there; a resident checking what's happening on their
+    street usually wants DAs too, and silence here just sends them back to
+    the five Council tabs this site exists to replace."""
+    return (
+        '<aside class="seealso">'
+        "<h2>Development applications</h2>"
+        f"<p>This site doesn't cover development applications for {h(what)}. "
+        '<a href="' + h(PLANNINGALERTS_URL) + '" rel="noopener">PlanningAlerts</a>'
+        " does it properly — it's a free service from the OpenAustralia "
+        "Foundation that emails you when someone applies to build near you.</p>"
+        "</aside>"
+    )
 
 
 def _meeting_mentions_html(refs: list[dict[str, Any]]) -> str:
@@ -1379,6 +1400,7 @@ def render_suburb(name, projects, closures, graph) -> str:
   {clos_html}
   {meet_html}
   {news_html}
+  {_planningalerts_html(name)}
   <div data-ipswichfacts-related data-suburb="{h(name)}"></div>
 </article>
 """
@@ -2114,6 +2136,14 @@ def render_about() -> str:
 <h2>Licence</h2>
 <p>Council content is published under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. This site preserves attribution and links back to the Council source for every item reproduced.</p>
 
+<h2>What this site doesn't cover</h2>
+<p><b>Development applications.</b> DAs are not scraped or republished here —
+<a href="{PLANNINGALERTS_URL_PLACEHOLDER}" rel="noopener">PlanningAlerts</a>,
+from the OpenAustralia Foundation, already does that well and will email you
+when someone applies to build near you. Use it.</p>
+<p>There are no comments, submissions or forms here either, and nothing on this
+site is editorial — it reproduces Council's published data and links back to it.</p>
+
 <h2>Bugs, gaps, corrections</h2>
 <p>This site is assembled by software from Council's own published data, and
 software misreads things. If a figure, date, or cross-reference here is wrong —
@@ -2137,6 +2167,7 @@ Council or anyone in it.</p>
 """
     body = body.replace("{ISSUES_URL_PLACEHOLDER}", h(ISSUES_URL))
     body = body.replace("{REPO_URL_PLACEHOLDER}", h(REPO_URL))
+    body = body.replace("{PLANNINGALERTS_URL_PLACEHOLDER}", h(PLANNINGALERTS_URL))
     if COFFEE_URL:
         body = body.replace("{COFFEE_URL_PLACEHOLDER}", h(COFFEE_URL))
         body = body.replace("{COFFEE_LABEL_PLACEHOLDER}", h(COFFEE_LABEL))
@@ -2325,6 +2356,14 @@ _CSS = """
   --warn: #b34700;
 }
 * { box-sizing: border-box; }
+/* Available to screen readers, invisible on screen. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0;
+                   margin: -1px; overflow: hidden; clip: rect(0 0 0 0);
+                   white-space: nowrap; border: 0; }
+.skip-link { position: absolute; left: -9999px; top: 0; z-index: 10;
+             background: var(--accent); color: #fff; padding: 0.6rem 1rem; }
+.skip-link:focus { left: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 body { font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
        color: var(--fg); background: var(--bg); margin: 0; }
 .site-header { display: flex; gap: 1.5rem; align-items: baseline;
@@ -2395,6 +2434,11 @@ table.data th { color: var(--muted); font-weight: 600; }
            margin: 2rem 0; background: #fffdf2; }
 .support p { margin: 0.4rem 0; }
 /* Money disclaimer — required wherever a dollar figure appears. */
+.seealso { border: 1px solid var(--line); border-left: 3px solid var(--accent);
+           background: #fbfbfa; border-radius: 4px; padding: 0.5rem 1rem;
+           margin: 1.5rem 0; }
+.seealso h2 { border-bottom: none; margin: 0.35rem 0 0.25rem; font-size: 1rem; }
+.seealso p { margin: 0.25rem 0; font-size: 0.9rem; }
 .disclaimer { border: 1px solid #e6ddc4; background: #fffdf5; border-radius: 6px;
               padding: 0.75rem 1rem; margin: 1.25rem 0; font-size: 0.85rem;
               color: #4a4433; max-width: none; }
@@ -2483,24 +2527,48 @@ function buildIndex(data) {
 }
 
 function mountSearch(el, index) {
+  // A placeholder is not a label — screen readers announce nothing useful for
+  // the site's primary control. role=combobox + aria-* describe the listbox
+  // pattern this actually implements.
   el.innerHTML = `
-    <input type="search" placeholder="Search a street, suburb, project, meeting or article…" autocomplete="off" autofocus>
-    <div class="results" hidden></div>
+    <label class="visually-hidden" for="if-search">Search Ipswich Facts</label>
+    <input id="if-search" type="search"
+           placeholder="Search a street, suburb, project, meeting or article…"
+           autocomplete="off" autofocus
+           role="combobox" aria-expanded="false" aria-autocomplete="list"
+           aria-controls="if-search-results">
+    <div class="results" id="if-search-results" role="listbox"
+         aria-label="Search results" hidden></div>
+    <p class="sr-status visually-hidden" role="status" aria-live="polite"></p>
   `;
   const input = el.querySelector('input');
   const results = el.querySelector('.results');
 
+  const status = el.querySelector('.sr-status');
+
   input.addEventListener('input', () => {
     const q = input.value.trim().toLowerCase();
-    if (!q) { results.hidden = true; results.innerHTML = ''; return; }
+    if (!q) {
+      results.hidden = true;
+      results.innerHTML = '';
+      input.setAttribute('aria-expanded', 'false');
+      status.textContent = '';
+      return;
+    }
     const matches = index
       .filter(i => i.hay.includes(q))
       .sort((a, b) => a.hay.indexOf(q) - b.hay.indexOf(q))
       .slice(0, 30);
     results.hidden = matches.length === 0;
     results.innerHTML = matches
-      .map(m => `<a href="${m.href}"><span class="kind">${m.kind}</span> ${m.label}</a>`)
+      .map(m => `<a href="${m.href}" role="option"><span class="kind">${m.kind}</span> ${m.label}</a>`)
       .join('');
+    // aria-expanded must track reality, and a live region is the only way a
+    // screen-reader user learns the result count changed.
+    input.setAttribute('aria-expanded', String(!results.hidden));
+    status.textContent = matches.length
+      ? `${matches.length} result${matches.length === 1 ? '' : 's'}`
+      : 'No results';
   });
 }
 

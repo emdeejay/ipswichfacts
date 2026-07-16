@@ -16,7 +16,7 @@ The whole point is discoverability: the site "wins" when a resident Googles thei
 4. **Faithful reproduction, no editorial.** Data is reproduced verbatim with attribution and a link back to the Council source. This site is not a Council watchdog blog. If editorial content is wanted, it lives on a separate domain.
 5. **Unofficial framing.** Every page footer says "Unofficial. Council's own systems are the source of truth."
 6. **CC BY 4.0 attribution** on all republished content. Council data is CC BY 4.0; keep the attribution.
-7. **PlanningAlerts owns DAs.** Do not scrape or republish development applications. Link out to openaustralia.org.au/planningalerts instead.
+7. **PlanningAlerts owns DAs.** Do not scrape or republish development applications. Link out to planningalerts.org.au instead — **both halves matter**: `_planningalerts_html()` puts that pointer on every street and suburb page and the About page states the boundary. Refusing to scrape DAs while saying nothing just sends residents back to the tabs this site exists to replace.
 8. **No user-generated content.** No comments, no submissions, no forms in v1. Removes the entire defamation surface.
 9. **Rate-limit scrapers.** ≤1 req/sec per host. Set a User-Agent that names the project and contact email so Council can find us.
 10. **The name is `ipswichfacts`.** Not "IpswichWatch" or anything else that reads as activist. Framing matters.
@@ -144,6 +144,16 @@ Two defences, keep both working:
    PDFs the arithmetic assertions matter most — if x-column clustering drifts,
    amounts land in the wrong financial year and look plausible; they stop
    summing to Council's printed totals, and the tests catch it.
+
+## Accessibility
+
+The search box is the site's primary control, so it carries a real `<label>`
+(`.visually-hidden`, never `display:none` — that hides it from screen readers
+too), `role=combobox` wired to the results `listbox` via `aria-controls`, and an
+`aria-live` status announcing the result count. `aria-expanded` must track the
+results actually showing; ARIA that doesn't follow state is worse than none.
+Every page has a skip link and a `<main id="main">` landmark. `tests/test_invariants.py`
+pins all of it.
 
 ## Coding notes
 
