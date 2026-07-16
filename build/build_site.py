@@ -44,7 +44,7 @@ import re
 import shutil
 import sys
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -124,6 +124,38 @@ def format_ymd(ymd: str | None) -> str:
     if re.fullmatch(r"\d{8}", ymd):
         ymd = f"{ymd[:4]}-{ymd[4:6]}-{ymd[6:8]}"
     return ymd
+
+
+# Queensland has no daylight saving, so Brisbane is a fixed UTC+10 all year —
+# no tz database needed to show a local time.
+_BRISBANE = timezone(timedelta(hours=10))
+
+# If the freshest live data is older than this at build time, something is
+# wrong upstream and --strict refuses to publish rather than present stale
+# closures as current. Generous: the daily cron plus the hourly closures job
+# mean healthy data is never more than ~1h old.
+CLOSURES_MAX_AGE_HOURS = 30
+
+
+def parse_iso(ts: str | None) -> "datetime | None":
+    if not ts:
+        return None
+    try:
+        return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def fmt_snapshot(ts: str | None) -> str:
+    """ISO-UTC timestamp -> 'Tuesday 16 July 2026, 4:15 pm AEST'. Empty string
+    if unparseable, so a bad timestamp never fabricates a time."""
+    dt = parse_iso(ts)
+    if dt is None:
+        return ""
+    local = dt.astimezone(_BRISBANE)
+    hour = local.hour % 12 or 12
+    ap = "am" if local.hour < 12 else "pm"
+    return f"{local:%A %-d %B %Y}, {hour}:{local:%M} {ap} AEST"
 
 
 def fmt_fy(fy: str | None) -> str:
@@ -779,7 +811,21 @@ def render_index(projects, closures, meetings, news, graph, capworks) -> str:
                 f'<td>{h(c.get("event_type"))}</td>'
                 f'<td>{h(c.get("impact"))}</td></tr>'
             )
-        closure_html = "<h2>Active road impacts (live traffic dashboard)</h2><table class='data'>" \
+        captured = fmt_snapshot(closures.get("snapshot_at"))
+        asof = (
+            f'<p class="asof">Road impacts as captured from Council\'s dashboard '
+            f'at <time datetime="{h(closures.get("snapshot_at"))}">{h(captured)}</time>. '
+            f"This is a snapshot, not a live feed — check the "
+            f'<a href="https://traffic.ipswich.qld.gov.au/" rel="noopener">Council dashboard</a> '
+            f"before you travel.</p>"
+            if captured else
+            '<p class="asof">This is a snapshot, not a live feed — check the '
+            '<a href="https://traffic.ipswich.qld.gov.au/" rel="noopener">Council dashboard</a> '
+            "before you travel.</p>"
+        )
+        closure_html = "<h2>Active road impacts (live traffic dashboard)</h2>" \
+            + asof \
+            + "<table class='data'>" \
             + "<thead><tr><th>Road</th><th>Suburb</th><th>Type</th><th>Impact</th></tr></thead>" \
             + "<tbody>" + "\n".join(rows) + "</tbody></table>"
 
@@ -2447,6 +2493,7 @@ h2 { border-bottom: 1px solid var(--line); padding-bottom: 0.25rem; margin-top: 
 .phases li:hover { border-color: var(--accent); }
 a[class^="phase-"] { text-decoration: none; }
 .muted { color: var(--muted); font-size: 0.9rem; }
+.asof { color: var(--muted); font-size: 0.9rem; margin: 0.25rem 0 0.75rem; }
 .impact-3 { background: #fde8e8; color: #a51212; padding: 0.15rem 0.55rem; border-radius: 3px; font-size: 0.8rem; white-space: nowrap; }
 .impact-2 { background: #fff4e5; color: #b34700; padding: 0.15rem 0.55rem; border-radius: 3px; font-size: 0.8rem; white-space: nowrap; }
 .impact-1 { background: #f0f0f0; color: #555; padding: 0.15rem 0.55rem; border-radius: 3px; font-size: 0.8rem; white-space: nowrap; }
@@ -2739,6 +2786,26 @@ def main() -> int:
                 "\nadjust MIN_EXPECTED in build/build_site.py if the drop is real.",
                 file=sys.stderr,
             )
+            return 1
+
+        # Don't present stale closures as current. The site labels its
+        # snapshot time, but week-old road impacts shown as "active" could
+        # send someone down a closed road — better to keep the last good
+        # deploy and let the failure alert fire.
+        snap = parse_iso(closures.get("snapshot_at"))
+        if snap is not None:
+            age_h = (datetime.now(timezone.utc) - snap).total_seconds() / 3600
+            if age_h > CLOSURES_MAX_AGE_HOURS:
+                print(
+                    f"REFUSING TO BUILD — closures data is {age_h:.0f}h old "
+                    f"(limit {CLOSURES_MAX_AGE_HOURS}h). The traffic scrape is "
+                    "probably failing; the live site keeps its last good deploy.",
+                    file=sys.stderr,
+                )
+                return 1
+        elif closures.get("closures"):
+            print("REFUSING TO BUILD — closures present but no snapshot_at "
+                  "timestamp to age-check.", file=sys.stderr)
             return 1
 
     urls = write_site(args.out, projects, closures, meetings, news, graph, capworks)

@@ -122,6 +122,22 @@ Also: never render compared amounts with `fmt_kdollars` — it rounds, so
 $2,450k and $2,500k both print "$2.5M" and a real revision looks like our bug.
 `fmt_dollars_exact` exists for this and a test enforces it.
 
+## Don't present stale data as current
+
+The homepage shows road impacts, which are safety-relevant and time-sensitive.
+Two rules:
+
+1. **Show the as-of time.** The closures section prints its `snapshot_at` in
+   Brisbane time (`fmt_snapshot`, fixed UTC+10 — Queensland has no DST) with a
+   machine-readable `<time>`, and says plainly it's a snapshot, not a live feed.
+2. **Refuse to serve dangerously stale closures.** `--strict` rejects the build
+   if closures are older than `CLOSURES_MAX_AGE_HOURS` (or present without a
+   timestamp). Both workflows scrape closures fresh every run, so this only
+   fires when the traffic scrape is actually broken — in which case the last
+   good deploy stays up and the failure alert fires, rather than the site
+   confidently showing week-old road closures as active. An *empty* dashboard
+   is a real state and passes.
+
 ## Don't publish a gutted site
 
 The dangerous failure here is not a crash. Every scraper parses HTML or PDFs
