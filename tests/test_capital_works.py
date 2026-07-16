@@ -145,3 +145,122 @@ def test_legend_and_footnotes_excluded(cycle_2026):
     """The KEY: legend's dots would otherwise attach to a row."""
     for r in _rows(cycle_2026):
         assert not r["project"].strip().upper().startswith("KEY")
+
+
+# ---------------------------------------------------------------------------
+# Funding revisions — the same-financial-year comparison
+#
+# The rule these protect: compare a project's amount for THE SAME financial
+# year across programs. Never its three-year total, which covers a different
+# rolling window each cycle (a finishing project would look like a cut one).
+
+from build.build_site import (  # noqa: E402
+    _funding_matrix,
+    collect_funding_revisions,
+    fmt_dollars_exact,
+    fmt_kdollars,
+)
+
+
+def _entry(cycle, fy_cols, amounts, published=True):
+    return {
+        "cycle": cycle,
+        "fy_columns": fy_cols,
+        "amounts_published": published,
+        "source_url": f"http://example/{cycle}.pdf",
+        "section": "Roads",
+        "row": {"project": "Test Road Upgrade", "amounts": amounts, "page": 3,
+                "total": sum(v for v in amounts.values() if v)},
+    }
+
+
+def test_matrix_flags_only_genuinely_revised_years():
+    entries = [
+        _entry("2024-2025", ["2024-2025", "2025-2026", "2026-2027"],
+               {"2024-2025": 100, "2025-2026": 200, "2026-2027": 300}),
+        # Same FY2025-2026, different figure → a revision. FY2026-2027 unchanged.
+        _entry("2025-2026", ["2025-2026", "2026-2027", "2027-2028"],
+               {"2025-2026": 250, "2026-2027": 300, "2027-2028": 400}),
+    ]
+    m = _funding_matrix(entries)
+    assert m["revised_fys"] == ["2025-2026"]
+
+
+def test_matrix_marks_out_of_window_years_not_zero():
+    """A blank must never read as 'Council budgeted nothing'.
+
+    Amounts dicts carry every year in the program's window, with None for the
+    '-' Council prints for nil — mirroring the parser's real output.
+    """
+    entries = [
+        _entry("2024-2025", ["2024-2025", "2025-2026", "2026-2027"],
+               {"2024-2025": 100, "2025-2026": None, "2026-2027": None}),
+        _entry("2025-2026", ["2025-2026", "2026-2027", "2027-2028"],
+               {"2025-2026": None, "2026-2027": None, "2027-2028": 400}),
+    ]
+    m = _funding_matrix(entries)
+    # FY2024-2025 predates the 2025-2026 program's window entirely.
+    assert m["cells"][("2025-2026", "2024-2025")]["kind"] == "outside"
+    # Published-as-nil is a different state from out-of-window.
+    assert m["cells"][("2024-2025", "2025-2026")]["kind"] == "nil"
+    # And a year no program covered at all isn't invented.
+    assert ("2024-2025", "2027-2028") in m["cells"]
+    assert m["cells"][("2024-2025", "2027-2028")]["kind"] == "outside"
+
+
+def test_matrix_ignores_dots_cycles():
+    """The 2026-27 program publishes no per-project figure — nothing to compare."""
+    entries = [
+        _entry("2025-2026", ["2025-2026"], {"2025-2026": 100}),
+        _entry("2026-2027", ["2026-2027"], {}, published=False),
+    ]
+    m = _funding_matrix(entries)
+    assert m["cycles"] == ["2025-2026"]
+    assert m["revised_fys"] == []
+
+
+def test_revisions_never_merge_different_stages():
+    """Stage 1 and Stage 2 are different works. Merging them would invent a
+    revision that doesn't exist."""
+    capworks = [
+        {"cycle": "2024-2025", "amounts_published": True, "source_url": "u",
+         "programs": [{"section": "Roads", "rows": [
+             {"project": "Foo Road Upgrade – Stage 1", "amounts": {"2025-2026": 100}, "page": 1},
+             {"project": "Foo Road Upgrade – Stage 2", "amounts": {"2025-2026": 900}, "page": 1},
+         ]}]},
+    ]
+    assert collect_funding_revisions(capworks) == []
+
+
+def test_revisions_detects_real_change():
+    capworks = [
+        {"cycle": "2024-2025", "amounts_published": True, "source_url": "a",
+         "programs": [{"section": "Roads", "rows": [
+             {"project": "Foo Road Upgrade", "amounts": {"2025-2026": 100}, "page": 1}]}]},
+        {"cycle": "2025-2026", "amounts_published": True, "source_url": "b",
+         "programs": [{"section": "Roads", "rows": [
+             {"project": "Foo Road Upgrade", "amounts": {"2025-2026": 250}, "page": 2}]}]},
+    ]
+    revs = collect_funding_revisions(capworks)
+    assert len(revs) == 1
+    assert set(revs[0]["revised"]["2025-2026"]) == {"2024-2025", "2025-2026"}
+    assert revs[0]["spread"] == 150
+
+
+def test_exact_formatter_distinguishes_what_rounding_hides():
+    """The bug this guards: $2,450k and $2,500k both render '$2.5M', making a
+    real revision look like a display error."""
+    assert fmt_kdollars(2450) == fmt_kdollars(2500)  # the trap
+    assert fmt_dollars_exact(2450) != fmt_dollars_exact(2500)
+    assert fmt_dollars_exact(2450) == "$2,450,000"
+
+
+def test_no_revised_row_displays_identical_values(cycle_2025):
+    """End-to-end: nothing marked 'revised' may render as two equal strings."""
+    import glob
+    import json as _json
+    capworks = [_json.load(open(f)) for f in sorted(glob.glob("data/capital_works/*.json"))]
+    for item in collect_funding_revisions(capworks):
+        for fy, by_cycle in item["revised"].items():
+            shown = [fmt_dollars_exact(c["amount"]) for c in by_cycle.values()]
+            assert len(set(shown)) > 1, f"{item['name']} {fy} renders identically: {shown}"

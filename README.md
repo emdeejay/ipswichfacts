@@ -92,6 +92,7 @@ Every entity gets its own URL:
 - `/news/` — news index (two most recent years, plus per-year pages `/news/YYYY/` for older articles)
 - `/capital-works/` — every Capital Works Program by budget cycle: program totals and grand totals
 - `/capital-works/<cycle>/` — one page per budget cycle: every project row with funding by financial year, linked to project pages and to the exact PDF page
+- `/capital-works/revisions/` — where Council published different figures for the same project and financial year in successive programs
 - `/division/<n>/` — each Council division: its two councillors (with contacts) and every project in the division
 - `/councillors/` — the Mayor and all eight councillors
 - `/projects/`, `/suburbs/`, `/streets/`, `/meetings/` — index pages

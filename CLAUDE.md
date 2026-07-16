@@ -83,6 +83,30 @@ make serve         # local preview at http://localhost:8000
 make clean         # wipe generated site and data (keeps data/sample)
 ```
 
+## Comparing budget figures across programs
+
+Each Capital Works Program covers a **rolling three-year window**, so the same
+financial year is published in up to three successive programs — and the
+figures don't always match. Setting those side by side (`/capital-works/revisions/`,
+and the matrix on project pages) is the one thing here Council's own systems
+can't show, because each program is a separate PDF.
+
+Two rules, both load-bearing:
+
+1. **Only ever compare the same financial year across programs.** A project's
+   *three-year total* covers a different window each cycle, so a project that's
+   nearly finished looks identical to one that's been cut. Comparing totals
+   would be actively misleading.
+2. **Reproduce, don't characterise** (invariant 4). Show what each program
+   printed, link to the page it's printed on, and stop. No percentages, no
+   "blowout", no verdict. Two numbers next to each other is journalism the
+   reader does themselves; the moment we editorialise it belongs on another
+   domain.
+
+Also: never render compared amounts with `fmt_kdollars` — it rounds, so
+$2,450k and $2,500k both print "$2.5M" and a real revision looks like our bug.
+`fmt_dollars_exact` exists for this and a test enforces it.
+
 ## Don't publish a gutted site
 
 The dangerous failure here is not a crash. Every scraper parses HTML or PDFs

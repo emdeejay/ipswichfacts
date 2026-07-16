@@ -126,13 +126,26 @@ def fmt_fy(fy: str | None) -> str:
 
 
 def fmt_kdollars(k: int | None) -> str:
-    """Format an amount given in $'000: 1200 -> $1.2M, 450 -> $450k."""
+    """Format an amount given in $'000: 1200 -> $1.2M, 450 -> $450k.
+
+    Rounds for readability. NEVER use where two amounts are being compared —
+    $2,450k and $2,500k both render '$2.5M', which makes a real revision look
+    like a mistake on our side. Use fmt_dollars_exact there."""
     if k is None:
         return "—"
     if k >= 1000:
         s = f"{k / 1000:,.1f}".rstrip("0").rstrip(".")
         return f"${s}M"
     return f"${k}k"
+
+
+def fmt_dollars_exact(k: int | None) -> str:
+    """Council publishes in $'000; multiply out and print in full. Used in the
+    comparison tables, where rounding two differing figures into the same
+    string would misrepresent the very thing the table exists to show."""
+    if k is None:
+        return "—"
+    return f"${k * 1000:,}"
 
 
 # Classify a project's traffic impact from Council's own status wording.
@@ -162,6 +175,19 @@ def _truncate(s: str | None, n: int) -> str:
     if not s:
         return ""
     return s if len(s) <= n else s[: n - 1].rsplit(" ", 1)[0] + "…"
+
+
+def _norm(s: str | None) -> str:
+    """Loose name key: lowercase, punctuation and runs of space flattened.
+    Council writes the same thing three different ways across systems."""
+    return re.sub(r" +", " ", re.sub(r"[^a-z0-9 ]", " ", (s or "").lower())).strip()
+
+
+def _name_core(name: str | None) -> str:
+    """_norm minus a trailing stage/phase tag: meeting papers and budget
+    lines say "Redbank Plains Road Upgrade" where the map says "… – Stage 3"."""
+    n = re.sub(r"\b(stage|phase)\s*\d+[a-z]?\b", "", _norm(name))
+    return re.sub(r" +", " ", n).strip()
 
 
 def dedupe(items: list[Any], key) -> list[Any]:
@@ -357,13 +383,6 @@ def build_graph(projects, closures, meetings, news, capworks) -> dict[str, Any]:
     # outright (normalised, stage/phase suffix stripped — papers say
     # "Redbank Plains Road Upgrade" for "... – Stage 3"). Sparse (~4% of
     # projects) but high precision, and it's the big projects that match.
-    def _norm(s):
-        return re.sub(r" +", " ", re.sub(r"[^a-z0-9 ]", " ", (s or "").lower())).strip()
-
-    def _name_core(name):
-        n = re.sub(r"\b(stage|phase)\s*\d+[a-z]?\b", "", _norm(name))
-        return re.sub(r" +", " ", n).strip()
-
     project_cores = {
         p["slug"]: _name_core(p.get("name"))
         for p in projects
@@ -748,9 +767,13 @@ def _capworks_funding_html(slug: str, graph) -> str:
             f"{h(ref.get('section'))} · as “{h(row.get('project'))}”)</span> {src}</h4>"
             f"{detail}"
         )
+    # Same-FY comparison across programs, where the project appears in more
+    # than one. This is the part Council's own PDFs can't show you.
+    matrix = render_funding_matrix_html(refs)
     return (
         "<h3>Funding (Capital Works Program)</h3>"
         + "".join(blocks)
+        + matrix
         + "<p class='muted'>Amounts are as published in Council's Capital Works Program "
         "PDFs ($'000, multiplied out). See <a href='/capital-works/'>all capital works "
         "programs</a>.</p>"
@@ -851,6 +874,8 @@ def render_project(p, closures, graph) -> str:
             f"<tbody>{rows}</tbody></table>{more}"
         )
 
+    timeline_html = render_timeline_html(build_project_timeline(p, graph, closures))
+
     body = f"""
 <article class="project">
   <p class="crumbs"><a href="/">Home</a> › <a href="/projects/">Projects</a> › {h(p.get("name"))}</p>
@@ -873,6 +898,8 @@ def render_project(p, closures, graph) -> str:
       {what_html}
 
       {funding_html}
+
+      {timeline_html}
     </div>
     <aside class="panel">
       <h3>Division</h3>
@@ -1445,6 +1472,348 @@ shown here multiplied out. <a href="{h(cw.get('source_url'))}" rel="noopener">Co
     )
 
 
+# ---------------------------------------------------------------------------
+# Project timeline
+#
+# Everything this site holds about one project, in the order it happened:
+# budget listings, meeting items, media releases, live closures. Each entry
+# cites the source it came from. No new data — this is the join, which is the
+# entire point of the project.
+#
+# Dating note: a Capital Works Program has no publication date we scrape, so
+# its entries sort by the financial year they open (2025-2026 → 2025-07) but
+# DISPLAY only the program name. We never print a date Council didn't give us.
+
+
+def build_project_timeline(p, graph, closures) -> list[dict[str, Any]]:
+    slug = p["slug"]
+    events: list[dict[str, Any]] = []
+
+    for e in graph.get("project_capworks", {}).get(slug, []):
+        cycle = e["cycle"]
+        url, page = _cycle_source([e], cycle)
+        row = e.get("row") or {}
+        if e.get("amounts_published") and row.get("total") is not None:
+            detail = f"Listed at {fmt_kdollars(row['total'])} over three years"
+        elif row.get("funded_years"):
+            detail = "Listed as funded in " + ", ".join(fmt_fy(f) for f in row["funded_years"])
+        else:
+            detail = "Listed in the program"
+        events.append({
+            # Sorts at the financial year's start; the label never claims a
+            # day, because Council doesn't give us one for the program.
+            "sort": f"{cycle[:4]}-07",
+            "when": f"{fmt_fy(cycle)}",
+            "kind": "budget",
+            "what": detail,
+            "url": f"{url}#page={page}" if url and page else url,
+            "source": "Capital Works Program (PDF)",
+        })
+
+    for r in graph.get("project_meeting_items", {}).get(slug, []):
+        events.append({
+            "sort": r.get("date") or "",
+            "when": format_ymd(r.get("date")),
+            "kind": "meeting",
+            "what": r.get("title") or "Discussed by Council",
+            "url": f"/meeting/{r['slug']}/#{r.get('anchor')}",
+            "source": r.get("committee") or "Council meeting",
+        })
+
+    for r in graph.get("project_news_items", {}).get(slug, []):
+        events.append({
+            "sort": r.get("date") or "",
+            "when": format_ymd(r.get("date")),
+            "kind": "news",
+            "what": r.get("title") or "",
+            "url": f"/news/{r['slug']}/",
+            "source": "Ipswich First",
+        })
+
+    # Live closures on this project's streets, where Council's own closure
+    # text names the project's street. Only current impacts — these expire.
+    p_streets = set(graph.get("project_streets", {}).get(slug, []))
+    for i, c in enumerate(closures.get("closures", [])):
+        if c.get("status") == "Archived":
+            continue
+        if p_streets & set(graph.get("closure_streets", {}).get(f"c{i}", [])):
+            start = (c.get("start_time") or "")[:10]
+            events.append({
+                "sort": start,
+                "when": format_ymd(start),
+                "kind": "closure",
+                "what": f"{c.get('event_type') or 'Road impact'}: {c.get('impact') or ''}".strip(": "),
+                "url": "",
+                "source": f"Live traffic dashboard — {c.get('road_name') or ''}".strip(" —"),
+            })
+
+    events.sort(key=lambda e: e["sort"], reverse=True)
+    return events
+
+
+def render_timeline_html(events: list[dict[str, Any]]) -> str:
+    if len(events) < 2:
+        return ""  # a single event is not a story
+    items = []
+    for e in events:
+        what = h(e["what"])
+        if e["url"]:
+            rel = ' rel="noopener"' if e["url"].startswith("http") else ""
+            what = f'<a href="{h(e["url"])}"{rel}>{what}</a>'
+        items.append(
+            f'<li class="tl tl-{h(e["kind"])}">'
+            f'<span class="tl-when">{h(e["when"])}</span>'
+            f'<span class="tl-what">{what}<br>'
+            f'<span class="muted">{h(e["source"])}</span></span></li>'
+        )
+    return (
+        "<h3>Timeline</h3>"
+        '<p class="muted">Everything Council has published about this project, '
+        "newest first. Each entry links to its source.</p>"
+        f'<ul class="timeline">{"".join(items)}</ul>'
+    )
+
+
+# ---------------------------------------------------------------------------
+# Funding revisions
+#
+# Council publishes a Capital Works Program with each budget: a rolling
+# three-year window of per-project amounts. Because the window rolls, the
+# SAME financial year is published three times, in three successive programs
+# — and the figures don't always match. Setting those side by side is the one
+# thing on this site Council's own systems can't show you, because each
+# program is a separate PDF.
+#
+# The trap, and the reason to be careful: never compare a project's *3-year
+# total* across cycles. Each total covers a different window, so a project
+# that's nearly finished (most spend now behind the window) looks exactly
+# like one that's been cut. Only same-financial-year comparisons mean
+# anything.
+#
+# Faithfulness (invariant 4): we reproduce what each program printed and link
+# to the page it's printed on. We do not compute "blowouts", percentages, or
+# verdicts — the reader can see two numbers and do their own arithmetic.
+
+
+def _funding_matrix(entries: list[dict[str, Any]]) -> dict[str, Any]:
+    """Build the same-FY-across-programs comparison for one project.
+
+    Returns {cycles, fys, cell(cycle, fy) -> state, revised_fys}. A cell is
+    one of:
+      {"kind": "amount", "value": int}  — that program published this figure
+      {"kind": "nil"}                   — in window, published as nil ('-')
+      {"kind": "outside"}               — the FY predates/postdates the
+                                          program's three-year window; a blank
+                                          here means "not covered", NOT zero.
+    """
+    published = [e for e in entries if e.get("amounts_published")]
+    cycles = sorted({e["cycle"] for e in published})
+    cells: dict[tuple[str, str], dict[str, Any]] = {}
+    windows: dict[str, list[str]] = {}
+    for e in published:
+        cycle = e["cycle"]
+        # The program's own declared three-year window decides what's in
+        # scope — don't infer it from which keys the parser happened to emit.
+        windows[cycle] = e.get("fy_columns", [])
+        amounts = e["row"].get("amounts") or {}
+        for fy in windows[cycle]:
+            amt = amounts.get(fy)
+            cells[(cycle, fy)] = (
+                {"kind": "amount", "value": amt} if amt is not None else {"kind": "nil"}
+            )
+    fys = sorted({fy for w in windows.values() for fy in w})
+    for cycle in cycles:
+        for fy in fys:
+            if (cycle, fy) not in cells:
+                cells[(cycle, fy)] = {"kind": "outside"}
+
+    revised = []
+    for fy in fys:
+        vals = {
+            cells[(c, fy)]["value"]
+            for c in cycles
+            if cells[(c, fy)]["kind"] == "amount"
+        }
+        if len(vals) > 1:
+            revised.append(fy)
+    return {
+        "cycles": cycles,
+        "fys": fys,
+        "cells": cells,
+        "revised_fys": revised,
+        "windows": windows,
+    }
+
+
+def _cycle_source(entries: list[dict[str, Any]], cycle: str) -> tuple[str, int | None]:
+    for e in entries:
+        if e["cycle"] == cycle:
+            return e.get("source_url") or "", (e.get("row") or {}).get("page")
+    return "", None
+
+
+def render_funding_matrix_html(entries: list[dict[str, Any]], heading: str = "h3") -> str:
+    """The published-figures table. Empty string unless at least two programs
+    published a figure for the same financial year (nothing to compare
+    otherwise)."""
+    m = _funding_matrix(entries)
+    if len(m["cycles"]) < 2 or not m["fys"]:
+        return ""
+    comparable = any(
+        sum(1 for c in m["cycles"] if m["cells"][(c, fy)]["kind"] == "amount") > 1
+        for fy in m["fys"]
+    )
+    if not comparable:
+        return ""
+
+    head = "".join(f"<th>{h(fmt_fy(c))} program</th>" for c in m["cycles"])
+    rows = []
+    for fy in m["fys"]:
+        tds = []
+        for c in m["cycles"]:
+            cell = m["cells"][(c, fy)]
+            if cell["kind"] == "amount":
+                url, page = _cycle_source(entries, c)
+                link = f"{url}#page={page}" if url and page else url
+                inner = h(fmt_dollars_exact(cell["value"]))
+                tds.append(
+                    f'<td><a href="{h(link)}" rel="noopener" '
+                    f'title="As printed in the {h(fmt_fy(c))} Capital Works Program">{inner}</a></td>'
+                )
+            elif cell["kind"] == "nil":
+                tds.append('<td class="muted" title="Published as nil for this year">–</td>')
+            else:
+                tds.append('<td class="cell-outside" title="Outside this program\'s three-year window">·</td>')
+        marker = ' <span class="revised">revised</span>' if fy in m["revised_fys"] else ""
+        rows.append(f"<tr><th>{h(fmt_fy(fy))}{marker}</th>{''.join(tds)}</tr>")
+
+    note = ""
+    if m["revised_fys"]:
+        years = ", ".join(fmt_fy(fy) for fy in m["revised_fys"])
+        note = (
+            f'<p class="muted">Council published different figures for '
+            f'{h(years)} in different programs. Both are Council\'s own; each '
+            f"links to the page it appears on.</p>"
+        )
+    return (
+        f"<{heading}>Funding, as published in each program</{heading}>"
+        '<table class="data funding"><thead><tr><th>Financial year</th>'
+        f"{head}</tr></thead><tbody>{''.join(rows)}</tbody></table>"
+        f'{note}<p class="muted">· = outside that program\'s three-year window '
+        "(not zero). Amounts are Council's, in the year they were published for.</p>"
+    )
+
+
+def collect_funding_revisions(capworks) -> list[dict[str, Any]]:
+    """Every line item whose figure for a given financial year differs between
+    the programs that published it.
+
+    Grouped by EXACT normalised name, never the stage-stripped one: "… Stage 1"
+    and "… Stage 2" are different works, and merging them would manufacture a
+    revision that doesn't exist.
+    """
+    claims: dict[str, dict[str, Any]] = {}
+    for cw in capworks:
+        if not cw.get("amounts_published"):
+            continue  # dots cycles publish no per-project figure to compare
+        for prog in cw.get("programs", []):
+            for row in prog.get("rows", []):
+                key = _norm(row.get("project"))
+                if not key:
+                    continue
+                item = claims.setdefault(
+                    key,
+                    {
+                        "name": row.get("project"),
+                        "project_slug": row.get("project_slug"),
+                        "section": prog.get("section"),
+                        "fy": defaultdict(dict),
+                    },
+                )
+                item["project_slug"] = item["project_slug"] or row.get("project_slug")
+                for fy, amt in (row.get("amounts") or {}).items():
+                    if amt is None:
+                        continue
+                    item["fy"][fy][cw["cycle"]] = {
+                        "amount": amt,
+                        "url": cw.get("source_url"),
+                        "page": row.get("page"),
+                    }
+
+    out = []
+    for item in claims.values():
+        revised = {
+            fy: by_cycle
+            for fy, by_cycle in item["fy"].items()
+            if len({c["amount"] for c in by_cycle.values()}) > 1
+        }
+        if not revised:
+            continue
+        spread = max(
+            max(c["amount"] for c in by.values()) - min(c["amount"] for c in by.values())
+            for by in revised.values()
+        )
+        out.append({**item, "revised": revised, "spread": spread})
+    out.sort(key=lambda x: -x["spread"])
+    return out
+
+
+def render_funding_revisions(capworks) -> str:
+    revisions = collect_funding_revisions(capworks)
+    cycles = sorted({c for cw in capworks if cw.get("amounts_published") for c in [cw["cycle"]]})
+
+    blocks = []
+    for item in revisions:
+        rows = []
+        for fy in sorted(item["revised"]):
+            by_cycle = item["revised"][fy]
+            tds = []
+            for c in cycles:
+                claim = by_cycle.get(c)
+                if not claim:
+                    tds.append('<td class="cell-outside">·</td>')
+                    continue
+                link = f'{claim["url"]}#page={claim["page"]}' if claim.get("page") else claim["url"]
+                tds.append(
+                    f'<td><a href="{h(link)}" rel="noopener">{h(fmt_dollars_exact(claim["amount"]))}</a></td>'
+                )
+            rows.append(f"<tr><th>{h(fmt_fy(fy))}</th>{''.join(tds)}</tr>")
+        name_html = h(item["name"])
+        if item.get("project_slug"):
+            name_html = f'<a href="/project/{item["project_slug"]}/">{name_html}</a>'
+        head = "".join(f"<th>{h(fmt_fy(c))}</th>" for c in cycles)
+        blocks.append(
+            f'<div class="revision"><h3>{name_html}</h3>'
+            f'<p class="muted">{h(item.get("section") or "")}</p>'
+            '<table class="data funding"><thead><tr><th>Financial year</th>'
+            f"{head}</tr></thead><tbody>{''.join(rows)}</tbody></table></div>"
+        )
+
+    body = f"""
+<p class="crumbs"><a href="/">Home</a> › <a href="/capital-works/">Capital works</a> › Revised figures</p>
+<h1>Figures that changed between programs</h1>
+<p>Council publishes a Capital Works Program with each budget, covering a rolling
+three years. Because the window rolls, the same financial year is published more
+than once — in successive programs. These {len(revisions)} line items are the ones
+where the figures for a given year <em>differ</em> between the programs that
+published them.</p>
+<p class="meta">Every number here is Council's own and links to the page of the PDF
+it appears on. Amounts are compared only within the same financial year — a
+program's three-year total covers a different window each cycle, so comparing
+totals would be meaningless. Column heads are the program (budget) year; <span
+class="cell-outside">·</span> means that year fell outside that program's window.</p>
+{"".join(blocks) or "<p>No differences found.</p>"}
+<p class="attribution">Source: Ipswich City Council Capital Works Programs (CC BY 4.0).
+See <a href="/capital-works/">all programs</a>.</p>
+"""
+    return render_layout(
+        title="Capital works figures that changed between programs",
+        description="Where Ipswich City Council published different amounts for the same project and the same financial year in successive Capital Works Programs.",
+        path="/capital-works/revisions/",
+        body=body,
+    )
+
+
 def _councillor_card(c) -> str:
     email_html = (
         f'<br><a href="mailto:{h(c["email"])}">{h(c["email"])}</a>' if c.get("email") else ""
@@ -1631,6 +2000,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
     # is committed (refreshed once a year), so these always build.
     if capworks:
         write("/capital-works/", render_capworks_index(capworks))
+        write("/capital-works/revisions/", render_funding_revisions(capworks))
         for cw in capworks:
             write(f"/capital-works/{cw['cycle']}/", render_capworks_cycle(cw, graph))
 
@@ -1798,6 +2168,24 @@ table.data th { color: var(--muted); font-weight: 600; }
 .support { border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.25rem;
            margin: 2rem 0; background: #fffdf2; }
 .support p { margin: 0.4rem 0; }
+/* Funding matrix: same financial year as published in successive programs. */
+table.funding th { font-weight: 600; color: var(--fg); white-space: nowrap; }
+table.funding td { text-align: right; font-variant-numeric: tabular-nums; }
+table.funding td a { text-decoration: none; }
+table.funding td a:hover { text-decoration: underline; }
+.cell-outside { color: #ccc; text-align: center !important; }
+.revised { background: #fff4e5; color: #b34700; padding: 0.05rem 0.4rem;
+           border-radius: 3px; font-size: 0.7rem; font-weight: 600; }
+/* Project timeline */
+.timeline { list-style: none; padding: 0; margin: 0.5rem 0 0; }
+.timeline .tl { display: flex; gap: 0.6rem; padding: 0.5rem 0 0.5rem 0.75rem;
+                border-left: 3px solid var(--line); font-size: 0.9rem; }
+.tl-when { color: var(--muted); flex: 0 0 7rem; font-size: 0.85rem; }
+.tl-what { min-width: 0; }
+.timeline .tl-budget { border-left-color: var(--accent); }
+.timeline .tl-meeting { border-left-color: #003f88; }
+.timeline .tl-news { border-left-color: #4c00b3; }
+.timeline .tl-closure { border-left-color: #b34700; }
 .cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 2.5rem; }
 .panel { border: 1px solid var(--line); border-radius: 8px; padding: 0.25rem 1.25rem 1rem;
          background: #fff; align-self: start; }
