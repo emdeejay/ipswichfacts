@@ -694,8 +694,10 @@ def render_index(projects, closures, meetings, news, graph, capworks) -> str:
 
     body = f"""
 <section class="hero">
-  <h1>Find out what your Council is doing on your street.</h1>
-  <p>Type a street name, suburb, or project name.</p>
+  <h1>What your Council is doing, who decided it, and what it costs.</h1>
+  <p>Ipswich City Council publishes all of this — across six unconnected systems.
+  Here it's in one place: projects, road closures, meeting decisions, media
+  releases and budgets, cross-referenced and searchable.</p>
   <div data-ipswichfacts-search></div>
 </section>
 
@@ -729,7 +731,7 @@ def render_index(projects, closures, meetings, news, graph, capworks) -> str:
 """
     return render_layout(
         title="Ipswich Council data, joined up",
-        description="Live road closures, civic projects, and Council decisions for Ipswich, Queensland — all in one place, searchable, cross-referenced.",
+        description="Every Ipswich City Council project, road closure, meeting decision, media release and capital works budget — joined up, cross-referenced and searchable by street, suburb or project.",
         path="/",
         body=body,
     )
@@ -2212,6 +2214,9 @@ h2 { border-bottom: 1px solid var(--line); padding-bottom: 0.25rem; margin-top: 
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 1rem; list-style: none; padding: 0; }
 .grid li { border: 1px solid var(--line); border-radius: 6px; padding: 1rem; text-align: center; }
+/* Tiles that link (e.g. the capital program total) must look like the rest. */
+.grid li a { color: inherit; text-decoration: none; display: block; }
+.grid li:has(a):hover { border-color: var(--accent); }
 .grid b { display: block; font-size: 2rem; color: var(--accent); }
 .grid span { display: block; color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem; }
 .phases { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -2347,7 +2352,7 @@ function buildIndex(data) {
 
 function mountSearch(el, index) {
   el.innerHTML = `
-    <input type="search" placeholder="Type a street, suburb, project name…" autocomplete="off" autofocus>
+    <input type="search" placeholder="Search a street, suburb, project, meeting or article…" autocomplete="off" autofocus>
     <div class="results" hidden></div>
   `;
   const input = el.querySelector('input');
