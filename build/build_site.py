@@ -654,8 +654,10 @@ def render_layout(title: str, description: str, path: str, body: str) -> str:
         f'\n<meta name="google-site-verification" content="{h(GOOGLE_SITE_VERIFICATION)}">'
         if GOOGLE_SITE_VERIFICATION else ""
     )
+    # One ask per page. The homepage and About carry their own support
+    # section; asking again in the footer just reads as nagging.
     coffee_footer = ""
-    if COFFEE_URL:
+    if COFFEE_URL and "coffee-btn" not in body:
         coffee_footer = (
             f'<p class="coffee">This is a volunteer project. If it saved you time — '
             f'<a class="coffee-btn" href="{h(COFFEE_URL)}" rel="noopener">'

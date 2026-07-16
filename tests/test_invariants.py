@@ -92,3 +92,25 @@ def test_visually_hidden_utility_exists_and_is_not_display_none():
     block = _CSS.split(".visually-hidden", 1)[1].split("}", 1)[0]
     assert "display: none" not in block
     assert "position: absolute" in block
+
+
+# ---------------------------------------------------------------------------
+# Tip jar: exactly one ask per page.
+
+
+def test_footer_does_not_repeat_an_ask_the_page_already_makes():
+    """The homepage and About carry their own support section; a second
+    button in the footer just reads as nagging."""
+    with_support = render_layout("T", "D", "/", '<a class="coffee-btn" href="#">Buy me a coffee</a>')
+    assert with_support.count("coffee-btn") == 1
+
+    plain = render_layout("T", "D", "/street/x/", "<p>no ask here</p>")
+    assert plain.count("coffee-btn") == 1  # footer supplies it
+
+
+def test_about_page_asks_exactly_once():
+    assert render_about().count("coffee-btn") == 1
+
+
+def test_404_asks_exactly_once():
+    assert render_404().count("coffee-btn") == 1
