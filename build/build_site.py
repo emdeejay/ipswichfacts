@@ -728,6 +728,14 @@ def render_layout(title: str, description: str, path: str, body: str) -> str:
 <meta property="og:description" content="{h(description)}">
 <meta property="og:url" content="{h(canonical)}">
 <meta property="og:site_name" content="Ipswich Facts">
+<meta property="og:type" content="website">
+<meta property="og:image" content="{BASE_URL}/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{h(title)}">
+<meta name="twitter:description" content="{h(description)}">
+<meta name="twitter:image" content="{BASE_URL}/og-image.png">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -2263,13 +2271,16 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
     (out / "css").mkdir(exist_ok=True)
     (out / "js").mkdir(exist_ok=True)
 
-    urls: list[str] = []
+    # (path, lastmod) — lastmod is a real entity date or None. A missing
+    # lastmod tells Google "unknown", which is honest; a fabricated one (e.g.
+    # build time on every page) just trains it to ignore the field.
+    urls: list[tuple[str, str | None]] = []
 
-    def write(path: str, body: str) -> None:
+    def write(path: str, body: str, lastmod: str | None = None) -> None:
         target = out / path.strip("/") / "index.html" if path != "/" else out / "index.html"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(body)
-        urls.append(path)
+        urls.append((path, lastmod if lastmod and re.fullmatch(r"\d{4}-\d{2}-\d{2}", lastmod) else None))
 
     # Landing
     write("/", render_index(projects, closures, meetings, news, graph, capworks))
@@ -2279,7 +2290,8 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
     for phase in sorted({p.get("phase") or "Unknown" for p in projects}):
         write(f"/projects/phase/{slugify(phase)}/", render_phase_list(phase, projects))
     for p in projects:
-        write(f"/project/{p['slug']}/", render_project(p, closures, graph))
+        write(f"/project/{p['slug']}/", render_project(p, closures, graph),
+              lastmod=format_ymd(p.get("updated")))
 
     # Suburbs
     write("/suburbs/", render_list("All suburbs", "suburb", graph["suburbs"]))
@@ -2295,7 +2307,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
     meetings_list = meetings.get("meetings", [])
     write("/meetings/", render_meetings_index(meetings_list))
     for m in meetings_list:
-        write(f"/meeting/{m['slug']}/", render_meeting(m, graph))
+        write(f"/meeting/{m['slug']}/", render_meeting(m, graph), lastmod=m.get("date"))
 
     # News. The /news/ index lists the two most recent years and links to
     # per-year index pages for the rest.
@@ -2308,7 +2320,8 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
     for y in news_older_years:
         write(f"/news/{y}/", render_news_year(y, news_posts))
     for p in news_posts:
-        write(f"/news/{p['slug']}/", render_news_post(p, graph))
+        write(f"/news/{p['slug']}/", render_news_post(p, graph),
+              lastmod=(p.get("modified") or p.get("date") or "")[:10] or None)
 
     # Capital works: one index page plus one page per budget cycle. The data
     # is committed (refreshed once a year), so these always build.
@@ -2403,6 +2416,12 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
     }
     (out / "data" / "mentions.json").write_text(json.dumps(mentions))
 
+    # ---- Static assets (committed, copied verbatim) ----
+    assets_dir = Path(__file__).resolve().parent.parent / "assets"
+    og = assets_dir / "og-image.png"
+    if og.exists():
+        shutil.copyfile(og, out / "og-image.png")
+
     # ---- CSS / JS ----
     (out / "css" / "site.css").write_text(_CSS)
     # Label the archive button with the actual span of what it loads.
@@ -2429,10 +2448,15 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
     return urls
 
 
-def _sitemap(urls: list[str]) -> str:
-    entries = "\n".join(
-        f"  <url><loc>{BASE_URL}{u}</loc></url>" for u in urls
-    )
+def _sitemap(urls: list[tuple[str, str | None]]) -> str:
+    lines = []
+    for u, lastmod in urls:
+        # Emit lastmod only if it's a real ISO date. A malformed one is worse
+        # than none — Google discounts the whole field when it sees garbage.
+        valid = lastmod and re.fullmatch(r"\d{4}-\d{2}-\d{2}", lastmod)
+        mod = f"<lastmod>{lastmod}</lastmod>" if valid else ""
+        lines.append(f"  <url><loc>{BASE_URL}{u}</loc>{mod}</url>")
+    entries = "\n".join(lines)
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {entries}

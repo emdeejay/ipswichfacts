@@ -175,3 +175,32 @@ def test_real_council_stories_are_never_filtered():
     assert not _is_whats_on_listing({"title": "Mayor supports USQ funding calls", "categories": ["Now"]})
     # Listing-shaped title but categorised as Council business.
     assert not _is_whats_on_listing({"title": "March 3: Council meeting", "categories": ["Council", "Now"]})
+
+
+# ---------------------------------------------------------------------------
+# SEO / sharing metadata.
+
+
+def test_sitemap_carries_real_lastmod_only():
+    """A fabricated lastmod trains Google to ignore the field, so entries
+    either have a real entity date or none."""
+    from build.build_site import _sitemap
+
+    xml = _sitemap([
+        ("/project/x/", "2026-05-08"),
+        ("/streets/", None),
+        ("/project/y/", "not-a-date"),  # write() nulls these before they arrive
+    ])
+    assert "<loc>https://ipswichfacts.au/project/x/</loc><lastmod>2026-05-08</lastmod>" in xml
+    assert "<loc>https://ipswichfacts.au/streets/</loc></url>" in xml  # no lastmod
+    # every lastmod present must be an ISO date
+    import re
+    for m in re.findall(r"<lastmod>([^<]*)</lastmod>", xml):
+        assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", m), m
+
+
+def test_pages_have_a_social_card():
+    html = render_layout("T", "D", "/", "<p>b</p>")
+    assert 'property="og:image" content="https://ipswichfacts.au/og-image.png"' in html
+    assert 'name="twitter:card" content="summary_large_image"' in html
+    assert 'property="og:image:width" content="1200"' in html
