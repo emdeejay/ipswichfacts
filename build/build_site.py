@@ -267,21 +267,36 @@ def load_registry(inp: Path) -> dict[str, Any]:
     }
 
 
+def _with_suffix(base: str, suffix: str) -> str:
+    """Slug of `base` with a disambiguating `-suffix` that ALWAYS survives.
+    slugify() truncates to 80 chars, so a naive slugify(f"{base}-{suffix}")
+    silently drops the suffix when base is long — collapsing every
+    disambiguated candidate onto the same 80-char slug. That is how a long
+    colliding name used to spin _pick_slug's while-loop forever. Reserve room
+    for the suffix by trimming base instead."""
+    suf = slugify(suffix)
+    if not suf:
+        return slugify(base)
+    head = slugify(base)[: max(80 - len(suf) - 1, 0)].strip("-")
+    return f"{head}-{suf}" if head else suf
+
+
 def _pick_slug(base: str, hints: list[str | None], key: str, taken: set[str]) -> str:
     """First free slug from: the bare name, then name+hint (e.g. suburb), then
     name+Council's id. Every candidate is derived from stable data, so the same
     entity resolves to the same slug on every build."""
-    candidates = [base]
-    candidates += [f"{base}-{hint}" for hint in hints if hint]
-    candidates.append(f"{base}-{key}")
+    candidates = [slugify(base)]
+    candidates += [_with_suffix(base, hint) for hint in hints if hint]
+    candidates.append(_with_suffix(base, key))
     for cand in candidates:
-        s = slugify(cand)
-        if s and s not in taken:
-            return s
+        if cand and cand not in taken:
+            return cand
+    # Numbered fallback. The number lives in the suffix so it survives
+    # truncation — each n yields a distinct slug, so this always terminates.
     n = 2
-    while slugify(f"{base}-{key}-{n}") in taken:
+    while _with_suffix(base, f"{key}-{n}") in taken:
         n += 1
-    return slugify(f"{base}-{key}-{n}")
+    return _with_suffix(base, f"{key}-{n}")
 
 
 def assign_stable_slugs(

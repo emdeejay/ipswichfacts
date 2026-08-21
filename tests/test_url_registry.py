@@ -126,6 +126,25 @@ def test_entities_without_a_stable_id_are_left_alone():
     assert items[0]["slug"] == "preexisting"
 
 
+def test_long_colliding_names_terminate_and_disambiguate():
+    """Regression for the build-hang: slugify() truncates to 80 chars, so for a
+    name whose slug already fills 80 chars the '-{id}' disambiguator was chopped
+    right back off — every candidate collapsed onto the same taken slug and
+    _pick_slug's `while ... in taken` spun forever (a long-titled pair in the
+    live feed hung the daily build for hours). Distinct ids must still yield
+    distinct, <=80-char slugs — and, the point, the call must return at all."""
+    reg = _registry()
+    name = (
+        "Ipswich City Council Nicholas Street Precinct and Ipswich Central "
+        "Redevelopment Community Consultation Findings Report"
+    )  # slugifies to well over 80 chars
+    items = _projects((name, 111, "Ipswich"), (name, 222, "Ipswich"))
+    assign_stable_slugs(reg, "project", items, lambda p: p["id"], lambda p: p["name"])
+    slugs = [p["slug"] for p in items]
+    assert len(set(slugs)) == 2, f"collision: {slugs}"
+    assert all(0 < len(s) <= 80 for s in slugs), slugs
+
+
 def test_live_registry_has_no_duplicate_slugs():
     """Two entities sharing a URL means one page silently overwrites the other
     — the bug this whole mechanism exists to kill."""
