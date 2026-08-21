@@ -205,7 +205,18 @@ redirects `shapeyouripswich.com.au` → `https://www.shapeyouripswich.com.au/`
 - **`<title>` tags** need to be human-readable and end with `— Ipswich Facts`.
 - **Meta description** should be ~150 chars, drawn from the entity's substantive content.
 - **Canonical URL** is set explicitly to `https://ipswichfacts.au/<path>/` — trailing slash matters; index.html-per-directory pattern relies on it.
-- **Sitemap** is regenerated on every build. Ping Google Search Console after deploy if the site grows meaningfully (add to workflow).
+- **Sitemap** is regenerated on every build (7.4k+ URLs, with `lastmod`).
+
+### Search-engine indexing — receipts (2026-08-21)
+
+The site had been live since 2026-07-15 but **nothing was indexed** — `site:ipswichfacts.au` returned zero pages, and Search Console showed **0 indexed / 0 clicks**. Root cause: the sitemap was **never submitted to Search Console**. Ownership was verified (the `google-site-verification` meta tag ships on every page), but verification ≠ submission — Google was never handed the URL list, so it only ever found the homepage (via a Facebook-group backlink) and left it "Crawled – currently not indexed" (normal caution for a new, low-authority domain). Fixed on 2026-08-21:
+
+1. **Submitted `https://ipswichfacts.au/sitemap.xml`** in Search Console (Indexing → Sitemaps). This is the load-bearing fix. It's a one-time human action and **self-sustaining** — Google re-fetches a submitted sitemap on its own schedule forever, using `lastmod` to spot changes. It cannot silently lapse the way it did, so there is deliberately **no sitemap-ping step in CI for Google**: Google retired the `google.com/ping?sitemap=` endpoint in 2023, and adding it would be cargo-cult.
+2. **Requested indexing** of the homepage (URL Inspection → Request Indexing) to priority-queue the front page.
+3. Expect indexing to build over **days-to-weeks** — a 5-week-old domain with ~one backlink gets a conservative crawl budget. The single highest-leverage accelerant now is **real backlinks** (Council open-data directory, local media, a Facebook/Reddit post), not more GSC buttons.
+
+- **IndexNow** (`INDEXNOW_KEY` in `build_site.py`) covers **Bing, Yandex, DuckDuckGo, Seznam — not Google** (Google doesn't participate). The build emits `/{key}.txt` and the deploy workflow's `notify` job pings IndexNow with the homepage after each deploy; the engines follow the sitemap from there. Submitting only the homepage keeps the ping non-spammy. Set `INDEXNOW_KEY = None` to disable both halves.
+- **Re-check the sitemap status in a day or two** — right after submission it read "Couldn't fetch" with an empty *Last read*, which is the normal not-yet-fetched state (the sitemap itself serves clean: 200, valid XML, robots allows it). If it's still failing after Google has actually attempted a read, that's a real signal.
 
 ## Attribution and legal
 

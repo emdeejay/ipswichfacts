@@ -120,3 +120,23 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Nudge IndexNow (Bing, Yandex, DuckDuckGo, Seznam) to recrawl after a
+  # deploy. NOT Google — Google doesn't take IndexNow; its sitemap is
+  # submitted once in Search Console and it re-fetches on its own (Google
+  # retired sitemap ping in 2023, so there is deliberately no Google step).
+  # We submit only the homepage: that's a non-spammy "something changed" hint,
+  # and the engines follow the sitemap from there. The key lives in
+  # build/build_site.py (INDEXNOW_KEY) and is emitted to /{key}.txt by the
+  # build; we read it from source here so there's one source of truth.
+  notify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ping IndexNow
+        run: |
+          KEY=$(sed -n 's/^INDEXNOW_KEY = "\([0-9a-f]*\)".*/\1/p' build/build_site.py)
+          if [ -z "$KEY" ]; then echo "IndexNow disabled (no key); skipping."; exit 0; fi
+          curl -sS -o /dev/null -w "IndexNow HTTP %{http_code}\n" \
+            "https://api.indexnow.org/indexnow?url=https://ipswichfacts.au/&key=${KEY}&keyLocation=https://ipswichfacts.au/${KEY}.txt"

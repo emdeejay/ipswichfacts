@@ -71,6 +71,15 @@ COFFEE_LABEL = "Buy me a coffee"
 # host doesn't allow TXT records). Set to None to omit the tag.
 GOOGLE_SITE_VERIFICATION = "ECKRlA4paFCOzc3-zwWE3wORqBHl6LWTEr_8z4WblYA"
 
+# IndexNow key (Bing, Yandex, DuckDuckGo, Seznam — NOT Google, which doesn't
+# participate). The key is public by design: the build writes it to
+# site/{key}.txt at the site root, and the deploy workflow pings IndexNow so
+# those engines recrawl after a deploy. Google is handled separately — its
+# sitemap is submitted once in Search Console and it re-fetches on its own;
+# Google retired sitemap ping in 2023, so there is deliberately no Google ping
+# step. Set to None to omit the key file (and drop the workflow's ping step).
+INDEXNOW_KEY = "8889012e0b29f25d34bfd900086bcdd5"
+
 # Sanity floors for --strict (used by CI before deploying).
 #
 # Every scraper parses HTML or PDFs that Council can change without notice.
@@ -2693,6 +2702,12 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
     (out / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {BASE_URL}/sitemap.xml\n"
     )
+
+    # IndexNow ownership proof: a file at the site root whose name is the key
+    # and whose body is the key. The deploy workflow pings IndexNow, and the
+    # engines fetch this to confirm we own the host before trusting the ping.
+    if INDEXNOW_KEY:
+        (out / f"{INDEXNOW_KEY}.txt").write_text(INDEXNOW_KEY + "\n")
     return urls
 
 
