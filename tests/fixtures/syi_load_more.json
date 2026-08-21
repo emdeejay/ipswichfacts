@@ -1,0 +1,267 @@
+{
+  "result": [
+    {
+      "projectID": 1553,
+      "projectName": "Rosewood Place Plan",
+      "projectDescription": "Love Rosewood? Help shape the new Rosewood Place Plan. ",
+      "projectStatus": "Open",
+      "projectPath": "https://www.shapeyouripswich.com.au/rosewood-place-plan",
+      "projectImageName": "EDM Banner Sizes  (3).png",
+      "projectImageSrc": "https://hdp-au-prod-app-ipsw-shapeyouripswich-files.s3.ap-southeast-2.amazonaws.com/thumbnails/project_list_card/8717/8159/0054/EDM_Banner_Sizes__3.png",
+      "projectImageFileID": 8987,
+      "imgOverlay": false,
+      "projectDateNum": "2026-07-14",
+      "projectDateStr": "14 July 2026",
+      "newsDateNum": null,
+      "newsDateStr": null,
+      "projectLocation": "Rosewood Thagoona Walloon",
+      "projectLocationArray": [
+        "Rosewood",
+        "Thagoona",
+        "Walloon"
+      ],
+      "projectCategory": "Animals Arts, Culture and Heritage Business and Economy City Design and Planning Community Environment, Sustainability and Climate Change Governance Health and Wellbeing Indigenous Parks and Recreation Sport Transport and Movement Waste/Resource Recovery Disaster Management Tourism",
+      "projectCategoryArray": [
+        "Animals",
+        "Arts, Culture and Heritage",
+        "Business and Economy",
+        "City Design and Planning",
+        "Community",
+        "Environment, Sustainability and Climate Change",
+        "Governance",
+        "Health and Wellbeing",
+        "Indigenous",
+        "Parks and Recreation",
+        "Sport",
+        "Transport and Movement",
+        "Waste/Resource Recovery",
+        "Disaster Management",
+        "Tourism"
+      ],
+      "projectCategories": [
+        {
+          "class": "animals",
+          "value": "Animals"
+        },
+        {
+          "class": "arts-culture-and-heritage",
+          "value": "Arts, Culture and Heritage"
+        },
+        {
+          "class": "business-and-economy",
+          "value": "Business and Economy"
+        },
+        {
+          "class": "city-design-and-planning",
+          "value": "City Design and Planning"
+        },
+        {
+          "class": "community",
+          "value": "Community"
+        },
+        {
+          "class": "environment-sustainability-and-climate-change",
+          "value": "Environment, Sustainability and Climate Change"
+        },
+        {
+          "class": "governance",
+          "value": "Governance"
+        },
+        {
+          "class": "health-and-wellbeing",
+          "value": "Health and Wellbeing"
+        },
+        {
+          "class": "indigenous",
+          "value": "Indigenous"
+        },
+        {
+          "class": "parks-and-recreation",
+          "value": "Parks and Recreation"
+        },
+        {
+          "class": "sport",
+          "value": "Sport"
+        },
+        {
+          "class": "transport-and-movement",
+          "value": "Transport and Movement"
+        },
+        {
+          "class": "wasteresource-recovery",
+          "value": "Waste/Resource Recovery"
+        },
+        {
+          "class": "disaster-management",
+          "value": "Disaster Management"
+        },
+        {
+          "class": "tourism",
+          "value": "Tourism"
+        }
+      ],
+      "projectColour": "project-colour-standard"
+    },
+    {
+      "projectID": 1554,
+      "projectName": "Ipswich Art Awards 2025",
+      "projectDescription": "Thank you to everyone who entered and attended the 2025 exhibition. The exhibition ran from 8 November 2025 to 15 November 2025.",
+      "projectStatus": "Closed",
+      "projectPath": "https://www.shapeyouripswich.com.au/ipswich-art-awards-2025",
+      "projectImageName": "EDM Banner - 2025 Art Awards.png",
+      "projectImageSrc": "https://hdp-au-prod-app-ipsw-shapeyouripswich-files.s3.ap-southeast-2.amazonaws.com/thumbnails/project_list_card/3417/6394/9503/EDM_Banner_-_2025_Art_Awards.png",
+      "projectImageFileID": 8383,
+      "imgOverlay": false,
+      "projectDateNum": "2026-06-29",
+      "projectDateStr": "29 June 2026",
+      "newsDateNum": null,
+      "newsDateStr": null,
+      "projectLocation": "Ipswich Amberley Augustine Heights Ashwell Barellan Point Basin Pocket Bellbird Park Blacksoil Blackstone Booval Brassall Brookwater Bundamba Calvert Camira Carole Park Churchill Chuwar Coalfalls Collingwood Park Deebing Heights Dinmore East Ipswich Eastern Heights Ebbw Vale Ebenezer Flinders View Gailes Goodna Goolman Grandchester Haigslea Ironbark Jeebropilly Karalee Karrabin Lanefield Leichhardt Lower Mount Walker Marburg Mount Forbes Mount Marrow Mount Mort Mount Walker West Muirlea Mutdapilly New Chum Newtown North Booval North Ipswich North Tivoli One Mile Peak Crossing Pine Mountain Purga Raceview Redbank Redbank Plains Ripley Riverview Rosewood Sadliers Crossing Silkstone South Ripley Spring Mountain Springfield Springfield Central Springfield Lakes Swanbank Tallegalla Thagoona The Bluff Tivoli Walloon West Ipswich White Rock Willowbank Woodend Woolshed Wulkuraka Yamanto",
+      "projectLocationArray": [
+        "Ipswich",
+        "Amberley",
+        "Augustine Heights",
+        "Ashwell",
+        "Barellan Point",
+        "Basin Pocket",
+        "Bellbird Park",
+        "Blacksoil",
+        "Blackstone",
+        "Booval",
+        "Brassall",
+        "Brookwater",
+        "Bundamba",
+        "Calvert",
+        "Camira",
+        "Carole Park",
+        "Churchill",
+        "Chuwar",
+        "Coalfalls",
+        "Collingwood Park",
+        "Deebing Heights",
+        "Dinmore",
+        "East Ipswich",
+        "Eastern Heights",
+        "Ebbw Vale",
+        "Ebenezer",
+        "Flinders View",
+        "Gailes",
+        "Goodna",
+        "Goolman",
+        "Grandchester",
+        "Haigslea",
+        "Ironbark",
+        "Jeebropilly",
+        "Karalee",
+        "Karrabin",
+        "Lanefield",
+        "Leichhardt",
+        "Lower Mount Walker",
+        "Marburg",
+        "Mount Forbes",
+        "Mount Marrow",
+        "Mount Mort",
+        "Mount Walker West",
+        "Muirlea",
+        "Mutdapilly",
+        "New Chum",
+        "Newtown",
+        "North Booval",
+        "North Ipswich",
+        "North Tivoli",
+        "One Mile",
+        "Peak Crossing",
+        "Pine Mountain",
+        "Purga",
+        "Raceview",
+        "Redbank",
+        "Redbank Plains",
+        "Ripley",
+        "Riverview",
+        "Rosewood",
+        "Sadliers Crossing",
+        "Silkstone",
+        "South Ripley",
+        "Spring Mountain",
+        "Springfield",
+        "Springfield Central",
+        "Springfield Lakes",
+        "Swanbank",
+        "Tallegalla",
+        "Thagoona",
+        "The Bluff",
+        "Tivoli",
+        "Walloon",
+        "West Ipswich",
+        "White Rock",
+        "Willowbank",
+        "Woodend",
+        "Woolshed",
+        "Wulkuraka",
+        "Yamanto"
+      ],
+      "projectCategory": "Arts, Culture and Heritage Tourism",
+      "projectCategoryArray": [
+        "Arts, Culture and Heritage",
+        "Tourism"
+      ],
+      "projectCategories": [
+        {
+          "class": "arts-culture-and-heritage",
+          "value": "Arts, Culture and Heritage"
+        },
+        {
+          "class": "tourism",
+          "value": "Tourism"
+        }
+      ],
+      "projectColour": "project-colour-standard"
+    },
+    {
+      "projectID": 1233,
+      "projectName": "Ripley Road & Fischer Road Upgrade",
+      "projectDescription": "See the latest information on this crucial road upgrade.",
+      "projectStatus": "Open",
+      "projectPath": "https://www.shapeyouripswich.com.au/ripley-road-fischer-road-upgrade",
+      "projectImageName": "Ripley Road Banner.PNG",
+      "projectImageSrc": "https://hdp-au-prod-app-ipsw-shapeyouripswich-files.s3.ap-southeast-2.amazonaws.com/thumbnails/project_list_card/5917/0302/8410/Ripley_Road_Banner.png",
+      "projectImageFileID": 5103,
+      "imgOverlay": false,
+      "projectDateNum": "2026-06-22",
+      "projectDateStr": "22 June 2026",
+      "newsDateNum": null,
+      "newsDateStr": null,
+      "projectLocation": "Ripley",
+      "projectLocationArray": [
+        "Ripley"
+      ],
+      "projectCategory": "Business and Economy City Design and Planning Community Transport and Movement",
+      "projectCategoryArray": [
+        "Business and Economy",
+        "City Design and Planning",
+        "Community",
+        "Transport and Movement"
+      ],
+      "projectCategories": [
+        {
+          "class": "business-and-economy",
+          "value": "Business and Economy"
+        },
+        {
+          "class": "city-design-and-planning",
+          "value": "City Design and Planning"
+        },
+        {
+          "class": "community",
+          "value": "Community"
+        },
+        {
+          "class": "transport-and-movement",
+          "value": "Transport and Movement"
+        }
+      ],
+      "projectColour": "project-colour-standard"
+    }
+  ],
+  "moreToLoad": false
+}

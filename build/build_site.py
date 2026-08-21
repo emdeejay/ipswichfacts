@@ -6,6 +6,7 @@ Reads:
     data/closures.json      (from scrape.road_closures)
     data/meetings.json      (from scrape.council_meetings)
     data/news.json          (from scrape.ipswich_first)
+    data/consultations.json (from scrape.shape_your_ipswich)
     data/capital_works/capworks-*.json  (from scrape.capital_works, committed)
 
 Writes:
@@ -15,6 +16,7 @@ Writes:
     site/street/<slug>/index.html
     site/meeting/<slug>/index.html
     site/news/<slug>/index.html
+    site/consultation/<slug>/index.html
     site/capital-works/index.html
     site/capital-works/<cycle>/index.html
     site/data/projects.json         (client widget data)
@@ -90,6 +92,7 @@ MIN_EXPECTED = {
     "capital_works_rows": 1000,  # 1,745 across four cycles
     "councillors": 9,         # Mayor + 8; fixed until the 2028 election
     "streets": 300,           # ~1,371 extracted; the joins are the whole point
+    "consultations": 100,     # ~120 top-level projects; closed ones only accrue
 }
 # Deliberately NOT floored: closures. An empty traffic dashboard is a real,
 # common state (imsRoad is often empty), not a parser failure.
@@ -349,7 +352,7 @@ def dedupe(items: list[Any], key) -> list[Any]:
 # Load
 
 
-def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
+def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     projects = json.loads((inp / "projects.json").read_text())
     closures_path = inp / "closures.json"
     closures = json.loads(closures_path.read_text()) if closures_path.exists() else {"closures": []}
@@ -380,6 +383,15 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
                 news["posts"].append(p)
     news["posts"].sort(key=lambda p: (p.get("date") or "", p.get("id") or 0), reverse=True)
 
+    # Consultations (Shape Your Ipswich): a single daily scrape covers the full
+    # top-level project list, including closed/archived ones (buried history is
+    # the point), so there's no separate committed archive to merge.
+    cons_path = inp / "consultations.json"
+    consultations = (
+        json.loads(cons_path.read_text()).get("consultations", [])
+        if cons_path.exists() else []
+    )
+
 
     # Pin URLs. Slugs come from Council-supplied names, which change; ids
     # don't. Assign once, keep forever — see the URL registry section above.
@@ -408,6 +420,15 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
         base_fn=lambda p: p.get("slug") or p.get("title") or "post",
         today=today,
     )
+    # EngagementHQ slugs are themselves stable, but pin them through the same
+    # registry (keyed on the stable projectID) so a renamed project keeps its
+    # URL and colliding names get a deterministic discriminator.
+    changed |= assign_stable_slugs(
+        registry, "consultation", consultations,
+        id_fn=lambda c: c.get("id"),
+        base_fn=lambda c: c.get("slug") or c.get("name") or "consultation",
+        today=today,
+    )
     if changed:
         save_registry(inp, registry)
 
@@ -423,7 +444,7 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
         for f in sorted((inp / "capital_works").glob("capworks-*.json"), reverse=True)
     ] if (inp / "capital_works").exists() else []
 
-    return projects, closures, meetings, news, councillors, capworks
+    return projects, closures, meetings, news, councillors, capworks, consultations
 
 
 
@@ -492,7 +513,7 @@ def _normalise_type(t: str) -> str:
 # Build the entity graph
 
 
-def build_graph(projects, closures, meetings, news, capworks) -> dict[str, Any]:
+def build_graph(projects, closures, meetings, news, capworks, consultations) -> dict[str, Any]:
     streets_set: set[str] = set()
     suburbs_set: set[str] = set()
 
@@ -537,6 +558,44 @@ def build_graph(projects, closures, meetings, news, capworks) -> dict[str, Any]:
         if len(_name_core(p.get("name"))) >= 12
     }
     project_meeting_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
+
+    # Consultations (Shape Your Ipswich). Suburbs come from Council's own
+    # structured location tags (no free-text guessing, so no false positives) —
+    # add them to the gazetteer before it's frozen below so meetings/news can
+    # match them too. Streets come from the project name/summary via the same
+    # regex as everything else, and a consultation whose name names a mapped
+    # project hangs directly off that project (same normalised-core match as
+    # meetings/news).
+    consultation_streets: dict[str, list[str]] = {}
+    consultation_suburbs: dict[str, list[str]] = {}
+    street_consultations: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    suburb_consultations: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    project_consultations: dict[str, list[dict[str, Any]]] = defaultdict(list)
+
+    for c in consultations:
+        cslug = c["slug"]
+        c_suburbs = [s for s in (c.get("suburbs") or []) if s]
+        blob = " . ".join(filter(None, [c.get("name"), c.get("summary")]))
+        c_streets = extract_streets_from_text(blob)
+        ref = {
+            "slug": cslug,
+            "name": c.get("name"),
+            "status": c.get("status"),
+            "date": c.get("date"),
+            "url": c.get("url"),
+        }
+        for s in c_suburbs:
+            suburb_consultations[s].append(ref)
+            suburbs_set.add(s)
+        for s in c_streets:
+            street_consultations[s].append(ref)
+        streets_set.update(c_streets)
+        n_blob = _norm(blob)
+        for pslug, core in project_cores.items():
+            if core in n_blob:
+                project_consultations[pslug].append(ref)
+        consultation_streets[cslug] = c_streets
+        consultation_suburbs[cslug] = c_suburbs
 
     # Meetings: streets via the regex extractor; suburbs matched against the
     # gazetteer of suburb names already known from projects + closures
@@ -693,6 +752,11 @@ def build_graph(projects, closures, meetings, news, capworks) -> dict[str, Any]:
         "street_news_items": dict(street_news_items),
         "suburb_news_items": dict(suburb_news_items),
         "project_news_items": dict(project_news_items),
+        "consultation_streets": consultation_streets,
+        "consultation_suburbs": consultation_suburbs,
+        "street_consultations": dict(street_consultations),
+        "suburb_consultations": dict(suburb_consultations),
+        "project_consultations": dict(project_consultations),
     }
 
 
@@ -775,7 +839,7 @@ def _support_html() -> str:
     )
 
 
-def render_index(projects, closures, meetings, news, graph, capworks) -> str:
+def render_index(projects, closures, meetings, news, graph, capworks, consultations) -> str:
     by_phase: dict[str, int] = defaultdict(int)
     for p in projects:
         by_phase[p.get("phase") or "Unknown"] += 1
@@ -885,6 +949,7 @@ def render_index(projects, closures, meetings, news, graph, capworks) -> str:
     <li><b>{len(active_closures)}</b><span>Active road impacts</span></li>
     <li><b>{len(meetings.get('meetings', []))}</b><span>Council meetings indexed</span></li>
     <li><b>{len(news.get('posts', []))}</b><span>Ipswich First articles</span></li>
+    <li><a href="/consultations/"><b>{len(consultations)}</b><span>Consultations tracked</span></a></li>
     {capworks_tile}
   </ul>
   {capworks_note}
@@ -899,7 +964,7 @@ def render_index(projects, closures, meetings, news, graph, capworks) -> str:
 
 <section>
   <h2>Explore</h2>
-  <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a> · <a href="/news/">Ipswich First news</a> · <a href="/capital-works/">Capital works funding</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
+  <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a> · <a href="/news/">Ipswich First news</a> · <a href="/consultations/">Consultations</a> · <a href="/capital-works/">Capital works funding</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
 </section>
 
 {_support_html()}
@@ -1304,6 +1369,125 @@ def render_news_year(year: str, posts) -> str:
     )
 
 
+_CONSULTATION_OPEN = {"Open", "Active"}
+
+
+def render_consultation(c, graph) -> str:
+    slug = c["slug"]
+    status = c.get("status")
+    is_open = status in _CONSULTATION_OPEN
+
+    cats = " · ".join(h(x) for x in c.get("categories") or [])
+    cats_html = f"<h3>Topics</h3><p>{cats}</p>" if cats else ""
+
+    suburb_links = [
+        f'<a href="/suburb/{slugify(s)}/">{h(s)}</a>'
+        for s in graph.get("consultation_suburbs", {}).get(slug, [])
+    ]
+    suburbs_html = (
+        f"<h3>Location{'s' if len(suburb_links) != 1 else ''}</h3>"
+        f'<p>{" · ".join(suburb_links)}</p>' if suburb_links else ""
+    )
+    street_links = [
+        f'<a href="/street/{slugify(s)}/">{h(s)}</a>'
+        for s in graph.get("consultation_streets", {}).get(slug, [])
+    ]
+    streets_html = (
+        f"<h3>Streets mentioned</h3><p>{' · '.join(street_links)}</p>"
+        if street_links else ""
+    )
+
+    # Council's own status wording, reproduced — not characterised.
+    if is_open:
+        status_note = (
+            '<p class="meta">This consultation is open. To take part, use the '
+            "official Shape Your Ipswich page linked below — this site mirrors "
+            "the project details only and does not collect responses.</p>"
+        )
+    else:
+        status_note = (
+            '<p class="meta">This consultation has closed. Council\'s project '
+            "page may still carry outcomes or reports — see the source link "
+            "below.</p>"
+        )
+
+    date_html = (
+        f' · Updated {h(c.get("date_str") or format_ymd(c.get("date")))}'
+        if (c.get("date_str") or c.get("date")) else ""
+    )
+
+    body = f"""
+<article class="consultation">
+  <p class="crumbs"><a href="/">Home</a> › <a href="/consultations/">Consultations</a> › {h(c.get("name"))}</p>
+  <h1>{h(c.get("name"))}</h1>
+  <p class="meta">
+    <span class="{_consultation_status_class(status)}">{h(status)}</span>{date_html}
+  </p>
+  {f'<p>{h(c.get("summary"))}</p>' if c.get("summary") else ""}
+  {status_note}
+  <div class="cols">
+    <div>
+      {cats_html}
+    </div>
+    <aside class="panel">
+      {suburbs_html}
+      {streets_html}
+      <h3>Take part / read more</h3>
+      <p><a href="{h(c.get("url"))}" rel="noopener">On Shape Your Ipswich ↗</a></p>
+    </aside>
+  </div>
+  <p class="attribution">Source: <a href="{h(c.get('source_url'))}" rel="noopener">Shape Your Ipswich (Ipswich City Council)</a> — CC BY 4.0. This site mirrors project details only; community submissions and responses are not reproduced.</p>
+</article>
+"""
+    return render_layout(
+        title=c.get("name") or "Consultation",
+        description=(c.get("summary") or c.get("name") or "")[:200],
+        path=f"/consultation/{slug}/",
+        body=body,
+    )
+
+
+def render_consultations_index(consultations) -> str:
+    open_ones = [c for c in consultations if c.get("status") in _CONSULTATION_OPEN]
+    closed_ones = [c for c in consultations if c.get("status") not in _CONSULTATION_OPEN]
+
+    def _li(c) -> str:
+        return (
+            f'<li><a href="/consultation/{c["slug"]}/">{h(c.get("name"))}</a> '
+            f'<span class="{_consultation_status_class(c.get("status"))}">{h(c.get("status"))}</span> '
+            f'<span class="muted">{h(format_ymd(c.get("date")))}</span></li>'
+        )
+
+    open_html = ""
+    if open_ones:
+        open_html = (
+            "<h2>Open for input now</h2><ul class='biglist'>"
+            + "".join(_li(c) for c in open_ones) + "</ul>"
+        )
+    closed_html = ""
+    if closed_ones:
+        closed_html = (
+            f"<h2>Closed consultations ({len(closed_ones)})</h2>"
+            "<p class='meta'>Kept on file — the record of what Council asked about, and when.</p>"
+            "<ul class='biglist'>" + "".join(_li(c) for c in closed_ones) + "</ul>"
+        )
+
+    body = f"""
+<p class="crumbs"><a href="/">Home</a> › Consultations</p>
+<h1>Shape Your Ipswich consultations</h1>
+<p class="meta">Community consultation and engagement projects published by Ipswich City Council on Shape Your Ipswich, newest first. Open projects are shown first; closed ones are kept as a record. This site mirrors project details only — to have your say, use Council's own page.</p>
+{open_html}
+{closed_html}
+<p class="attribution">Source: <a href="https://www.shapeyouripswich.com.au/" rel="noopener">Shape Your Ipswich (Ipswich City Council)</a> — CC BY 4.0.</p>
+"""
+    return render_layout(
+        title="Shape Your Ipswich consultations",
+        description="Every Ipswich City Council community consultation on Shape Your Ipswich, open and closed, searchable and cross-referenced by suburb and street.",
+        path="/consultations/",
+        body=body,
+    )
+
+
 def render_street(name, projects, closures, graph) -> str:
     slug = slugify(name)
     matching_projects = [p for p in projects if name in graph["project_streets"].get(p["slug"], [])]
@@ -1337,8 +1521,9 @@ def render_street(name, projects, closures, graph) -> str:
 
     meet_html = _meeting_mentions_html(graph["street_meeting_items"].get(name, []))
     news_html = _news_mentions_html(graph.get("street_news_items", {}).get(name, []))
+    cons_html = _consultation_mentions_html(graph.get("street_consultations", {}).get(name, []))
 
-    empty = "" if (matching_projects or matching_closures or meet_html or news_html) else "<p>No projects, road impacts, Council meeting or news mentions recorded on this street.</p>"
+    empty = "" if (matching_projects or matching_closures or meet_html or news_html or cons_html) else "<p>No projects, road impacts, Council meeting, consultation or news mentions recorded on this street.</p>"
 
     body = f"""
 <article>
@@ -1347,6 +1532,7 @@ def render_street(name, projects, closures, graph) -> str:
   <p class="meta">Everything Council has published for this street.</p>
   {proj_html}
   {clos_html}
+  {cons_html}
   {meet_html}
   {news_html}
   {empty}
@@ -1431,6 +1617,46 @@ def _news_mentions_html(refs: list[dict[str, Any]]) -> str:
     )
 
 
+def _consultation_status_class(status: str | None) -> str:
+    return "cons-" + slugify(status or "unknown")
+
+
+def _consultation_mentions_html(refs: list[dict[str, Any]]) -> str:
+    """Shared 'Consultations' section for street/suburb pages — same shape as
+    the meeting/news mentions helpers."""
+    if not refs:
+        return ""
+    # Deduped (a consultation can be tagged to a suburb once) and open first,
+    # then newest.
+    seen: set[str] = set()
+    uniq = []
+    for r in refs:
+        if r["slug"] not in seen:
+            seen.add(r["slug"])
+            uniq.append(r)
+    # Stable sort: newest first, then bring open consultations to the top.
+    order = {"Open": 0, "Active": 1}
+    uniq.sort(key=lambda r: r.get("date") or "", reverse=True)
+    uniq.sort(key=lambda r: order.get(r.get("status"), 2))
+    shown = uniq[:_MENTIONS_CAP]
+    rows = "".join(
+        f'<tr><td><a href="/consultation/{r["slug"]}/">{h(r.get("name"))}</a></td>'
+        f'<td><span class="{_consultation_status_class(r.get("status"))}">'
+        f'{h(r.get("status"))}</span></td>'
+        f'<td>{h(format_ymd(r.get("date")))}</td></tr>'
+        for r in shown
+    )
+    more = (
+        f"<p class='muted'>Showing {len(shown)} of {len(uniq)} consultations.</p>"
+        if len(uniq) > len(shown) else ""
+    )
+    return (
+        f"<h2>Have your say — consultations ({len(uniq)})</h2>"
+        "<table class='data'><thead><tr><th>Consultation</th><th>Status</th>"
+        f"<th>Updated</th></tr></thead><tbody>{rows}</tbody></table>{more}"
+    )
+
+
 def render_suburb(name, projects, closures, graph) -> str:
     slug = slugify(name)
     matching_projects = [p for p in projects if p.get("suburb") == name]
@@ -1463,6 +1689,7 @@ def render_suburb(name, projects, closures, graph) -> str:
 
     meet_html = _meeting_mentions_html(graph["suburb_meeting_items"].get(name, []))
     news_html = _news_mentions_html(graph.get("suburb_news_items", {}).get(name, []))
+    cons_html = _consultation_mentions_html(graph.get("suburb_consultations", {}).get(name, []))
 
     body = f"""
 <article>
@@ -1470,6 +1697,7 @@ def render_suburb(name, projects, closures, graph) -> str:
   <h1>{h(name)}</h1>
   {proj_html or "<p>No projects recorded for this suburb.</p>"}
   {clos_html}
+  {cons_html}
   {meet_html}
   {news_html}
   {_planningalerts_html(name)}
@@ -2200,9 +2428,8 @@ def render_about() -> str:
   <li><a href="https://ipswich.infocouncil.biz/">Council business papers</a> — meeting agendas and minutes, item by item.</li>
   <li><a href="https://www.ipswichfirst.com.au/">Ipswich First</a> — Council's media releases, back to 2017.</li>
   <li><a href="https://www.ipswich.qld.gov.au/About-Council/Media-and-Publications/Corporate-Publications">Capital Works Program PDFs</a> — per-project funding by financial year, one program per budget cycle.</li>
+  <li><a href="https://www.shapeyouripswich.com.au/">Shape Your Ipswich</a> — Council's community consultation and engagement projects, open and closed. Project details only; community submissions and responses are not reproduced.</li>
 </ul>
-
-<p>More sources — Shape Your Ipswich consultations — will be added.</p>
 
 <h2>Licence</h2>
 <p>Council content is published under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. This site preserves attribution and links back to the Council source for every item reproduced.</p>
@@ -2252,7 +2479,7 @@ Council or anyone in it.</p>
 # Write
 
 
-def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -> list[str]:
+def write_site(out: Path, projects, closures, meetings, news, graph, capworks, consultations) -> list[str]:
     """Write all pages. Returns the list of URL paths for sitemap."""
     # Best-effort clean (overwrites are always fine; deletion may fail on
     # read-only mounts, in which case we just overwrite in place).
@@ -2283,7 +2510,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
         urls.append((path, lastmod if lastmod and re.fullmatch(r"\d{4}-\d{2}-\d{2}", lastmod) else None))
 
     # Landing
-    write("/", render_index(projects, closures, meetings, news, graph, capworks))
+    write("/", render_index(projects, closures, meetings, news, graph, capworks, consultations))
 
     # Projects
     write("/projects/", render_projects_list(projects))
@@ -2322,6 +2549,14 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
     for p in news_posts:
         write(f"/news/{p['slug']}/", render_news_post(p, graph),
               lastmod=(p.get("modified") or p.get("date") or "")[:10] or None)
+
+    # Consultations (Shape Your Ipswich). One index plus one page per project,
+    # open and closed alike.
+    if consultations:
+        write("/consultations/", render_consultations_index(consultations))
+        for c in consultations:
+            write(f"/consultation/{c['slug']}/", render_consultation(c, graph),
+                  lastmod=c.get("date"))
 
     # Capital works: one index page plus one page per budget cycle. The data
     # is committed (refreshed once a year), so these always build.
@@ -2396,6 +2631,19 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks) -
         if (p.get("date") or "")[:4] not in news_recent_years
     ]
     (out / "data" / "news-archive.json").write_text(json.dumps(archive_news))
+    # Consultations: small enough (~120) to index in full, no archive split.
+    # Slug, name, status and date only — the summary lives in the static page.
+    slim_consultations = [
+        {
+            "slug": c["slug"],
+            "name": c.get("name"),
+            "status": c.get("status"),
+            "date": c.get("date"),
+            "suburbs": c.get("suburbs") or [],
+        }
+        for c in consultations
+    ]
+    (out / "data" / "consultations.json").write_text(json.dumps(slim_consultations))
     slim_news_slugs = {p["slug"] for p in slim_news}
     mentions = {
         "project_streets": graph["project_streets"],
@@ -2543,6 +2791,10 @@ table.data th { color: var(--muted); font-weight: 600; }
 .doc-type { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 3px; font-size: 0.8rem; }
 .doc-type-min { background: #e8f6ec; color: #005238; }
 .doc-type-agn { background: #e5f5ff; color: #003f88; }
+[class^="cons-"] { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 3px; font-size: 0.8rem; }
+.cons-open { background: #e8f6ec; color: #005238; }
+.cons-active { background: #e5f5ff; color: #003f88; }
+.cons-closed { background: #efefef; color: #666; }
 .meeting-item { border-top: 1px solid var(--line); margin-top: 1.5rem; }
 .meeting-item h2 { border-bottom: none; font-size: 1.15rem; }
 .meeting-item h2 a { color: inherit; text-decoration: none; }
@@ -2626,14 +2878,15 @@ async function loadData() {
   // Only what the search index actually reads. mentions.json and closures.json
   // are still published as open data under /data/ — they're just not something
   // a visitor should download to type in a search box.
-  const [projects, streets, suburbs, meetings, news] = await Promise.all([
+  const [projects, streets, suburbs, meetings, news, consultations] = await Promise.all([
     fetch(`${DATA_BASE}/projects.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/streets.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/suburbs.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/meetings.json`).then(r => r.json()).catch(() => []),
     fetch(`${DATA_BASE}/news.json`).then(r => r.json()).catch(() => []),
+    fetch(`${DATA_BASE}/consultations.json`).then(r => r.json()).catch(() => []),
   ]);
-  return { projects, streets, suburbs, meetings, news };
+  return { projects, streets, suburbs, meetings, news, consultations };
 }
 
 function slugify(s) {
@@ -2653,6 +2906,10 @@ function buildIndex(data) {
   }
   for (const n of data.news) {
     items.push({ kind: 'news', label: `${n.title} — ${n.date}`, href: `/news/${n.slug}/`, hay: (n.title + ' ' + n.date).toLowerCase() });
+  }
+  for (const c of data.consultations || []) {
+    const subs = (c.suburbs || []).join(' ');
+    items.push({ kind: 'consultation', label: `${c.name} (${c.status})`, href: `/consultation/${c.slug}/`, hay: (c.name + ' ' + (c.status || '') + ' ' + subs).toLowerCase() });
   }
   return items;
 }
@@ -2766,15 +3023,16 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    projects, closures, meetings, news, councillors, capworks = load(args.data)
+    projects, closures, meetings, news, councillors, capworks, consultations = load(args.data)
     print(
         f"Loaded {len(projects)} projects, {len(closures.get('closures', []))} closures, "
         f"{len(meetings.get('meetings', []))} meetings, {len(news.get('posts', []))} news posts, "
-        f"{len(councillors)} councillors, {len(capworks)} capital works cycles",
+        f"{len(councillors)} councillors, {len(capworks)} capital works cycles, "
+        f"{len(consultations)} consultations",
         file=sys.stderr,
     )
 
-    graph = build_graph(projects, closures, meetings, news, capworks)
+    graph = build_graph(projects, closures, meetings, news, capworks, consultations)
     matched, total_rows = graph.get("capworks_match", (0, 0))
     if total_rows:
         print(
@@ -2799,6 +3057,7 @@ def main() -> int:
             "capital_works_rows": total_rows,
             "councillors": len(councillors),
             "streets": len(graph["streets"]),
+            "consultations": len(consultations),
         }
         failures = check_data_sanity(counts)
         if failures:
@@ -2832,7 +3091,7 @@ def main() -> int:
                   "timestamp to age-check.", file=sys.stderr)
             return 1
 
-    urls = write_site(args.out, projects, closures, meetings, news, graph, capworks)
+    urls = write_site(args.out, projects, closures, meetings, news, graph, capworks, consultations)
     print(f"Wrote {len(urls)} pages to {args.out}", file=sys.stderr)
     return 0
 

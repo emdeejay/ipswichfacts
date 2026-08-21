@@ -2,7 +2,7 @@
 
 Public Ipswich City Council data — projects, closures, mentions — joined up and made searchable, then published as a plain static site so Google can index the joined view.
 
-Status: **working prototype**. Five data sources plumbed end-to-end (Civic Projects + live road closures + Council meeting agendas/minutes + Ipswich First media releases + Capital Works Program budgets). Everything else on the roadmap is a bolt-on that follows the same shape.
+Status: **working prototype**. Six data sources plumbed end-to-end (Civic Projects + live road closures + Council meeting agendas/minutes + Ipswich First media releases + Capital Works Program budgets + Shape Your Ipswich consultations). Everything else on the roadmap is a bolt-on that follows the same shape.
 
 ## What it is
 
@@ -38,16 +38,17 @@ make serve
 | Council meetings (agendas + minutes) | `https://ipswich.infocouncil.biz/` index → `Open/YYYY/MM/*_WEB.htm` framesets | ~100 meetings/year, per-item text + resolutions; 2020–2025 archive committed in `data/archive/` | Daily (current year); archive scraped once |
 | Ipswich First media releases | `https://www.ipswichfirst.com.au/wp-json/wp/v2/posts` (WordPress REST API) | ~4,900 posts back to 2017, plain-text body + categories; 2017–2025 archive committed in `data/archive/` | Daily (current year); archive scraped once |
 | Capital Works Programs | One PDF per budget cycle, linked from `.../Corporate-Publications/Budget-YYYY-YYYY`; parsed with `pdfplumber` | ~380–470 projects/cycle with funding by financial year; 2023-2024 → 2026-2027 committed in `data/capital_works/` (2026-27 marks funded years with ● instead of amounts) | Yearly (`make backfill-capworks` when the new budget drops) |
+| Shape Your Ipswich consultations | `https://www.shapeyouripswich.com.au/projects` → per-block JSON `load_more` endpoint (Granicus EngagementHQ) | ~120 top-level consultation projects (open + closed), with Council's summary, status, suburbs and categories — project metadata only, no community submissions | Daily |
 
 Endpoints were discovered by inspecting the Council apps' network traffic; both return plain JSON (once double-decoded for the traffic feed) and can be scraped with `httpx`.
 
 ## Roadmap (not yet built)
 
-Same shape as above, just more sources:
-
-- **Shape Your Ipswich** — Granicus EngagementHQ. HTML scrape per project page.
-
-Add each as a new file in `scrape/`, extend the `build_site.py` graph to consume it, generate more page templates. No architectural changes required.
+Same shape as above, just more sources. The scaffolding is proven; adding a
+source means a new file in `scrape/`, extending the `build_site.py` graph to
+consume it, and generating more page templates. No architectural changes
+required. (The last roadmap item, Shape Your Ipswich consultations, is now
+built — see `scrape/shape_your_ipswich.py`.)
 
 ## Project layout
 

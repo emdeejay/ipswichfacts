@@ -4,6 +4,7 @@ data/projects.json
 data/closures.json
 data/meetings.json
 data/news.json
+data/consultations.json
 
 # python
 __pycache__/

@@ -57,6 +57,9 @@ jobs:
           python -m scrape.road_closures --out data/closures.json
           python -m scrape.council_meetings --out data/meetings.json
           python -m scrape.ipswich_first --out data/news.json
+          # Shape Your Ipswich consultations — daily (not time-sensitive like
+          # closures, so not in the hourly refresh).
+          python -m scrape.shape_your_ipswich --out data/consultations.json
 
       # The hourly closures workflow reuses this instead of re-hitting
       # infocouncil every hour (that would be ~4k requests/day at Council).
@@ -73,6 +76,14 @@ jobs:
         with:
           path: data/news.json
           key: news-${{ github.run_id }}
+
+      # And Shape Your Ipswich — the hourly build reuses today's consultations
+      # instead of re-hitting EngagementHQ every hour.
+      - name: Cache consultations data for hourly builds
+        uses: actions/cache/save@v4
+        with:
+          path: data/consultations.json
+          key: consultations-${{ github.run_id }}
 
       - name: Build
         # --strict: refuse to publish if a scraper silently returned nothing

@@ -134,6 +134,63 @@ Standard WP REST API. Paginate; `x-wp-totalpages` header tells you when to stop 
 - **Categories** are ids; one request to `/wp-json/wp/v2/categories?per_page=100` gives the id→name map (27 categories, single page).
 - Same immutable-history pattern as meetings: `data/archive/news-YYYY.json` committed once per past year, `data/news.json` (current year) scraped daily and gitignored.
 
+### Shape Your Ipswich (Granicus EngagementHQ) — GET (scrape/shape_your_ipswich.py)
+
+Community-consultation site, "the Hive" theme on Granicus EngagementHQ. Host
+redirects `shapeyouripswich.com.au` → `https://www.shapeyouripswich.com.au/`
+(302) — always use the `www.` host.
+
+- **No public REST API.** `/api/v2/projects`, `/projects.json` etc. all 404.
+- **But there IS a clean JSON feed** — the one the `/projects` page's "Show
+  more" button calls. Each `<section class="projects-list" data-route="…">`
+  block carries its own load-more route:
+
+  ```
+  https://www.shapeyouripswich.com.au/ccm/the_hive_projects/tools/
+      the_hive_projects_list/load_more/{blockID}?page=N
+      -> { "result": [ {project}, … ], "moreToLoad": bool }
+  ```
+
+  The front-end (`packages/the_hive_projects/js/hive-projects-list.js`) starts
+  at `page=0` and increments while `moreToLoad` is true. Currently every block
+  returns its whole set on page 0 (`moreToLoad:false`), but the scraper paginates
+  defensively. There are **three list blocks** — one each for the Open, Active
+  and Closed project groups — so fetch all three routes and de-dupe by
+  `projectID`. Discover the routes from the `/projects` HTML; don't hardcode the
+  numeric block ids (Council can change them).
+- **Each `result` item is fully-formed JSON**, no HTML parsing needed:
+  `projectID` (stable int), `projectName`, `projectDescription` (Council's own
+  one-line summary), `projectStatus` (`Open`|`Active`|`Closed`), `projectPath`
+  (canonical URL — last path segment is the stable EngagementHQ slug),
+  `projectDateNum`/`projectDateStr` (a recency/last-activity date; spans 2022→now,
+  correlates with status), `projectLocationArray` (**gazetted Ipswich suburb
+  names — the primary suburb join key**, clean and structured, no free-text
+  guessing), `projectCategoryArray` (one category has an escaped slash,
+  `Waste/Resource Recovery`). Verified 17 Jul 2026: 120 top-level projects
+  (9 Open, 23 Active, 88 Closed). 22 of them are tagged with all ~81 LGA suburbs
+  (i.e. "citywide") — faithful, so kept; the mentions cap (50) stops any one
+  suburb page ballooning.
+- **Enumeration: use this feed, NOT the sitemap or the HTML cards.** The card
+  markup (`data-project-location` / `data-project-category` as entity-encoded
+  JSON) is a fallback if the feed ever dies. The homepage lists only ~22
+  *featured* projects. `sitemap.xml` returns 544 locs, but ~408 of them are
+  project sub-pages (news updates, event/pop-up RSVP pages, survey tool pages)
+  and business-workshop blog posts — **not** top-level consultations. The
+  load-more feed is the authoritative top-level list; the sitemap is only a
+  cross-check.
+- **Invariant 8 (no UGC) — why listing-only, never the project pages.**
+  EngagementHQ project pages are built around resident surveys, comments,
+  guestbooks, forums and contributions (a single page carries dozens of
+  `comment`/`survey`/`contribution`/`moderation` markers). This listing feed is
+  the one surface that exposes *only* Council-authored project metadata, so it's
+  both sufficient and the safe choice. And fetching the page wouldn't even help:
+  a project page's only clean Council-authored text is its `<meta
+  og:description>`, which is byte-for-byte the `projectDescription` already in
+  the feed. `normalise_project()` whitelists fields (never passthrough) so no
+  future UGC field can leak through.
+- Status wording is Council's own (`Open`/`Active` = taking input, `Closed` =
+  archived); reproduced verbatim, never characterised.
+
 ## Data-model gotchas
 
 - **Division fields** come through as `DIVISION 1`, `DIVISION 2`, `DIVISION 3`, `DIVISION 4` — with a space, uppercase. Values are `"T"` (in division) or `null`. Only 4 divisions on the map layer even though the LGA has more councillors — because the map is scoped to civic-project reporting. Full councillor mapping requires a separate scrape.

@@ -45,6 +45,7 @@ scrape:
 	python3 -m scrape.road_closures --out data/closures.json
 	python3 -m scrape.council_meetings --out data/meetings.json
 	python3 -m scrape.ipswich_first --out data/news.json
+	python3 -m scrape.shape_your_ipswich --out data/consultations.json
 
 build:
 	python3 -m build.build_site --data data --out site
@@ -55,6 +56,7 @@ sample:
 	cp data/sample/closures.json data/closures.json
 	cp data/sample/meetings.json data/meetings.json
 	cp data/sample/news.json data/news.json
+	cp data/sample/consultations.json data/consultations.json
 	python3 -m build.build_site --data data --out site
 
 serve:
@@ -62,4 +64,4 @@ serve:
 
 clean:
 	rm -rf site/*
-	rm -f data/projects.json data/closures.json data/meetings.json data/news.json
+	rm -f data/projects.json data/closures.json data/meetings.json data/news.json data/consultations.json

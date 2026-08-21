@@ -1,0 +1,295 @@
+{
+  "scraped_at": "2026-07-17T10:38:18.459535+00:00",
+  "consultations": [
+    {
+      "id": 1391,
+      "slug": "ipswich-central-heart",
+      "name": "Designing the heart of Ipswich Central",
+      "summary": "Help us shape the design of Ipswich Central.",
+      "status": "Open",
+      "date": "2026-07-17",
+      "date_str": "17 July 2026",
+      "suburbs": [
+        "Ipswich"
+      ],
+      "categories": [
+        "Arts, Culture and Heritage",
+        "Business and Economy",
+        "City Design and Planning",
+        "Community",
+        "Transport and Movement"
+      ],
+      "url": "https://www.shapeyouripswich.com.au/ipswich-central-heart",
+      "source_url": "https://www.shapeyouripswich.com.au/ipswich-central-heart"
+    },
+    {
+      "id": 1233,
+      "slug": "ripley-road-fischer-road-upgrade",
+      "name": "Ripley Road & Fischer Road Upgrade",
+      "summary": "See the latest information on this crucial road upgrade.",
+      "status": "Open",
+      "date": "2026-06-22",
+      "date_str": "22 June 2026",
+      "suburbs": [
+        "Ripley"
+      ],
+      "categories": [
+        "Business and Economy",
+        "City Design and Planning",
+        "Community",
+        "Transport and Movement"
+      ],
+      "url": "https://www.shapeyouripswich.com.au/ripley-road-fischer-road-upgrade",
+      "source_url": "https://www.shapeyouripswich.com.au/ripley-road-fischer-road-upgrade"
+    },
+    {
+      "id": 1497,
+      "slug": "paperbark-flats-upgrade",
+      "name": "Paperbark Flats upgrade",
+      "summary": "Community engagement report and summary now available.",
+      "status": "Active",
+      "date": "2026-07-09",
+      "date_str": "9 July 2026",
+      "suburbs": [
+        "Redbank Plains",
+        "White Rock"
+      ],
+      "categories": [
+        "Community",
+        "Environment, Sustainability and Climate Change",
+        "Indigenous",
+        "Parks and Recreation",
+        "Tourism"
+      ],
+      "url": "https://www.shapeyouripswich.com.au/paperbark-flats-upgrade",
+      "source_url": "https://www.shapeyouripswich.com.au/paperbark-flats-upgrade"
+    },
+    {
+      "id": 1488,
+      "slug": "school-road-upgrade",
+      "name": "School Road Upgrade",
+      "summary": "Creating a more connected School Road to meet community and transport needs.",
+      "status": "Active",
+      "date": "2026-07-07",
+      "date_str": "7 July 2026",
+      "suburbs": [
+        "Ipswich"
+      ],
+      "categories": [
+        "Business and Economy",
+        "City Design and Planning",
+        "Community",
+        "Environment, Sustainability and Climate Change",
+        "Transport and Movement"
+      ],
+      "url": "https://www.shapeyouripswich.com.au/school-road-upgrade",
+      "source_url": "https://www.shapeyouripswich.com.au/school-road-upgrade"
+    },
+    {
+      "id": 1400,
+      "slug": "western-growth-corridor",
+      "name": "Western Growth Corridor",
+      "summary": "Community Engagement Report and Summary now available.",
+      "status": "Active",
+      "date": "2026-06-10",
+      "date_str": "10 June 2026",
+      "suburbs": [
+        "Rosewood",
+        "Tallegalla",
+        "Thagoona",
+        "Walloon"
+      ],
+      "categories": [
+        "City Design and Planning",
+        "Community"
+      ],
+      "url": "https://www.shapeyouripswich.com.au/western-growth-corridor",
+      "source_url": "https://www.shapeyouripswich.com.au/western-growth-corridor"
+    },
+    {
+      "id": 1270,
+      "slug": "bell-street-overpass-removal-project",
+      "name": "Bell Street Overpass Removal Project",
+      "summary": "On behalf of the State Government, Ipswich City Council removed the Bell Street Overpass between March and June 2024. This project has been completed.",
+      "status": "Closed",
+      "date": "2026-06-11",
+      "date_str": "11 June 2026",
+      "suburbs": [
+        "Ipswich"
+      ],
+      "categories": [
+        "Business and Economy",
+        "City Design and Planning",
+        "Community",
+        "Transport and Movement"
+      ],
+      "url": "https://www.shapeyouripswich.com.au/bell-street-overpass-removal-project",
+      "source_url": "https://www.shapeyouripswich.com.au/bell-street-overpass-removal-project"
+    },
+    {
+      "id": 1353,
+      "slug": "old-tallegalla-school",
+      "name": "Old Tallegalla School",
+      "summary": "Thank you to everyone for providing your feedback. See project outcomes.",
+      "status": "Closed",
+      "date": "2026-04-28",
+      "date_str": "28 Apr 2026",
+      "suburbs": [
+        "Tallegalla"
+      ],
+      "categories": [
+        "Arts, Culture and Heritage",
+        "City Design and Planning",
+        "Community"
+      ],
+      "url": "https://www.shapeyouripswich.com.au/old-tallegalla-school",
+      "source_url": "https://www.shapeyouripswich.com.au/old-tallegalla-school"
+    },
+    {
+      "id": 1346,
+      "slug": "welcome-ipswich-central-business-incentive-program",
+      "name": "Welcome to Ipswich Central: Business Incentive Program",
+      "summary": "Thank you to everyone for providing your feedback. See project outcomes.",
+      "status": "Closed",
+      "date": "2025-10-22",
+      "date_str": "22 Oct 2025",
+      "suburbs": [
+        "Ipswich"
+      ],
+      "categories": [
+        "Business and Economy",
+        "City Design and Planning"
+      ],
+      "url": "https://www.shapeyouripswich.com.au/welcome-ipswich-central-business-incentive-program",
+      "source_url": "https://www.shapeyouripswich.com.au/welcome-ipswich-central-business-incentive-program"
+    },
+    {
+      "id": 1478,
+      "slug": "local-law-review",
+      "name": "Local Law Review",
+      "summary": "Thank you to everyone for sharing your feedback. See project outcomes.",
+      "status": "Closed",
+      "date": "2026-07-16",
+      "date_str": "16 July 2026",
+      "suburbs": [
+        "Ipswich",
+        "Amberley",
+        "Augustine Heights",
+        "Ashwell",
+        "Barellan Point",
+        "Basin Pocket",
+        "Bellbird Park",
+        "Blacksoil",
+        "Blackstone",
+        "Booval",
+        "Brassall",
+        "Brookwater",
+        "Bundamba",
+        "Calvert",
+        "Camira",
+        "Carole Park",
+        "Churchill",
+        "Chuwar",
+        "Coalfalls",
+        "Collingwood Park",
+        "Deebing Heights",
+        "Dinmore",
+        "East Ipswich",
+        "Eastern Heights",
+        "Ebbw Vale",
+        "Ebenezer",
+        "Flinders View",
+        "Gailes",
+        "Goodna",
+        "Goolman",
+        "Grandchester",
+        "Haigslea",
+        "Ironbark",
+        "Jeebropilly",
+        "Karalee",
+        "Karrabin",
+        "Lanefield",
+        "Leichhardt",
+        "Lower Mount Walker",
+        "Marburg",
+        "Mount Forbes",
+        "Mount Marrow",
+        "Mount Mort",
+        "Mount Walker West",
+        "Muirlea",
+        "Mutdapilly",
+        "New Chum",
+        "Newtown",
+        "North Booval",
+        "North Ipswich",
+        "North Tivoli",
+        "One Mile",
+        "Peak Crossing",
+        "Pine Mountain",
+        "Purga",
+        "Raceview",
+        "Redbank",
+        "Redbank Plains",
+        "Ripley",
+        "Riverview",
+        "Rosewood",
+        "Sadliers Crossing",
+        "Silkstone",
+        "South Ripley",
+        "Spring Mountain",
+        "Springfield",
+        "Springfield Central",
+        "Springfield Lakes",
+        "Swanbank",
+        "Tallegalla",
+        "Thagoona",
+        "The Bluff",
+        "Tivoli",
+        "Walloon",
+        "West Ipswich",
+        "White Rock",
+        "Willowbank",
+        "Woodend",
+        "Woolshed",
+        "Wulkuraka",
+        "Yamanto"
+      ],
+      "categories": [
+        "Animals",
+        "Arts, Culture and Heritage",
+        "Business and Economy",
+        "City Design and Planning",
+        "Community",
+        "Environment, Sustainability and Climate Change",
+        "Governance",
+        "Health and Wellbeing",
+        "Indigenous",
+        "Parks and Recreation",
+        "Sport",
+        "Transport and Movement",
+        "Waste/Resource Recovery",
+        "Disaster Management",
+        "Tourism"
+      ],
+      "url": "https://www.shapeyouripswich.com.au/local-law-review",
+      "source_url": "https://www.shapeyouripswich.com.au/local-law-review"
+    },
+    {
+      "id": 1518,
+      "slug": "renaming-nsp-carpark",
+      "name": "Renaming Nicholas Street Precinct Carpark",
+      "summary": "Thank you to everyone for providing your feedback. See project outcomes.",
+      "status": "Closed",
+      "date": "2026-06-02",
+      "date_str": "2 June 2026",
+      "suburbs": [],
+      "categories": [
+        "Business and Economy",
+        "City Design and Planning",
+        "Transport and Movement"
+      ],
+      "url": "https://www.shapeyouripswich.com.au/renaming-nsp-carpark",
+      "source_url": "https://www.shapeyouripswich.com.au/renaming-nsp-carpark"
+    }
+  ]
+}
