@@ -49,6 +49,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote_plus
 
 from scrape.extract_mentions import Extractor
 
@@ -1560,7 +1561,7 @@ def render_street(name, projects, closures, graph) -> str:
   {meet_html}
   {news_html}
   {empty}
-  {_planningalerts_html(name)}
+  {_planningalerts_html(name, near=f"{name}, Ipswich, Queensland")}
 </article>
 """
     return render_layout(
@@ -1578,19 +1579,30 @@ _MENTIONS_CAP = 50
 PLANNINGALERTS_URL = "https://www.planningalerts.org.au/"
 
 
-def _planningalerts_html(what: str) -> str:
+def _planningalerts_html(what: str, near: str | None = None) -> str:
     """Invariant 7: PlanningAlerts owns development applications — we don't
     scrape or republish them. The other half of that invariant is actually
     pointing people there; a resident checking what's happening on their
     street usually wants DAs too, and silence here just sends them back to
-    the five Council tabs this site exists to replace."""
+    the five Council tabs this site exists to replace.
+
+    Deep-link to DAs *near this place* rather than PlanningAlerts' national
+    homepage: their public `/applications/address?address=` endpoint geocodes
+    a place string and lists applications within 2 km (and offers email
+    alerts). `near` is that geocode string — a suburb reads well on its own
+    ("Ripley QLD"); a street needs the LGA to disambiguate ("Fischer Road,
+    Ipswich, Queensland"). It degrades gracefully: an address PlanningAlerts
+    can't place just lands on their search box, no worse than the old link.
+    (Their full-text `/applications/search` is access-gated, so not that.)"""
+    loc = near or what
+    url = f"{PLANNINGALERTS_URL}applications/address?address={quote_plus(loc)}#results"
     return (
         '<aside class="seealso">'
         "<h2>Development applications</h2>"
         f"<p>This site doesn't cover development applications for {h(what)}. "
-        '<a href="' + h(PLANNINGALERTS_URL) + '" rel="noopener">PlanningAlerts</a>'
-        " does it properly — it's a free service from the OpenAustralia "
-        "Foundation that emails you when someone applies to build near you.</p>"
+        f'<a href="{h(url)}" rel="noopener">See DAs near {h(what)} on PlanningAlerts</a>'
+        " — a free service from the OpenAustralia Foundation that also emails "
+        "you when someone applies to build nearby.</p>"
         "</aside>"
     )
 
@@ -1724,7 +1736,7 @@ def render_suburb(name, projects, closures, graph) -> str:
   {cons_html}
   {meet_html}
   {news_html}
-  {_planningalerts_html(name)}
+  {_planningalerts_html(name, near=f"{name} QLD")}
 </article>
 """
     return render_layout(
