@@ -215,6 +215,28 @@ def test_sitemap_carries_real_lastmod_only():
         assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", m), m
 
 
+def test_llms_txt_points_at_data_and_carries_the_boundaries():
+    """llms.txt is the curated entry point for AIs. It must point at the JSON
+    API, keep the unofficial framing, and carry the invariants in as boundaries
+    — an AI reasoning over the site should inherit the same guardrails a page
+    reader gets, not a looser version."""
+    from build.build_site import _llms_txt
+
+    txt = _llms_txt()
+    # leads with the machine-readable data, not just pages
+    assert "/data/development_applications.json" in txt
+    assert "/data/projects.json" in txt
+    assert "sitemap.xml" in txt
+    # provenance / framing
+    assert "unofficial" in txt.lower()
+    assert "source of truth" in txt.lower()
+    assert "CC BY 4.0" in txt
+    # the invariant boundaries an AI must respect
+    assert "snapshot" in txt.lower()               # closures are not live
+    assert "same financial year" in txt.lower()    # budget comparison rule
+    assert "not reproduced" in txt.lower() or "NOT reproduced" in txt  # DA limits
+
+
 def test_pages_have_a_social_card():
     html = render_layout("T", "D", "/", "<p>b</p>")
     assert 'property="og:image" content="https://ipswichfacts.au/og-image.png"' in html

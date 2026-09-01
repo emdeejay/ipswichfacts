@@ -30,6 +30,7 @@ Writes:
     site/data/suburbs.json
     site/sitemap.xml
     site/robots.txt
+    site/llms.txt                   (curated entry point for LLMs/agents)
     site/css/site.css
     site/js/widget.js
 
@@ -2863,6 +2864,13 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         f"User-agent: *\nAllow: /\nSitemap: {BASE_URL}/sitemap.xml\n"
     )
 
+    # llms.txt: a curated entry point for LLMs/agents (emerging convention).
+    # The site's SEO-friendly shape — stable per-entity URLs, an open JSON API,
+    # verbatim data linked to source — is also what makes it good to reason
+    # over, so point models straight at the data and carry the invariants in as
+    # boundaries. Like robots.txt, a root file; deliberately NOT in the sitemap.
+    (out / "llms.txt").write_text(_llms_txt())
+
     # IndexNow ownership proof: a file at the site root whose name is the key
     # and whose body is the key. The deploy workflow pings IndexNow, and the
     # engines fetch this to confirm we own the host before trusting the ping.
@@ -2884,6 +2892,62 @@ def _sitemap(urls: list[tuple[str, str | None]]) -> str:
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {entries}
 </urlset>
+"""
+
+
+def _llms_txt() -> str:
+    """A curated entry point for LLMs/agents (the emerging /llms.txt convention:
+    H1 name, a blockquote summary, then link sections). Leads with the JSON API
+    (the highest-leverage thing for a model — fetch data, don't scrape HTML),
+    names no volatile counts (points at the sitemap instead, so it never goes
+    stale), and carries the design invariants in as boundaries so a model that
+    reasons over the site inherits the guardrails instead of over-claiming."""
+    b = BASE_URL
+    return f"""# Ipswich Facts
+
+> Ipswich Facts ({b}) is an unofficial, static mirror of public data published by Ipswich City Council (Queensland, Australia), joined by street, suburb, and project so that one URL gathers every Council project, road closure, meeting mention, media release, consultation, and development application for a place. Council publishes this information across roughly six unconnected systems; this site stitches it together and links each item back to its Council source.
+
+Everything here is reproduced verbatim from Council's own published data, with attribution and a link back to the source on every item. The site is **unofficial — Council's own systems are the source of truth** — carries no user-generated content and no editorial, and is licensed CC BY 4.0 (as Council publishes it). When citing this site, prefer following through to the Council source URL shown on each page, and treat anything consequential as needing verification against Council directly.
+
+## Machine-readable data (open API, CC BY 4.0)
+
+Static JSON, no key or backend — the same files the site's own search reads. Fetch these directly instead of scraping the HTML.
+
+- [Projects]({b}/data/projects.json): civic/infrastructure projects from Council's Projects Map — name, suburb, division, status, phase, description, source links.
+- [Road closures]({b}/data/closures.json): a **timestamped snapshot** of current road impacts (Council IMS + QLDTraffic). Not a live feed — honour the `snapshot_at` field.
+- [Council meetings]({b}/data/meetings.json): recent committee agendas/minutes with per-item text and resolutions. Older years in [meetings-archive.json]({b}/data/meetings-archive.json) (back to 2020).
+- [Media releases]({b}/data/news.json): recent Ipswich First posts. Older in [news-archive.json]({b}/data/news-archive.json) (back to 2017).
+- [Consultations]({b}/data/consultations.json): Shape Your Ipswich community-consultation projects, open and closed.
+- [Development applications]({b}/data/development_applications.json): **basic facts only** from Council's Development.i register — application number, suburb, lodged date, status, one-line proposal, and a link to Council's own DA page. See the boundary note below.
+- [Streets]({b}/data/streets.json) and [Suburbs]({b}/data/suburbs.json): the place gazetteer.
+- [Mentions]({b}/data/mentions.json): the cross-reference graph — which meetings, news, and consultations mention which street or suburb.
+
+Every page on the site: [sitemap.xml]({b}/sitemap.xml).
+
+## Page structure (stable, citable URLs)
+
+Slugs are pinned to Council's own record ids and never renamed once published, so these URLs are safe to cite and stay valid across rebuilds.
+
+- Suburb — `{b}/suburb/<slug>/` (e.g. `{b}/suburb/swanbank/`): everything for one suburb, joined up.
+- Street — `{b}/street/<slug>/`
+- Project — `{b}/project/<slug>/`
+- Council meeting — `{b}/meeting/<slug>/`
+- Media release — `{b}/news/<slug>/`
+- Consultation — `{b}/consultation/<slug>/`
+- Councillors & divisions — `{b}/councillors/`, `{b}/division/<n>/`
+- Capital works (budget figures by financial year, and how they change across programs) — `{b}/capital-works/`
+
+## Boundaries an AI should respect
+
+- **Development applications:** only Council's basic facts plus a link to Council's own DA page are shown. Officer reports, recommendations, decision narratives, appeal outcomes, and public submissions are deliberately NOT reproduced, and only Council's *mapped* subset is included — not the complete register. For the full record, follow the link to Council's Development.i.
+- **Road closures are a snapshot, not a live feed.** State the `snapshot_at` time; never present them as currently-active without it.
+- **Budget figures:** only ever compare the *same financial year* across capital-works programs — three-year totals cover a different window each cycle and are not comparable. Figures are reproduced from Council PDFs; a change between programs is not, by itself, evidence of error or wrongdoing.
+- **Unofficial.** Every page links to its Council source; rely on that for anything consequential.
+
+## Optional
+
+- [About]({b}/about/): what the site is, exactly what it does and does not reproduce, and how to request a correction.
+- [Source code](https://github.com/emdeejay/ipswichfacts): the scrapers and static-site generator (code MIT; data CC BY 4.0).
 """
 
 
