@@ -19,7 +19,7 @@ Before you write code, read `CLAUDE.md` (particularly the "Design invariants" li
 - No feature that requires a paid tier of any service.
 - Rate-limit scrapers; set an honest User-Agent.
 - No user-generated content in v1.
-- Don't scrape DA data — link to PlanningAlerts.
+- Development applications are a **link + factual-metadata layer** from Council's own Development.i register (application number, suburb, lodged date, status, one-line description, deep link) — never officer reports, decisions, appeals or submissions. See CLAUDE.md invariant 7. PlanningAlerts stays as the email-alerts complement.
 
 ## Development
 
@@ -70,4 +70,4 @@ Do not open PRs that:
 - Add editorial commentary on Council decisions.
 - Introduce a runtime backend or database server.
 - Add tracking/analytics beyond a privacy-preserving hit counter (and even that is debatable).
-- Duplicate PlanningAlerts.
+- Reproduce development applications in full (officer reports, decisions, appeals, submissions). The DA layer is basic facts + a link to Council only (invariant 7); PlanningAlerts still owns the email-alerts use case.

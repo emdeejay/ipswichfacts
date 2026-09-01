@@ -1,0 +1,230 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "id": "plan_development_apps.fid--1891452d_1a05ca8e8a6_-67f9",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     152.81788721,
+     -27.64550423
+    ]
+   },
+   "geometry_name": "geom_point",
+   "properties": {
+    "pdonline_id": 1878888,
+    "application_number": "12285/2026/MCU",
+    "description": "Material Change of Use - Warehouse (Data Centre)",
+    "decision_desc": "Information Response",
+    "group_code": "DI001",
+    "group_desc": "Material Change of Use",
+    "category_desc": "DA - Material Change of Use",
+    "project_officer": "Sean Dickson",
+    "appeal_result": null,
+    "progress": "In Progress",
+    "date_received": "2026-08-04T00:00:00Z",
+    "date_determined": null,
+    "application_type": "Material Change of Use",
+    "assessment_level": "Code",
+    "uselevel1": "Centres and Industry Uses; ",
+    "uselevel2": "Warehouse; ",
+    "date_created": "2026-08-04T00:00:00Z",
+    "land_no": "147045",
+    "land_parcel_relationship": "Lodged over current land parcel",
+    "submissionindicator": "C",
+    "newfiledate": null,
+    "publicnotification": "N",
+    "from_layer": "plan_development_apps",
+    "category": "development",
+    "kindofrecord": "filtered"
+   },
+   "bbox": [
+    152.81564502,
+    -27.64553371,
+    152.8201242,
+    -27.64547482
+   ]
+  },
+  {
+   "type": "Feature",
+   "id": "plan_development_apps.fid--1891452d_1a05ca8e8a6_-67f3",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     152.82590912,
+     -27.66281219
+    ]
+   },
+   "geometry_name": "geom_point",
+   "properties": {
+    "pdonline_id": 1876597,
+    "application_number": "11235/2022/MAMC/B",
+    "description": "Minor Change - Other Change - Change to existing approval CA/194/98 (which currently permits a Waste Processing, Treatment and Disposal Facility (Landfill)) to permit the establishment of a new Waste Activity involving Compost Manufacturing Enclosed including: ERA 33 - Crushing, milling, grinding or screening; ERA 53 - Organic material processing; ERA 54 - Mechanical waste reprocessing; ERA 55 - Other waste reprocessing or treatment; ERA 60 - Waste disposal; and ERA 62 - Resource recovery and transfer facility operation",
+    "decision_desc": "Initial Application Review",
+    "group_code": "DI010",
+    "group_desc": "Modification/Extension",
+    "category_desc": "DA - Modification-Change Application Minor",
+    "project_officer": "Aidan Brotherton",
+    "appeal_result": null,
+    "progress": "In Progress",
+    "date_received": "2026-07-23T00:00:00Z",
+    "date_determined": null,
+    "application_type": "Modification/Extension",
+    "assessment_level": "Other",
+    "uselevel1": "Centres and Industry Uses; ",
+    "uselevel2": "Special Industry; ",
+    "date_created": "2026-07-24T00:00:00Z",
+    "land_no": "144232",
+    "land_parcel_relationship": "Lodged over current land parcel",
+    "submissionindicator": "C",
+    "newfiledate": null,
+    "publicnotification": "N",
+    "from_layer": "plan_development_apps",
+    "category": "development",
+    "kindofrecord": "filtered"
+   },
+   "bbox": [
+    152.82203935,
+    -27.66577917,
+    152.83001655,
+    -27.65962643
+   ]
+  },
+  {
+   "type": "Feature",
+   "id": "plan_development_apps.fid--1891452d_1a05ca8e8a6_-67e4",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     152.81182953,
+     -27.6364487
+    ]
+   },
+   "geometry_name": "geom_point",
+   "properties": {
+    "pdonline_id": 1858381,
+    "application_number": "5588/2011/MAMC/A",
+    "description": "Minor Change - Special Industry - Concrete Batching & Concrete Product Manufacturing ERA 43 (Concrete Batching)",
+    "decision_desc": "Approved",
+    "group_code": "DI010",
+    "group_desc": "Modification/Extension",
+    "category_desc": "DA - Modification-Change Application Minor",
+    "project_officer": "Grant Johnson",
+    "appeal_result": null,
+    "progress": "Decided",
+    "date_received": "2026-05-18T00:00:00Z",
+    "date_determined": "2026-06-18T00:00:00Z",
+    "application_type": "Modification/Extension",
+    "assessment_level": "Other",
+    "uselevel1": "Centres and Industry Uses; ",
+    "uselevel2": "Special Industry; ",
+    "date_created": "2026-05-18T00:00:00Z",
+    "land_no": "157037",
+    "land_parcel_relationship": "Lodged over current land parcel",
+    "submissionindicator": "N",
+    "newfiledate": null,
+    "publicnotification": "N",
+    "from_layer": "plan_development_apps",
+    "category": "development",
+    "kindofrecord": "filtered"
+   },
+   "bbox": [
+    152.80759836,
+    -27.63788261,
+    152.8154016,
+    -27.63508112
+   ]
+  },
+  {
+   "type": "Feature",
+   "id": "plan_development_apps.fid--1891452d_1a05ca8e8a6_-67e2",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     152.80908019,
+     -27.65652763
+    ]
+   },
+   "geometry_name": "geom_point",
+   "properties": {
+    "pdonline_id": 1857111,
+    "application_number": "7314/2026/MCU",
+    "description": "Material Change of Use - Medium Impact Industry (Concrete Batching Plant)",
+    "decision_desc": "Referral",
+    "group_code": "DI001",
+    "group_desc": "Material Change of Use",
+    "category_desc": "DA - Material Change of Use",
+    "project_officer": "Grant Johnson",
+    "appeal_result": null,
+    "progress": "In Progress",
+    "date_received": "2026-05-12T00:00:00Z",
+    "date_determined": null,
+    "application_type": "Material Change of Use",
+    "assessment_level": "Code",
+    "uselevel1": "Centres and Industry Uses; ",
+    "uselevel2": "Medium Impact Industry; ",
+    "date_created": "2026-05-13T00:00:00Z",
+    "land_no": "121062",
+    "land_parcel_relationship": "Lodged over current land parcel",
+    "submissionindicator": "C",
+    "newfiledate": null,
+    "publicnotification": "N",
+    "from_layer": "plan_development_apps",
+    "category": "development",
+    "kindofrecord": "filtered"
+   },
+   "bbox": [
+    152.80868862,
+    -27.65736809,
+    152.80945429,
+    -27.6555729
+   ]
+  },
+  {
+   "type": "Feature",
+   "id": "plan_development_apps.fid--1891452d_1a05ca8e8a6_-67e0",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     152.80979,
+     -27.65690037
+    ]
+   },
+   "geometry_name": "geom_point",
+   "properties": {
+    "pdonline_id": 1857111,
+    "application_number": "7314/2026/MCU",
+    "description": "Material Change of Use - Medium Impact Industry (Concrete Batching Plant)",
+    "decision_desc": "Referral",
+    "group_code": "DI001",
+    "group_desc": "Material Change of Use",
+    "category_desc": "DA - Material Change of Use",
+    "project_officer": "Grant Johnson",
+    "appeal_result": null,
+    "progress": "In Progress",
+    "date_received": "2026-05-12T00:00:00Z",
+    "date_determined": null,
+    "application_type": "Material Change of Use",
+    "assessment_level": "Code",
+    "uselevel1": "Centres and Industry Uses; ",
+    "uselevel2": "Medium Impact Industry; ",
+    "date_created": "2026-05-13T00:00:00Z",
+    "land_no": "121068",
+    "land_parcel_relationship": "Lodged over current land parcel",
+    "submissionindicator": "C",
+    "newfiledate": null,
+    "publicnotification": "N",
+    "from_layer": "plan_development_apps",
+    "category": "development",
+    "kindofrecord": "filtered"
+   },
+   "bbox": [
+    152.80921481,
+    -27.65752658,
+    152.81043481,
+    -27.65598148
+   ]
+  }
+ ]
+}

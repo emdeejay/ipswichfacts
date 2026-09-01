@@ -73,6 +73,18 @@ jobs:
         if: steps.consultations-cache.outputs.cache-matched-key == ''
         run: python -m scrape.shape_your_ipswich --out data/consultations.json
 
+      - name: Restore development applications from daily build
+        id: das-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/development_applications.json
+          key: development-applications-never-matches-exactly
+          restore-keys: development-applications-
+
+      - name: Scrape development applications (fallback — cache was cold)
+        if: steps.das-cache.outputs.cache-matched-key == ''
+        run: python -m scrape.development_applications --out data/development_applications.json
+
       - name: Scrape closures and projects
         run: |
           python -m scrape.road_closures --out data/closures.json

@@ -7,6 +7,7 @@ Reads:
     data/meetings.json      (from scrape.council_meetings)
     data/news.json          (from scrape.ipswich_first)
     data/consultations.json (from scrape.shape_your_ipswich)
+    data/development_applications.json (from scrape.development_applications)
     data/capital_works/capworks-*.json  (from scrape.capital_works, committed)
 
 Writes:
@@ -23,6 +24,7 @@ Writes:
     site/data/closures.json
     site/data/meetings.json         (slim: no item text)
     site/data/news.json             (slim: slug/title/date, recent years)
+    site/data/development_applications.json  (slim: number/description/suburb/link)
     site/data/mentions.json
     site/data/streets.json
     site/data/suburbs.json
@@ -103,6 +105,10 @@ MIN_EXPECTED = {
     "councillors": 9,         # Mayor + 8; fixed until the 2028 election
     "streets": 300,           # ~1,371 extracted; the joins are the whole point
     "consultations": 100,     # ~120 top-level projects; closed ones only accrue
+    # Development.i's geo/map layer returns ~1,000+ mapped DAs across the LGA;
+    # a generous floor catches an anti-forgery/markup break without tripping on
+    # normal churn. NB this is the mapped subset, not Council's full register.
+    "development_applications": 500,
 }
 # Deliberately NOT floored: closures. An empty traffic dashboard is a real,
 # common state (imsRoad is often empty), not a parser failure.
@@ -377,7 +383,7 @@ def dedupe(items: list[Any], key) -> list[Any]:
 # Load
 
 
-def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     projects = json.loads((inp / "projects.json").read_text())
     closures_path = inp / "closures.json"
     closures = json.loads(closures_path.read_text()) if closures_path.exists() else {"closures": []}
@@ -415,6 +421,16 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
     consultations = (
         json.loads(cons_path.read_text()).get("consultations", [])
         if cons_path.exists() else []
+    )
+
+    # Development applications (Development.i). A LINK + factual-metadata layer,
+    # not full DA reproduction — see Invariant 7 and scrape/development_applications.py.
+    # Single daily scrape; no committed archive (Council's register is the source
+    # of truth and this only ever mirrors the current mapped set).
+    da_path = inp / "development_applications.json"
+    das = (
+        json.loads(da_path.read_text()).get("applications", [])
+        if da_path.exists() else []
     )
 
 
@@ -469,7 +485,7 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
         for f in sorted((inp / "capital_works").glob("capworks-*.json"), reverse=True)
     ] if (inp / "capital_works").exists() else []
 
-    return projects, closures, meetings, news, councillors, capworks, consultations
+    return projects, closures, meetings, news, councillors, capworks, consultations, das
 
 
 
@@ -538,7 +554,7 @@ def _normalise_type(t: str) -> str:
 # Build the entity graph
 
 
-def build_graph(projects, closures, meetings, news, capworks, consultations) -> dict[str, Any]:
+def build_graph(projects, closures, meetings, news, capworks, consultations, das) -> dict[str, Any]:
     streets_set: set[str] = set()
     suburbs_set: set[str] = set()
 
@@ -621,6 +637,33 @@ def build_graph(projects, closures, meetings, news, capworks, consultations) -> 
                 project_consultations[pslug].append(ref)
         consultation_streets[cslug] = c_streets
         consultation_suburbs[cslug] = c_suburbs
+
+    # Development applications (Development.i). Council tags each DA to a
+    # gazetted locality (the scraper's LocalityId), so the suburb bucket is
+    # exact — no free-text guessing. Add those suburbs to the gazetteer before
+    # it's frozen below. Streets come from the one-line proposal description via
+    # the same regex as everything else (sparse — most DA descriptions name a
+    # use, not a street — but free when it does land). A DA is a link + basic
+    # facts, never a reproduced assessment: refs carry only whitelisted fields.
+    suburb_das: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    street_das: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for a in das:
+        ref = {
+            "application_number": a.get("application_number"),
+            "description": a.get("description"),
+            "status": a.get("status"),
+            "type": a.get("application_type"),
+            "date": a.get("date_received"),
+            "url": a.get("source_url"),
+            "suburb": a.get("suburb"),
+        }
+        sub = a.get("suburb")
+        if sub:
+            suburb_das[sub].append(ref)
+            suburbs_set.add(sub)
+        for s in extract_streets_from_text(a.get("description")):
+            street_das[s].append(ref)
+            streets_set.add(s)
 
     # Meetings: streets via the regex extractor; suburbs matched against the
     # gazetteer of suburb names already known from projects + closures
@@ -782,6 +825,8 @@ def build_graph(projects, closures, meetings, news, capworks, consultations) -> 
         "street_consultations": dict(street_consultations),
         "suburb_consultations": dict(suburb_consultations),
         "project_consultations": dict(project_consultations),
+        "suburb_das": dict(suburb_das),
+        "street_das": dict(street_das),
     }
 
 
@@ -864,7 +909,7 @@ def _support_html() -> str:
     )
 
 
-def render_index(projects, closures, meetings, news, graph, capworks, consultations) -> str:
+def render_index(projects, closures, meetings, news, graph, capworks, consultations, das) -> str:
     by_phase: dict[str, int] = defaultdict(int)
     for p in projects:
         by_phase[p.get("phase") or "Unknown"] += 1
@@ -975,6 +1020,7 @@ def render_index(projects, closures, meetings, news, graph, capworks, consultati
     <li><b>{len(meetings.get('meetings', []))}</b><span>Council meetings indexed</span></li>
     <li><b>{len(news.get('posts', []))}</b><span>Ipswich First articles</span></li>
     <li><a href="/consultations/"><b>{len(consultations)}</b><span>Consultations tracked</span></a></li>
+    <li><b>{len(das)}</b><span>Development applications mapped</span></li>
     {capworks_tile}
   </ul>
   {capworks_note}
@@ -1547,8 +1593,9 @@ def render_street(name, projects, closures, graph) -> str:
     meet_html = _meeting_mentions_html(graph["street_meeting_items"].get(name, []))
     news_html = _news_mentions_html(graph.get("street_news_items", {}).get(name, []))
     cons_html = _consultation_mentions_html(graph.get("street_consultations", {}).get(name, []))
+    da_html = _da_mentions_html(graph.get("street_das", {}).get(name, []), name)
 
-    empty = "" if (matching_projects or matching_closures or meet_html or news_html or cons_html) else "<p>No projects, road impacts, Council meeting, consultation or news mentions recorded on this street.</p>"
+    empty = "" if (matching_projects or matching_closures or meet_html or news_html or cons_html or da_html) else "<p>No projects, road impacts, Council meeting, consultation, development application or news mentions recorded on this street.</p>"
 
     body = f"""
 <article>
@@ -1558,6 +1605,7 @@ def render_street(name, projects, closures, graph) -> str:
   {proj_html}
   {clos_html}
   {cons_html}
+  {da_html}
   {meet_html}
   {news_html}
   {empty}
@@ -1577,33 +1625,86 @@ def render_street(name, projects, closures, graph) -> str:
 _MENTIONS_CAP = 50
 
 PLANNINGALERTS_URL = "https://www.planningalerts.org.au/"
+DEVELOPMENTI_URL = "https://developmenti.ipswich.qld.gov.au/"
+DEVELOPMENTI_SEARCH_URL = f"{DEVELOPMENTI_URL}Home/MapSearch"
 
 
 def _planningalerts_html(what: str, near: str | None = None) -> str:
-    """Invariant 7: PlanningAlerts owns development applications — we don't
-    scrape or republish them. The other half of that invariant is actually
-    pointing people there; a resident checking what's happening on their
-    street usually wants DAs too, and silence here just sends them back to
-    the five Council tabs this site exists to replace.
+    """Invariant 7 (revised): Council's Development.i is now the authoritative
+    factual source we surface — this site shows basic DA facts (number, locality,
+    lodged date, status, one-line description) with a link back to Council, and
+    never reproduces officer reports, recommendations, submissions or outcome
+    narratives. See CLAUDE.md.
 
-    Deep-link to DAs *near this place* rather than PlanningAlerts' national
-    homepage: their public `/applications/address?address=` endpoint geocodes
-    a place string and lists applications within 2 km (and offers email
-    alerts). `near` is that geocode string — a suburb reads well on its own
-    ("Ripley QLD"); a street needs the LGA to disambiguate ("Fischer Road,
-    Ipswich, Queensland"). It degrades gracefully: an address PlanningAlerts
-    can't place just lands on their search box, no worse than the old link.
-    (Their full-text `/applications/search` is access-gated, so not that.)"""
+    This aside is the *pointer half* of that: it points at Council's own register
+    for full detail, and keeps PlanningAlerts as the complement — the service
+    that emails a resident when someone applies to build near them. Both matter:
+    Council is the source of truth; PlanningAlerts is the watch-my-street alert.
+
+    `near` is a geocode string for PlanningAlerts' `/applications/address?address=`
+    endpoint — a suburb reads well on its own ("Ripley QLD"); a street needs the
+    LGA to disambiguate ("Fischer Road, Ipswich, Queensland"). It degrades
+    gracefully: an address it can't place just lands on their search box."""
     loc = near or what
-    url = f"{PLANNINGALERTS_URL}applications/address?address={quote_plus(loc)}#results"
+    pa_url = f"{PLANNINGALERTS_URL}applications/address?address={quote_plus(loc)}#results"
     return (
         '<aside class="seealso">'
         "<h2>Development applications</h2>"
-        f"<p>This site doesn't cover development applications for {h(what)}. "
-        f'<a href="{h(url)}" rel="noopener">See DAs near {h(what)} on PlanningAlerts</a>'
-        " — a free service from the OpenAustralia Foundation that also emails "
-        "you when someone applies to build nearby.</p>"
+        f"<p>Ipswich City Council's own "
+        f'<a href="{h(DEVELOPMENTI_SEARCH_URL)}" rel="noopener">Development.i register</a> '
+        f"is the source of truth for development applications for {h(what)} — go "
+        "there for full detail, documents, and current status. This page shows "
+        "only Council's basic facts and links back; it is not the whole register.</p>"
+        f"<p>To be emailed whenever someone applies to build near {h(what)}, use "
+        f'<a href="{h(pa_url)}" rel="noopener">PlanningAlerts</a>'
+        " — a free service from the OpenAustralia Foundation that watches "
+        "development applications near an address for you.</p>"
         "</aside>"
+    )
+
+
+def _da_mentions_html(refs: list[dict[str, Any]], place: str) -> str:
+    """The 'Development applications' factual layer for a street/suburb page:
+    Council's own register rows (number, type/description, lodged date, status),
+    each linking to Council's detail page. Basic facts only — no officer report,
+    recommendation, submission or outcome narrative is ever shown (Invariant 7).
+    A prominent link to Council's full register makes clear this is a pointer,
+    not a replacement, and no total is asserted (the mapped set is a subset)."""
+    if not refs:
+        return ""
+    # De-dupe by application number and show newest-lodged first.
+    seen: set[str] = set()
+    uniq: list[dict[str, Any]] = []
+    for r in refs:
+        an = r.get("application_number")
+        if an and an not in seen:
+            seen.add(an)
+            uniq.append(r)
+    uniq.sort(key=lambda r: r.get("date") or "", reverse=True)
+    shown = uniq[:_MENTIONS_CAP]
+    rows = "".join(
+        f'<tr><td><a href="{h(r.get("url"))}" rel="noopener">{h(r.get("application_number"))}</a></td>'
+        f'<td>{h(r.get("description") or r.get("type"))}</td>'
+        f'<td>{h(format_ymd(r.get("date")))}</td>'
+        f'<td>{h(r.get("status"))}</td></tr>'
+        for r in shown
+    )
+    more = (
+        f"<p class='muted'>Showing {len(shown)} of {len(uniq)} shown here.</p>"
+        if len(uniq) > len(shown) else ""
+    )
+    return (
+        "<h2>Development applications</h2>"
+        "<p class='meta'>From Ipswich City Council's "
+        f'<a href="{h(DEVELOPMENTI_SEARCH_URL)}" rel="noopener">Development.i</a> register. '
+        "Basic facts only — go to Council for full detail, documents, and status. "
+        "This is not the complete register.</p>"
+        "<table class='data'><thead><tr><th>Application</th><th>Proposal</th>"
+        f"<th>Lodged</th><th>Status</th></tr></thead><tbody>{rows}</tbody></table>{more}"
+        "<p class='attribution'>Source: "
+        f'<a href="{h(DEVELOPMENTI_URL)}" rel="noopener">Development.i, Ipswich City Council</a>'
+        " — CC BY 4.0. Officer reports, recommendations, public submissions and "
+        "appeal outcomes are not reproduced here; see Council for those.</p>"
     )
 
 
@@ -1726,6 +1827,7 @@ def render_suburb(name, projects, closures, graph) -> str:
     meet_html = _meeting_mentions_html(graph["suburb_meeting_items"].get(name, []))
     news_html = _news_mentions_html(graph.get("suburb_news_items", {}).get(name, []))
     cons_html = _consultation_mentions_html(graph.get("suburb_consultations", {}).get(name, []))
+    da_html = _da_mentions_html(graph.get("suburb_das", {}).get(name, []), name)
 
     body = f"""
 <article>
@@ -1734,6 +1836,7 @@ def render_suburb(name, projects, closures, graph) -> str:
   {proj_html or "<p>No projects recorded for this suburb.</p>"}
   {clos_html}
   {cons_html}
+  {da_html}
   {meet_html}
   {news_html}
   {_planningalerts_html(name, near=f"{name} QLD")}
@@ -2465,16 +2568,31 @@ def render_about() -> str:
   <li><a href="https://www.ipswichfirst.com.au/">Ipswich First</a> — Council's media releases, back to 2017.</li>
   <li><a href="https://www.ipswich.qld.gov.au/About-Council/Media-and-Publications/Corporate-Publications">Capital Works Program PDFs</a> — per-project funding by financial year, one program per budget cycle.</li>
   <li><a href="https://www.shapeyouripswich.com.au/">Shape Your Ipswich</a> — Council's community consultation and engagement projects, open and closed. Project details only; community submissions and responses are not reproduced.</li>
+  <li><a href="https://developmenti.ipswich.qld.gov.au/">Development.i</a> — Council's development-application register. Basic facts only (see below).</li>
 </ul>
 
 <h2>Licence</h2>
 <p>Council content is published under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. This site preserves attribution and links back to the Council source for every item reproduced.</p>
 
-<h2>What this site doesn't cover</h2>
-<p><b>Development applications.</b> DAs are not scraped or republished here —
-<a href="{PLANNINGALERTS_URL_PLACEHOLDER}" rel="noopener">PlanningAlerts</a>,
-from the OpenAustralia Foundation, already does that well and will email you
-when someone applies to build near you. Use it.</p>
+<h2>Development applications</h2>
+<p><b>What this site shows.</b> For development applications, this site surfaces
+only the basic facts from Council's own
+<a href="https://developmenti.ipswich.qld.gov.au/" rel="noopener">Development.i</a>
+register — the application number, the suburb, the lodged date, the current
+status, Council's own one-line description of the proposal, and a link back to
+Council's own page for that application. That's it: a pointer to Council, not a
+replacement.</p>
+<p><b>What this site does not reproduce.</b> The assessing officer's name, their
+report and recommendation, Council's decision narrative, any appeal result, and
+public submissions or submitter details are <em>not</em> shown here. For any of
+that — and for the complete, authoritative register — go to
+<a href="https://developmenti.ipswich.qld.gov.au/" rel="noopener">Council's
+Development.i</a>. The set shown here is Council's mapped applications, and is
+not the whole register.</p>
+<p>To be emailed when someone applies to build near you, use
+<a href="{PLANNINGALERTS_URL_PLACEHOLDER}" rel="noopener">PlanningAlerts</a>
+from the OpenAustralia Foundation — it complements Council's register with a
+watch-my-street alert.</p>
 <p>There are no comments, submissions or forms here either, and nothing on this
 site is editorial — it reproduces Council's published data and links back to it.</p>
 
@@ -2515,7 +2633,7 @@ Council or anyone in it.</p>
 # Write
 
 
-def write_site(out: Path, projects, closures, meetings, news, graph, capworks, consultations) -> list[str]:
+def write_site(out: Path, projects, closures, meetings, news, graph, capworks, consultations, das) -> list[str]:
     """Write all pages. Returns the list of URL paths for sitemap."""
     # Best-effort clean (overwrites are always fine; deletion may fail on
     # read-only mounts, in which case we just overwrite in place).
@@ -2546,7 +2664,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         urls.append((path, lastmod if lastmod and re.fullmatch(r"\d{4}-\d{2}-\d{2}", lastmod) else None))
 
     # Landing
-    write("/", render_index(projects, closures, meetings, news, graph, capworks, consultations))
+    write("/", render_index(projects, closures, meetings, news, graph, capworks, consultations, das))
 
     # Projects
     write("/projects/", render_projects_list(projects))
@@ -2680,6 +2798,21 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         for c in consultations
     ]
     (out / "data" / "consultations.json").write_text(json.dumps(slim_consultations))
+    # Development applications: slim search chunk — application number,
+    # description, suburb and the Council detail link only. Whitelisted upstream,
+    # so no excluded field can appear here. DAs have no own-page on this site (a
+    # pointer, not a replacement), so search results carry the suburb they sit on.
+    slim_das = [
+        {
+            "application_number": a.get("application_number"),
+            "description": a.get("description"),
+            "suburb": a.get("suburb"),
+            "status": a.get("status"),
+            "url": a.get("source_url"),
+        }
+        for a in das
+    ]
+    (out / "data" / "development_applications.json").write_text(json.dumps(slim_das))
     slim_news_slugs = {p["slug"] for p in slim_news}
     mentions = {
         "project_streets": graph["project_streets"],
@@ -2920,15 +3053,16 @@ async function loadData() {
   // Only what the search index actually reads. mentions.json and closures.json
   // are still published as open data under /data/ — they're just not something
   // a visitor should download to type in a search box.
-  const [projects, streets, suburbs, meetings, news, consultations] = await Promise.all([
+  const [projects, streets, suburbs, meetings, news, consultations, das] = await Promise.all([
     fetch(`${DATA_BASE}/projects.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/streets.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/suburbs.json`).then(r => r.json()),
     fetch(`${DATA_BASE}/meetings.json`).then(r => r.json()).catch(() => []),
     fetch(`${DATA_BASE}/news.json`).then(r => r.json()).catch(() => []),
     fetch(`${DATA_BASE}/consultations.json`).then(r => r.json()).catch(() => []),
+    fetch(`${DATA_BASE}/development_applications.json`).then(r => r.json()).catch(() => []),
   ]);
-  return { projects, streets, suburbs, meetings, news, consultations };
+  return { projects, streets, suburbs, meetings, news, consultations, das };
 }
 
 function slugify(s) {
@@ -2952,6 +3086,14 @@ function buildIndex(data) {
   for (const c of data.consultations || []) {
     const subs = (c.suburbs || []).join(' ');
     items.push({ kind: 'consultation', label: `${c.name} (${c.status})`, href: `/consultation/${c.slug}/`, hay: (c.name + ' ' + (c.status || '') + ' ' + subs).toLowerCase() });
+  }
+  // Development applications have no own-page (this site is a pointer to
+  // Council's register, not a replacement), so a match lands on the suburb page
+  // where it's listed with a link back to Council's Development.i detail.
+  for (const a of data.das || []) {
+    if (!a.suburb) continue;
+    const label = `${a.application_number} — ${a.description || a.suburb}`;
+    items.push({ kind: 'DA', label, href: `/suburb/${slugify(a.suburb)}/`, hay: ((a.application_number || '') + ' ' + (a.description || '') + ' ' + a.suburb + ' ' + (a.status || '')).toLowerCase() });
   }
   return items;
 }
@@ -3065,16 +3207,16 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    projects, closures, meetings, news, councillors, capworks, consultations = load(args.data)
+    projects, closures, meetings, news, councillors, capworks, consultations, das = load(args.data)
     print(
         f"Loaded {len(projects)} projects, {len(closures.get('closures', []))} closures, "
         f"{len(meetings.get('meetings', []))} meetings, {len(news.get('posts', []))} news posts, "
         f"{len(councillors)} councillors, {len(capworks)} capital works cycles, "
-        f"{len(consultations)} consultations",
+        f"{len(consultations)} consultations, {len(das)} development applications",
         file=sys.stderr,
     )
 
-    graph = build_graph(projects, closures, meetings, news, capworks, consultations)
+    graph = build_graph(projects, closures, meetings, news, capworks, consultations, das)
     matched, total_rows = graph.get("capworks_match", (0, 0))
     if total_rows:
         print(
@@ -3100,6 +3242,7 @@ def main() -> int:
             "councillors": len(councillors),
             "streets": len(graph["streets"]),
             "consultations": len(consultations),
+            "development_applications": len(das),
         }
         failures = check_data_sanity(counts)
         if failures:
@@ -3133,7 +3276,7 @@ def main() -> int:
                   "timestamp to age-check.", file=sys.stderr)
             return 1
 
-    urls = write_site(args.out, projects, closures, meetings, news, graph, capworks, consultations)
+    urls = write_site(args.out, projects, closures, meetings, news, graph, capworks, consultations, das)
     print(f"Wrote {len(urls)} pages to {args.out}", file=sys.stderr)
     return 0
 

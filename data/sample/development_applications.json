@@ -1,0 +1,2525 @@
+{
+  "scraped_at": "2026-09-01T11:19:57.376103+00:00",
+  "applications": [
+    {
+      "application_number": "12789/2026/MCU",
+      "id": 1881472,
+      "description": "Material Change of Use - Multiple Dwelling (23 Townhouses)",
+      "status": "In Progress",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2026-08-14",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87244215,
+        -27.65264644
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=12789%2F2026%2FMCU"
+    },
+    {
+      "application_number": "12697/2026/RAL",
+      "id": 1880989,
+      "description": "Reconfiguring a Lot - One (1) Lot into Two (2) Lots",
+      "status": "In Progress",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2026-08-12",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.83544878,
+        -27.56346216
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=12697%2F2026%2FRAL"
+    },
+    {
+      "application_number": "12285/2026/MCU",
+      "id": 1878888,
+      "description": "Material Change of Use - Warehouse (Data Centre)",
+      "status": "In Progress",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2026-08-04",
+      "suburb": "Swanbank",
+      "coords": [
+        152.81788721,
+        -27.64550423
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=12285%2F2026%2FMCU"
+    },
+    {
+      "application_number": "11884/2026/MCU",
+      "id": 1876936,
+      "description": "Material Change of Use - Multiple Dwelling (17 Townhouses)",
+      "status": "In Progress",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2026-07-27",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87149725,
+        -27.65207997
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11884%2F2026%2FMCU"
+    },
+    {
+      "application_number": "11235/2022/MAMC/B",
+      "id": 1876597,
+      "description": "Minor Change - Other Change - Change to existing approval CA/194/98 (which currently permits a Waste Processing, Treatment and Disposal Facility (Landfill)) to permit the establishment of a new Waste Activity involving Compost Manufacturing Enclosed including: ERA 33 - Crushing, milling, grinding or screening; ERA 53 - Organic material processing; ERA 54 - Mechanical waste reprocessing; ERA 55 - Other waste reprocessing or treatment; ERA 60 - Waste disposal; and ERA 62 - Resource recovery and transfer facility operation",
+      "status": "In Progress",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2026-07-23",
+      "suburb": "Swanbank",
+      "coords": [
+        152.82590912,
+        -27.66281219
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11235%2F2022%2FMAMC%2FB"
+    },
+    {
+      "application_number": "11840/2026/RAL",
+      "id": 1876821,
+      "description": "Reconfiguring a Lot - One (1) Lot into Two (2) Lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2026-07-20",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.8408088,
+        -27.56956329
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11840%2F2026%2FRAL"
+    },
+    {
+      "application_number": "11417/2026/RAL",
+      "id": 1874896,
+      "description": "Reconfiguring a Lot - One (1) Lot into Three (3) Lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2026-07-16",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88394028,
+        -27.62925836
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11417%2F2026%2FRAL"
+    },
+    {
+      "application_number": "10736/2026/MCU",
+      "id": 1871848,
+      "description": "Material Change of Use - Multiple Dwelling (16 townhouses)",
+      "status": "In Progress",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2026-07-03",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87145215,
+        -27.6523493
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10736%2F2026%2FMCU"
+    },
+    {
+      "application_number": "10286/2026/SPSR",
+      "id": 1869841,
+      "description": "Superseded Planning Scheme Request - Reconfiguring a Lot - One (1) Lot into Three (3) Lots",
+      "status": "Decided",
+      "application_type": "Superseded Planning Scheme Request",
+      "assessment_level": "Other",
+      "date_received": "2026-06-26",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89470324,
+        -27.62884078
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10286%2F2026%2FSPSR"
+    },
+    {
+      "application_number": "10103/2026/SPSR",
+      "id": 1868991,
+      "description": "Superseded Planning Scheme Request - Reconfiguring a Lot (One (1) Lot into Two (2) Lots) and Access and Services Easement",
+      "status": "Decided",
+      "application_type": "Superseded Planning Scheme Request",
+      "assessment_level": "Other",
+      "date_received": "2026-06-24",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.88520896,
+        -27.66670601
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10103%2F2026%2FSPSR"
+    },
+    {
+      "application_number": "9535/2026/OD",
+      "id": 1866563,
+      "description": "Building Work assessable against the Planning Scheme - Secondary Dwelling affected by the Flood Risk and Overland Flow Overlay",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2026-06-16",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77089893,
+        -27.60118333
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9535%2F2026%2FOD"
+    },
+    {
+      "application_number": "8679/2026/SSP",
+      "id": 1862655,
+      "description": "Lot 903 on SP358984",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2026-06-01",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88486206,
+        -27.641636
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8679%2F2026%2FSSP"
+    },
+    {
+      "application_number": "8678/2026/SSP",
+      "id": 1862654,
+      "description": "Lots 503 on SP358988",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2026-06-01",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88672235,
+        -27.64186856
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8678%2F2026%2FSSP"
+    },
+    {
+      "application_number": "8464/2026/OD",
+      "id": 1861764,
+      "description": "Building Work assessable against the planning scheme - Swimming Pool affected by the Difficult Topography and Landslide Overlay",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2026-05-28",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.88393862,
+        -27.65447897
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8464%2F2026%2FOD"
+    },
+    {
+      "application_number": "8421/2026/OD",
+      "id": 1861670,
+      "description": "Building work assessable against the planning scheme - Secondary Dwelling affected by the Flood Risk & Overland Flow Overlay",
+      "status": "In Progress",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2026-05-28",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77287039,
+        -27.60182974
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8421%2F2026%2FOD"
+    },
+    {
+      "application_number": "8344/2026/OD",
+      "id": 1861246,
+      "description": "Building Work assessable against the planning scheme - Secondary Dwelling affected by the Slope Overlay",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2026-05-27",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.88505767,
+        -27.66579635
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8344%2F2026%2FOD"
+    },
+    {
+      "application_number": "7872/2026/SPSR",
+      "id": 1859326,
+      "description": "Superseded Planning Scheme Request - Reconfiguring a Lot - one (1) lot into three (3) lots and access easement",
+      "status": "Decided",
+      "application_type": "Superseded Planning Scheme Request",
+      "assessment_level": "Other",
+      "date_received": "2026-05-20",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88570725,
+        -27.63154843
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=7872%2F2026%2FSPSR"
+    },
+    {
+      "application_number": "5588/2011/MAMC/A",
+      "id": 1858381,
+      "description": "Minor Change - Special Industry - Concrete Batching & Concrete Product Manufacturing ERA 43 (Concrete Batching)",
+      "status": "Decided",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2026-05-18",
+      "suburb": "Swanbank",
+      "coords": [
+        152.81182953,
+        -27.6364487
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5588%2F2011%2FMAMC%2FA"
+    },
+    {
+      "application_number": "7326/2026/MCU",
+      "id": 1857132,
+      "description": "Material Change of Use - Shop, Food & Drink Outlet, Office & Health Care Service",
+      "status": "In Progress",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2026-05-12",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88149521,
+        -27.63939989
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=7326%2F2026%2FMCU"
+    },
+    {
+      "application_number": "7314/2026/MCU",
+      "id": 1857111,
+      "description": "Material Change of Use - Medium Impact Industry (Concrete Batching Plant)",
+      "status": "In Progress",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2026-05-12",
+      "suburb": "Swanbank",
+      "coords": [
+        152.80908019,
+        -27.65652763
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=7314%2F2026%2FMCU"
+    },
+    {
+      "application_number": "6911/2026/MCU",
+      "id": 1855193,
+      "description": "Material Change of Use - Multiple Dwelling (17 Townhouses)",
+      "status": "In Progress",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2026-05-05",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87878752,
+        -27.64546589
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6911%2F2026%2FMCU"
+    },
+    {
+      "application_number": "6854/2026/SPSR",
+      "id": 1854915,
+      "description": "Superseded Planning Scheme Request - Reconfiguring a Lot - One (1) Lot into Four (4) Lots",
+      "status": "Decided",
+      "application_type": "Superseded Planning Scheme Request",
+      "assessment_level": "Other",
+      "date_received": "2026-05-05",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89677624,
+        -27.62681278
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6854%2F2026%2FSPSR"
+    },
+    {
+      "application_number": "545/2020/MAEXT/A",
+      "id": 1854332,
+      "description": "Extension to Currency Period Application - Reconfiguring a Lot - One (1) Lot into Three (3) Lots",
+      "status": "Decided",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2026-04-30",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89631166,
+        -27.62917191
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=545%2F2020%2FMAEXT%2FA"
+    },
+    {
+      "application_number": "18074/2021/MAEXT/A",
+      "id": 1853198,
+      "description": "Extension to Currency Period Application - Reconfiguring a Lot - One (1) lot into Three (3) lots",
+      "status": "Decided",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2026-04-27",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88347229,
+        -27.63359861
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=18074%2F2021%2FMAEXT%2FA"
+    },
+    {
+      "application_number": "5807/2026/SSP",
+      "id": 1850516,
+      "description": "Lots 1 and 2 on SP350832",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2026-04-15",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87507062,
+        -27.63683233
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5807%2F2026%2FSSP"
+    },
+    {
+      "application_number": "5800/2026/SSP",
+      "id": 1850495,
+      "description": "Lots 1 & 2 on SP350831",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2026-04-15",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87510373,
+        -27.63664422
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5800%2F2026%2FSSP"
+    },
+    {
+      "application_number": "5609/2026/MCU",
+      "id": 1849744,
+      "description": "Material Change of Use - Dual Occupancy",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2026-04-14",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89299857,
+        -27.62445501
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5609%2F2026%2FMCU"
+    },
+    {
+      "application_number": "13258/2023/MAEXT/A",
+      "id": 1848680,
+      "description": "Extension to Currency Period Application - Stormwater and Earthworks",
+      "status": "Decided",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2026-04-08",
+      "suburb": "Swanbank",
+      "coords": [
+        152.82887948,
+        -27.64654183
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=13258%2F2023%2FMAEXT%2FA"
+    },
+    {
+      "application_number": "4222/2026/SPSR",
+      "id": 1844271,
+      "description": "Superseded Planning Scheme Request - Building Work assessable against the planning scheme - Extension to a Dwelling House affected by the Flood Overlay",
+      "status": "Decided",
+      "application_type": "Superseded Planning Scheme Request",
+      "assessment_level": "Other",
+      "date_received": "2026-03-18",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.7689228,
+        -27.60106319
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4222%2F2026%2FSPSR"
+    },
+    {
+      "application_number": "4071/2026/OD",
+      "id": 1843618,
+      "description": "Building Work assessable against the planning scheme - Swimming Pool affected by the Difficult Topography and Landslide Overlay and the Flood Risk and Overland Flow Overlay",
+      "status": "In Progress",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2026-03-16",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.90060473,
+        -27.62723141
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4071%2F2026%2FOD"
+    },
+    {
+      "application_number": "3657/2026/MCU",
+      "id": 1842071,
+      "description": "Material Change of Use - Health Care Service",
+      "status": "In Progress",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2026-03-10",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.8722199,
+        -27.64715142
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3657%2F2026%2FMCU"
+    },
+    {
+      "application_number": "3558/2026/OD",
+      "id": 1841683,
+      "description": "Building Work assessable against the planning scheme - Extension to a Dwelling House affected by the Difficult Topography and Landslide Overlay",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2026-03-09",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89803602,
+        -27.62918346
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3558%2F2026%2FOD"
+    },
+    {
+      "application_number": "3276/2026/OW",
+      "id": 1840677,
+      "description": "Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2026-03-04",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89328801,
+        -27.65469491
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3276%2F2026%2FOW"
+    },
+    {
+      "application_number": "2761/2026/OW",
+      "id": 1838617,
+      "description": "DA 21 - Road work, Stormwater Drainage and Earthworks",
+      "status": "In Progress",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2026-02-25",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.89007355,
+        -27.66555387
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=2761%2F2026%2FOW"
+    },
+    {
+      "application_number": "2409/2026/OD",
+      "id": 1837203,
+      "description": "Building Work assessable against the planning scheme - Shed, Garaport and Carport in the Rural Zone (Amenity and Aesthetic Requirements)",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2026-02-19",
+      "suburb": "Ashwell",
+      "coords": [
+        152.54979484,
+        -27.63545949
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=2409%2F2026%2FOD"
+    },
+    {
+      "application_number": "2026/2026/RAL",
+      "id": 1835521,
+      "description": "Reconfiguring a Lot - One (1) Lot into Two (2) Lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2026-02-13",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.83595268,
+        -27.56920237
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=2026%2F2026%2FRAL"
+    },
+    {
+      "application_number": "799/2026/RAL",
+      "id": 1830051,
+      "description": "Reconfiguring a Lot - One (1) lot into Two (2) Lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2026-01-22",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87947393,
+        -27.63417153
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=799%2F2026%2FRAL"
+    },
+    {
+      "application_number": "633/2026/MCU",
+      "id": 1829304,
+      "description": "Material Change of Use - Dwelling House affected by the Flooding & Bushfire Overlays",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2026-01-20",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.8458571,
+        -27.56908617
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=633%2F2026%2FMCU"
+    },
+    {
+      "application_number": "427/2026/OW",
+      "id": 1828492,
+      "description": "Non-Standard VXO",
+      "status": "Past",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2026-01-15",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89899391,
+        -27.66472192
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=427%2F2026%2FOW"
+    },
+    {
+      "application_number": "168/2026/OD",
+      "id": 1827281,
+      "description": "Building Work assessable against the planning scheme - Shed affected by the Overland Flow Path Overlay",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2026-01-09",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89225046,
+        -27.62525728
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=168%2F2026%2FOD"
+    },
+    {
+      "application_number": "14231/2025/MCU",
+      "id": 1824790,
+      "description": "Material Change of Use - Dwelling House within the OV11 Difficult Topography and Landslide Overlay and where non-compliant with the Accepted Development Subject to Requirements provisions of the Dwelling House and Dual Occupancy Code",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2025-12-16",
+      "suburb": "Ashwell",
+      "coords": [
+        152.56325734,
+        -27.61217942
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=14231%2F2025%2FMCU"
+    },
+    {
+      "application_number": "14106/2025/OD",
+      "id": 1824293,
+      "description": "Building Work assessable against the planning scheme - Covered Deck Extension & Container Pool affected by the Flood Risk and Overland Flow Overlay",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2025-12-12",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84569773,
+        -27.56489278
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=14106%2F2025%2FOD"
+    },
+    {
+      "application_number": "13080/2025/OW",
+      "id": 1818669,
+      "description": "Operational Works - Swanbank Sewerage Treatment Plant - Sewerage Infrastructure",
+      "status": "Past",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2025-11-18",
+      "suburb": "Swanbank",
+      "coords": [
+        152.81183463,
+        -27.66009025
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=13080%2F2025%2FOW"
+    },
+    {
+      "application_number": "4605/2017/MAEXT/B",
+      "id": 1813413,
+      "description": "Extension to Currency Period Application - Reconfiguring a Lot - One (1) lot into six (6) lots, consisting of four (4) development lots and two (2) balance project lots",
+      "status": "Decided",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2025-10-23",
+      "suburb": "Swanbank",
+      "coords": [
+        152.81417429,
+        -27.63484326
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4605%2F2017%2FMAEXT%2FB"
+    },
+    {
+      "application_number": "11866/2025/OW",
+      "id": 1812468,
+      "description": "Drainage work and Earthworks",
+      "status": "Past",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2025-10-20",
+      "suburb": "Swanbank",
+      "coords": [
+        152.81441552,
+        -27.66124882
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11866%2F2025%2FOW"
+    },
+    {
+      "application_number": "11196/2025/OW",
+      "id": 1809061,
+      "description": "Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2025-10-02",
+      "suburb": "Swanbank",
+      "coords": [
+        152.81613441,
+        -27.67402673
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11196%2F2025%2FOW"
+    },
+    {
+      "application_number": "5854/2025/SSP/A",
+      "id": 1808381,
+      "description": "Plan of New Road on SP34821",
+      "status": "Past",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2025-09-29",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89380126,
+        -27.62378325
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5854%2F2025%2FSSP%2FA"
+    },
+    {
+      "application_number": "10654/2025/OD",
+      "id": 1806431,
+      "description": "Building Work Assessable Against the Planning Scheme - Secondary Dwelling Affected by the Flood Risk & Overland Flow Overlay",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2025-09-18",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.90050447,
+        -27.62772415
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10654%2F2025%2FOD"
+    },
+    {
+      "application_number": "10207/2025/OD",
+      "id": 1803540,
+      "description": "Building Work assessable against the planning scheme - Carport affected by the Flood Risk and Overland Flow Overlay",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2025-09-10",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.87900248,
+        -27.66282811
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10207%2F2025%2FOD"
+    },
+    {
+      "application_number": "9871/2025/OW",
+      "id": 1801428,
+      "description": "Operational Works - Driveway",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2025-09-03",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.8770671,
+        -27.63465007
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9871%2F2025%2FOW"
+    },
+    {
+      "application_number": "9833/2025/OD",
+      "id": 1801184,
+      "description": "Building Work Assessable Against the Planning Scheme - Structures Affected by the Difficult Topography Overlay",
+      "status": "In Progress",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2025-09-02",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89441215,
+        -27.6238161
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9833%2F2025%2FOD"
+    },
+    {
+      "application_number": "9321/2025/OW",
+      "id": 1797507,
+      "description": "Operational Works - Driveway",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2025-08-21",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.88522523,
+        -27.65898111
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9321%2F2025%2FOW"
+    },
+    {
+      "application_number": "9055/2025/EXC",
+      "id": 1795976,
+      "description": "Exemption Certificate - Building Work assessable against the planning scheme - Shed affected by the Difficult Topography and Landslide Overlay",
+      "status": "Decided",
+      "application_type": "Exemption Certificate",
+      "assessment_level": "Other",
+      "date_received": "2025-08-15",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.87438887,
+        -27.65919
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9055%2F2025%2FEXC"
+    },
+    {
+      "application_number": "8140/2025/ADP",
+      "id": 1789035,
+      "description": "Area Development Plan to nominate land for Outdoor Recreation (Mini Golf, Driving Range and Golf Academy) Material Change of Use for Outdoor Recreation (Mini Golf, Driving Range and Golf Academy)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2025-07-28",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89411758,
+        -27.66362477
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8140%2F2025%2FADP"
+    },
+    {
+      "application_number": "4335/2011/MAMC/E",
+      "id": 1789625,
+      "description": "Minor Change - Special Industry (Wood Mulching and Composting Facility with associated site office, carparking, landscaping, storage and maintenance areas)",
+      "status": "Decided",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2025-07-28",
+      "suburb": "Swanbank",
+      "coords": [
+        152.83427957,
+        -27.6728374
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4335%2F2011%2FMAMC%2FE"
+    },
+    {
+      "application_number": "7005/2025/OW",
+      "id": 1781133,
+      "description": "Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2025-07-02",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.88582115,
+        -27.65734081
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=7005%2F2025%2FOW"
+    },
+    {
+      "application_number": "6947/2025/RAL",
+      "id": 1780510,
+      "description": "Reconfiguring a Lot - One (1) Lot into Two (2) Lots.",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2025-06-30",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84743139,
+        -27.57345913
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6947%2F2025%2FRAL"
+    },
+    {
+      "application_number": "6845/2025/RAL",
+      "id": 1779712,
+      "description": "Reconfiguring a Lot - One (1) Lot into Four (4) Lots plus Access Easements",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2025-06-27",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87816921,
+        -27.6406001
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6845%2F2025%2FRAL"
+    },
+    {
+      "application_number": "6808/2025/MCU",
+      "id": 1779467,
+      "description": "Material Change of Use - Dual Occupancy",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2025-06-27",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87893486,
+        -27.64417981
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6808%2F2025%2FMCU"
+    },
+    {
+      "application_number": "200/2022/SSP/A",
+      "id": 1777677,
+      "description": "Lots 1-4 on SP336141",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2025-06-23",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88039121,
+        -27.63058143
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=200%2F2022%2FSSP%2FA"
+    },
+    {
+      "application_number": "6382/2025/RAL",
+      "id": 1776451,
+      "description": "Reconfiguring a Lot - One (1) lot into Five (5) lots",
+      "status": "Past",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2025-06-18",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87566695,
+        -27.64812556
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6382%2F2025%2FRAL"
+    },
+    {
+      "application_number": "2957/2012/MAEXT/A",
+      "id": 1773268,
+      "description": "Extension to Currency Period Application - One (1) Lot into Five (5) Lots plus New Road",
+      "status": "Past",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Impact",
+      "date_received": "2025-06-10",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88626495,
+        -27.63288567
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=2957%2F2012%2FMAEXT%2FA"
+    },
+    {
+      "application_number": "7778/2023/SSP/A",
+      "id": 1766707,
+      "description": "lots 1-6 & 101 0n SP347429",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2025-05-19",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87670792,
+        -27.63740151
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=7778%2F2023%2FSSP%2FA"
+    },
+    {
+      "application_number": "4673/2025/OW",
+      "id": 1764464,
+      "description": "Proposed retaining walls exceeding 1m",
+      "status": "Past",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2025-05-09",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88644577,
+        -27.64421069
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4673%2F2025%2FOW"
+    },
+    {
+      "application_number": "3638/2025/MCU",
+      "id": 1756953,
+      "description": "Material Change of Use - Single Residential affected by a Development Constraints Overlay (Flooding)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2025-04-08",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.76900594,
+        -27.60278818
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3638%2F2025%2FMCU"
+    },
+    {
+      "application_number": "9877/2022/MAMC/A",
+      "id": 1749145,
+      "description": "Minor Change - Reconfiguring a Lot - One (1) Lot into Four (4) Lots",
+      "status": "In Progress",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2025-03-06",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89531026,
+        -27.63086556
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9877%2F2022%2FMAMC%2FA"
+    },
+    {
+      "application_number": "1422/2025/MCU",
+      "id": 1742768,
+      "description": "Material Change of Use - Single Residential",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2025-02-12",
+      "suburb": "Ashwell",
+      "coords": [
+        152.56407704,
+        -27.61497418
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=1422%2F2025%2FMCU"
+    },
+    {
+      "application_number": "1121/2025/OD",
+      "id": 1740931,
+      "description": "Carrying out building work not associated with a material change of use - Extension to a Single Residential (Auxiliary Unit)",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2025-02-05",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77082474,
+        -27.6042106
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=1121%2F2025%2FOD"
+    },
+    {
+      "application_number": "5001/2020/SSP/A",
+      "id": 1735067,
+      "description": "NewGen Business Park Stage 1 & 2 - Lots 1, 2, 8 and 900 on SP350399 and Lots 3-7, 9, 901, 911 & 912 on SP350400",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2025-01-15",
+      "suburb": "Swanbank",
+      "coords": [
+        152.81573825,
+        -27.64741922
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5001%2F2020%2FSSP%2FA"
+    },
+    {
+      "application_number": "293/2025/MCU",
+      "id": 1735134,
+      "description": "Material Change of Use - Single Residential affected by a Development Constraints Overlay (Flooding)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2025-01-15",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.90150464,
+        -27.62556356
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=293%2F2025%2FMCU"
+    },
+    {
+      "application_number": "14501/2024/RAL",
+      "id": 1732584,
+      "description": "Reconfiguring a Lot - One (1) lot into three (3) lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2024-12-23",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88235855,
+        -27.63695128
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=14501%2F2024%2FRAL"
+    },
+    {
+      "application_number": "14494/2024/OW",
+      "id": 1732453,
+      "description": "Tidal Works - Sewage Infrastructure",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2024-12-20",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77350524,
+        -27.59857654
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=14494%2F2024%2FOW"
+    },
+    {
+      "application_number": "14412/2024/RAL",
+      "id": 1731761,
+      "description": "Reconfiguring a Lot - One (1) lot into two (2) lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2024-12-19",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89364932,
+        -27.63345926
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=14412%2F2024%2FRAL"
+    },
+    {
+      "application_number": "13871/2024/OW",
+      "id": 1728270,
+      "description": "Stormwater, Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2024-12-06",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87370784,
+        -27.63782041
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=13871%2F2024%2FOW"
+    },
+    {
+      "application_number": "5147/2024/SSP/A",
+      "id": 1726836,
+      "description": "Lot 1 & 2 on SP336725",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2024-12-02",
+      "suburb": "Swanbank",
+      "coords": [
+        152.81205871,
+        -27.66590104
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5147%2F2024%2FSSP%2FA"
+    },
+    {
+      "application_number": "12935/2024/OW",
+      "id": 1722298,
+      "description": "Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2024-11-18",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.88405158,
+        -27.6504252
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=12935%2F2024%2FOW"
+    },
+    {
+      "application_number": "12648/2024/CA",
+      "id": 1720013,
+      "description": "Reconfiguring a Lot - One (1) Lot into Three (3) Lots Material Change of Use - Service/Trades Uses (Warehouse or Storage x 2)",
+      "status": "Decided",
+      "application_type": "Material Change of Use; Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2024-11-11",
+      "suburb": "Swanbank",
+      "coords": [
+        152.80190353,
+        -27.64378891
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=12648%2F2024%2FCA"
+    },
+    {
+      "application_number": "5539/2009/MAMC/A",
+      "id": 1719088,
+      "description": "Minor Change - Recreation Use (Outdoor Recreation)",
+      "status": "Decided",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2024-11-06",
+      "suburb": "Swanbank",
+      "coords": [
+        152.82559336,
+        -27.6837303
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5539%2F2009%2FMAMC%2FA"
+    },
+    {
+      "application_number": "1430/2018/MAEXT/A",
+      "id": 1716382,
+      "description": "Extension to Currency Period Application - Reconfigure a Lot - One (1) Lot into Four (4) Lots plus new road",
+      "status": "Decided",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2024-10-30",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87860095,
+        -27.64323746
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=1430%2F2018%2FMAEXT%2FA"
+    },
+    {
+      "application_number": "11642/2024/OW",
+      "id": 1712531,
+      "description": "BrisWest Industrial Estate - Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2024-10-17",
+      "suburb": "Swanbank",
+      "coords": [
+        152.82298356,
+        -27.64310315
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11642%2F2024%2FOW"
+    },
+    {
+      "application_number": "11609/2024/MCU",
+      "id": 1712360,
+      "description": "Material Change of Use - Multiple Residential (Thirty (30) Townhouses)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2024-10-16",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87258839,
+        -27.64927361
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11609%2F2024%2FMCU"
+    },
+    {
+      "application_number": "11442/2024/CA",
+      "id": 1711140,
+      "description": "Reconfiguring a Lot - One (1) lot into two (2) lots Material Change of Use - Single Residential affected by a development constraint (Urban Catchment Flowpath)",
+      "status": "Decided",
+      "application_type": "Material Change of Use; Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2024-10-14",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87325589,
+        -27.64773248
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11442%2F2024%2FCA"
+    },
+    {
+      "application_number": "10597/2024/OW",
+      "id": 1704949,
+      "description": "Road Work, Stormwater, Earthworks",
+      "status": "In Progress",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2024-09-19",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.8861061,
+        -27.63360211
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10597%2F2024%2FOW"
+    },
+    {
+      "application_number": "10335/2024/MCU",
+      "id": 1703157,
+      "description": "Material Change of Use - Dual Occupancy",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2024-09-13",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.8487936,
+        -27.56915161
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10335%2F2024%2FMCU"
+    },
+    {
+      "application_number": "9990/2024/MCU",
+      "id": 1700773,
+      "description": "Material Change of Use - Recreation Use (Indoor Recreation) and Business Use (Medical Centre & Cafe)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2024-09-04",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87264523,
+        -27.64394671
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9990%2F2024%2FMCU"
+    },
+    {
+      "application_number": "9668/2024/MCU",
+      "id": 1699263,
+      "description": "Material Change of Use - Single Residential affected by a Development Constraints Overlay (Mining, Difficult Topography & Flooding)",
+      "status": "Past",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2024-08-28",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77142123,
+        -27.5973207
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9668%2F2024%2FMCU"
+    },
+    {
+      "application_number": "9214/2024/RAL",
+      "id": 1697158,
+      "description": "Reconfiguring a Lot - One (1) Lot into Two (2) Lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2024-08-19",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89259029,
+        -27.62840585
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9214%2F2024%2FRAL"
+    },
+    {
+      "application_number": "9179/2024/CA",
+      "id": 1696836,
+      "description": "Variation Request - Preliminary approval to vary the effect of the Ipswich Planning Scheme to allow development to be carried out in accordance with the Hardrock Quarry Precinct Plan and Variation Document; and Reconfiguring a Lot - Boundary Realignment (Two [2] Lots into Two [2] Lots)",
+      "status": "In Progress",
+      "application_type": "Material Change of Use; Reconfiguring a Lot",
+      "assessment_level": "Impact",
+      "date_received": "2024-08-16",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.86980715,
+        -27.67073187
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9179%2F2024%2FCA"
+    },
+    {
+      "application_number": "8525/2024/OW",
+      "id": 1693555,
+      "description": "Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2024-07-31",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89932315,
+        -27.6647928
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8525%2F2024%2FOW"
+    },
+    {
+      "application_number": "10280/2019/MAMC/A",
+      "id": 1691387,
+      "description": "Minor Change - Drainage Work & Earthworks",
+      "status": "Decided",
+      "application_type": "Modification/Extension",
+      "assessment_level": "Other",
+      "date_received": "2024-07-22",
+      "suburb": "Amberley",
+      "coords": [
+        152.69684414,
+        -27.6506914
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10280%2F2019%2FMAMC%2FA"
+    },
+    {
+      "application_number": "7096/2024/OW",
+      "id": 1686619,
+      "description": "Stormwater & Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2024-07-01",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89079932,
+        -27.63046064
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=7096%2F2024%2FOW"
+    },
+    {
+      "application_number": "6573/2024/RAL",
+      "id": 1683828,
+      "description": "Reconfiguring a Lot - one (1) lot into two (2) lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2024-06-18",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89198169,
+        -27.62678407
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6573%2F2024%2FRAL"
+    },
+    {
+      "application_number": "6545/2024/MCU",
+      "id": 1683569,
+      "description": "Material Change of Use - Dual Occupancy (Relative’s Accommodation)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2024-06-18",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84652422,
+        -27.57334037
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6545%2F2024%2FMCU"
+    },
+    {
+      "application_number": "6448/2024/RAL",
+      "id": 1683179,
+      "description": "Reconfiguring a Lot - One (1) Lot into Five (5) Lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2024-06-13",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.877998,
+        -27.64241688
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6448%2F2024%2FRAL"
+    },
+    {
+      "application_number": "4610/2024/OW",
+      "id": 1673149,
+      "description": "Stormwater, Drainage work, Earthworks, Erosion and Sediment Control",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2024-05-01",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.8915593,
+        -27.66989159
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4610%2F2024%2FOW"
+    },
+    {
+      "application_number": "4600/2024/OD",
+      "id": 1673125,
+      "description": "Carrying out building work not associated with a material change of use - Carport Affected by a Development Constraints Overlay (Urban Catchment Flow Path)",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2024-05-01",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.88078929,
+        -27.63407251
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4600%2F2024%2FOD"
+    },
+    {
+      "application_number": "4311/2024/RAL",
+      "id": 1671871,
+      "description": "Reconfiguring a Lot - One (1) Lot into Three (3) Lots (including nomination of one Dual Occupancy lot)",
+      "status": "Past",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2024-04-24",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87997601,
+        -27.63063299
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4311%2F2024%2FRAL"
+    },
+    {
+      "application_number": "3934/2024/IU",
+      "id": 1669819,
+      "description": "Interim Uses - Civil Works",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2024-04-15",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.8961089,
+        -27.67206157
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3934%2F2024%2FIU"
+    },
+    {
+      "application_number": "3315/2024/RAL",
+      "id": 1666642,
+      "description": "Reconfiguring a Lot - One (1) Lot into Three (3) Lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2024-03-28",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.89691453,
+        -27.62622301
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3315%2F2024%2FRAL"
+    },
+    {
+      "application_number": "4448/2023/SSP/A",
+      "id": 1658006,
+      "description": "Lots 1 - 3 on SP335699",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2024-02-19",
+      "suburb": "Bellbird Park",
+      "coords": [
+        152.87710641,
+        -27.64254228
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4448%2F2023%2FSSP%2FA"
+    },
+    {
+      "application_number": "559/2024/OW",
+      "id": 1652820,
+      "description": "Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2024-01-24",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89881637,
+        -27.66397939
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=559%2F2024%2FOW"
+    },
+    {
+      "application_number": "13579/2023/SSP",
+      "id": 1648575,
+      "description": "Lots 1 - 42 on SP325931",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2023-12-20",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89955302,
+        -27.66662483
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=13579%2F2023%2FSSP"
+    },
+    {
+      "application_number": "13192/2023/RAL",
+      "id": 1646557,
+      "description": "Reconfiguring a Lot - Access Easement",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2023-12-11",
+      "suburb": "Amberley",
+      "coords": [
+        152.69619289,
+        -27.65266573
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=13192%2F2023%2FRAL"
+    },
+    {
+      "application_number": "12157/2023/OD",
+      "id": 1640904,
+      "description": "Carrying out building work not associated with a material change of use - Single Residential (Auxiliary Unit) affected by a Development Constraints Overlay (OV5 Adopted Flood Regulation Line)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2023-11-15",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84640849,
+        -27.56615723
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=12157%2F2023%2FOD"
+    },
+    {
+      "application_number": "11174/2023/RAL",
+      "id": 1635401,
+      "description": "Reconfiguring a Lot - One (1) Lot into Two (2) Lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2023-10-20",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84516407,
+        -27.57316231
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11174%2F2023%2FRAL"
+    },
+    {
+      "application_number": "10677/2019/SSP/B",
+      "id": 1608509,
+      "description": "Lots 150-163, 1001 on SP334758",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2023-07-28",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89807659,
+        -27.66786845
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10677%2F2019%2FSSP%2FB"
+    },
+    {
+      "application_number": "3809/2023/RAL",
+      "id": 1567999,
+      "description": "Reconfiguring a Lot - One (1) lot into two (2) lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2023-04-21",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84106276,
+        -27.57085948
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3809%2F2023%2FRAL"
+    },
+    {
+      "application_number": "2812/2023/IU",
+      "id": 1556544,
+      "description": "Interim Uses - Preliminary Bulk Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2023-03-21",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89050237,
+        -27.66145721
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=2812%2F2023%2FIU"
+    },
+    {
+      "application_number": "8784/2022/OW",
+      "id": 1467432,
+      "description": "Prescribed Tidal Works and Removal of Marine Plants",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2022-09-09",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.76706998,
+        -27.60005422
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8784%2F2022%2FOW"
+    },
+    {
+      "application_number": "8783/2022/IU",
+      "id": 1467382,
+      "description": "Material Change of Use - Animal Husbandry (Bee Keeping)",
+      "status": "Decided",
+      "application_type": "Other",
+      "assessment_level": "Other",
+      "date_received": "2022-09-09",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.89196367,
+        -27.66952555
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8783%2F2022%2FIU"
+    },
+    {
+      "application_number": "8487/2022/OW",
+      "id": 1464119,
+      "description": "Landscaping",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2022-09-02",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89038252,
+        -27.66256336
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8487%2F2022%2FOW"
+    },
+    {
+      "application_number": "4913/2022/OW",
+      "id": 1413824,
+      "description": "Road work, Stormwater, Water infrastructure, Earthworks and Landscaping - Augustine Heights State School",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2022-05-27",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.87353831,
+        -27.66700485
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4913%2F2022%2FOW"
+    },
+    {
+      "application_number": "16397/2021/RAL",
+      "id": 1297941,
+      "description": "Reconfiguring a Lot - One (1) Lot into Two (2) Lots",
+      "status": "Decided",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2021-09-29",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77139567,
+        -27.60125089
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=16397%2F2021%2FRAL"
+    },
+    {
+      "application_number": "2894/2012/SSP/B",
+      "id": 1284720,
+      "description": "Lots 40-50 on SP270670",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2021-09-07",
+      "suburb": "Brookwater",
+      "coords": [
+        152.8933776,
+        -27.6551082
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=2894%2F2012%2FSSP%2FB"
+    },
+    {
+      "application_number": "13478/2021/OW",
+      "id": 1263217,
+      "description": "Landscaping - Retaining Wall",
+      "status": "Past",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2021-08-04",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.87547579,
+        -27.66427795
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=13478%2F2021%2FOW"
+    },
+    {
+      "application_number": "12627/2021/OD",
+      "id": 1253748,
+      "description": "Carrying out building work not associated with a material change of use - Shed on a Vacant Lot",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2021-07-20",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.8491738,
+        -27.5762157
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=12627%2F2021%2FOD"
+    },
+    {
+      "application_number": "11122/2021/OW",
+      "id": 1234357,
+      "description": "Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2021-06-15",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.8765808,
+        -27.66023737
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=11122%2F2021%2FOW"
+    },
+    {
+      "application_number": "10914/2021/MCU",
+      "id": 1231365,
+      "description": "Material Change of Use - Single Residential affected by a Development Constraints Overlay (OV5 - Adopted Flood Regulation Line)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2021-06-09",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84799677,
+        -27.58116326
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10914%2F2021%2FMCU"
+    },
+    {
+      "application_number": "5124/2021/OD",
+      "id": 1166963,
+      "description": "Building Work not Associated with an MCU - Auxiliary Unit within a Development Constraints Overlay (OV5 - Flooding)",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2021-03-05",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.7688406,
+        -27.60025201
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5124%2F2021%2FOD"
+    },
+    {
+      "application_number": "3025/2021/MCU",
+      "id": 1145854,
+      "description": "Material Change of Use - Single Residential - Affected by a Development Constraints Overlay (Flooding)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2021-02-08",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84907815,
+        -27.57328178
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3025%2F2021%2FMCU"
+    },
+    {
+      "application_number": "12248/2020/IU",
+      "id": 1110084,
+      "description": "Interim Uses - Clearing Vegetation - Site 1",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2020-12-14",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89614667,
+        -27.66096395
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=12248%2F2020%2FIU"
+    },
+    {
+      "application_number": "10157/2020/SSP",
+      "id": 1087250,
+      "description": "Lots 1, 2 on SP280575",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2020-11-10",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.87667256,
+        -27.65983746
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10157%2F2020%2FSSP"
+    },
+    {
+      "application_number": "10013/2020/MCU",
+      "id": 1085307,
+      "description": "Material Change of Use - Single Residential affected by a Development Constraints Overlay (Flooding)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2020-11-06",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84436174,
+        -27.57972784
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=10013%2F2020%2FMCU"
+    },
+    {
+      "application_number": "8115/2020/MCU",
+      "id": 1062957,
+      "description": "Material Change of Use - Single Residential Dwelling in a Development Constraints Overlay",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2020-09-25",
+      "suburb": "Ashwell",
+      "coords": [
+        152.56342705,
+        -27.60974244
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8115%2F2020%2FMCU"
+    },
+    {
+      "application_number": "6428/2020/MCU",
+      "id": 1041453,
+      "description": "Material Change of Use - Single Residential affected by a Development Constraints Overlay (Flooding and Mining)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2020-08-11",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77201427,
+        -27.59802682
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6428%2F2020%2FMCU"
+    },
+    {
+      "application_number": "3242/2019/SSP/A",
+      "id": 1042444,
+      "description": "Plan of New Road, Easements AA, AC & AD and Easements AB & AE-AJ on SP309054",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2020-08-11",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.89382039,
+        -27.67184709
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3242%2F2019%2FSSP%2FA"
+    },
+    {
+      "application_number": "8212/2017/SSP/A",
+      "id": 1024707,
+      "description": "Plan of New Road on SP309078",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2020-07-02",
+      "suburb": "Brookwater",
+      "coords": [
+        152.90156235,
+        -27.66788584
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8212%2F2017%2FSSP%2FA"
+    },
+    {
+      "application_number": "3778/2020/OW",
+      "id": 1004532,
+      "description": "Earthworks",
+      "status": "Decided",
+      "application_type": "Operational Works",
+      "assessment_level": "Code",
+      "date_received": "2020-05-20",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.8737839,
+        -27.65794236
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3778%2F2020%2FOW"
+    },
+    {
+      "application_number": "3740/2020/RAL",
+      "id": 1004043,
+      "description": "Reconfiguring a Lot - One (1) lot into Two (2) lots",
+      "status": "Past",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2020-05-20",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.838582,
+        -27.56809886
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3740%2F2020%2FRAL"
+    },
+    {
+      "application_number": "3570/2019/SSP/B",
+      "id": 948276,
+      "description": "Lots 100-115, 175-189, & 901 on SP304727",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2019-12-20",
+      "suburb": "Brookwater",
+      "coords": [
+        152.89983324,
+        -27.66395739
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3570%2F2019%2FSSP%2FB"
+    },
+    {
+      "application_number": "7126/2019/RAL",
+      "id": 897198,
+      "description": "Reconfiguring a Lot - Twenty Eight (28) Lots into Eight (8) Lots",
+      "status": "Past",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2019-08-28",
+      "suburb": "Amberley",
+      "coords": [
+        152.67197133,
+        -27.63168312
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=7126%2F2019%2FRAL"
+    },
+    {
+      "application_number": "3570/2019/SSP/A",
+      "id": 864568,
+      "description": "Lots 116-122, 166-174, 190-198, 8000 & Common Property on SP304728 Lots 8000, 9000 & Common Property on SP312112",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2019-06-18",
+      "suburb": "Brookwater",
+      "coords": [
+        152.8983449,
+        -27.66270867
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3570%2F2019%2FSSP%2FA"
+    },
+    {
+      "application_number": "6892/2006/SSP/V",
+      "id": 862505,
+      "description": "Easement A on SP312141",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": null,
+      "date_received": "2019-06-13",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.87071716,
+        -27.65652387
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6892%2F2006%2FSSP%2FV"
+    },
+    {
+      "application_number": "4196/2019/OD",
+      "id": 853577,
+      "description": "Building Work not Associated with a Material Change of Use - Extension to a Single Residential Affected by a Character Places Overlay",
+      "status": "Past",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2019-05-27",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.76810696,
+        -27.60208481
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4196%2F2019%2FOD"
+    },
+    {
+      "application_number": "6312/2017/SSP/A",
+      "id": 771343,
+      "description": "Lots 3420 - 3423 on SP291453",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2018-11-01",
+      "suburb": "Brookwater",
+      "coords": [
+        152.88985559,
+        -27.64877919
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6312%2F2017%2FSSP%2FA"
+    },
+    {
+      "application_number": "1917/2018/SSP/A",
+      "id": 731211,
+      "description": "Lots 73 and 74 on SP300733",
+      "status": "Decided",
+      "application_type": "Plan Sealing",
+      "assessment_level": "Other",
+      "date_received": "2018-08-03",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.87169106,
+        -27.659018
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=1917%2F2018%2FSSP%2FA"
+    },
+    {
+      "application_number": "4957/2018/OD",
+      "id": 712618,
+      "description": "Carrying out building work not associated with a Material Change of Use - Shed in a Character Zone",
+      "status": "Decided",
+      "application_type": "Building Works Assessable Against the P/S",
+      "assessment_level": "Code",
+      "date_received": "2018-06-22",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77206252,
+        -27.60069765
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4957%2F2018%2FOD"
+    },
+    {
+      "application_number": "3668/2018/MCU",
+      "id": 695149,
+      "description": "Material Change of Use - Single Residential - affected by a Development Constraints Overlay (Difficult Topography)",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2018-05-14",
+      "suburb": "Augustine Heights",
+      "coords": [
+        152.87113199,
+        -27.65911409
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3668%2F2018%2FMCU"
+    },
+    {
+      "application_number": "3343/2018/MCU",
+      "id": 690818,
+      "description": "Material Change of Use for Special Industry (Landfill for Non-putrescible Waste and Waste Transfer Station), Environmentally Relevant Activity (ERA) 60 - Waste Disposal, and Environmentally Relevant Activity (ERA) 33 - Crushing, Milling, Grinding or Screening",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Impact",
+      "date_received": "2018-05-03",
+      "suburb": "Amberley",
+      "coords": [
+        152.6791763,
+        -27.65408483
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3343%2F2018%2FMCU"
+    },
+    {
+      "application_number": "3236/2018/RAL",
+      "id": 689204,
+      "description": "Reconfiguring a Lot - One (1) Lot into Two (2) Lots",
+      "status": "Past",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2018-05-01",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.83538557,
+        -27.56384841
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3236%2F2018%2FRAL"
+    },
+    {
+      "application_number": "7427/2017/RAL",
+      "id": 624615,
+      "description": "Reconfigure a Lot - One (1) Lot into Two (2) Lots",
+      "status": "Past",
+      "application_type": "Reconfiguring a Lot",
+      "assessment_level": "Code",
+      "date_received": "2017-10-06",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84544039,
+        -27.5754727
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=7427%2F2017%2FRAL"
+    },
+    {
+      "application_number": "2778/2015/RAL",
+      "id": 529004,
+      "description": "Reconfiguring a Lot - One (1) lot into Two (2) lots",
+      "status": "Past",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2015-05-26",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.83681673,
+        -27.56565176
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=2778%2F2015%2FRAL"
+    },
+    {
+      "application_number": "1545/2015/MCU",
+      "id": 525738,
+      "description": "Single Residential within a Development Constraint Overlay",
+      "status": "Decided",
+      "application_type": "Material Change of Use",
+      "assessment_level": "Code",
+      "date_received": "2015-03-25",
+      "suburb": "Ashwell",
+      "coords": [
+        152.56988273,
+        -27.63856785
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=1545%2F2015%2FMCU"
+    },
+    {
+      "application_number": "5497/2014/OD",
+      "id": 517075,
+      "description": "Building Work not Associated with a Material Change of Use (Extension to Single Residential within a Development Constraints Overlay - Flooding)",
+      "status": "Past",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2014-10-08",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.85064348,
+        -27.57982302
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5497%2F2014%2FOD"
+    },
+    {
+      "application_number": "816/2014/MCU",
+      "id": 503649,
+      "description": "Relatives Accommodation",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2014-02-25",
+      "suburb": "Ashwell",
+      "coords": [
+        152.55923133,
+        -27.63084413
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=816%2F2014%2FMCU"
+    },
+    {
+      "application_number": "539/2014/MCU",
+      "id": 502632,
+      "description": "Material Change of Use - Dual Occupancy",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2014-02-07",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.85060357,
+        -27.57369642
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=539%2F2014%2FMCU"
+    },
+    {
+      "application_number": "528/2013/OW",
+      "id": 485790,
+      "description": "Road Works, Stormwater, Drainage Works, Earthworks, Signage and Street Lighting - RAAF Base Amberley Redevelopment (Stage 3)",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2013-02-08",
+      "suburb": "Amberley",
+      "coords": [
+        152.7010911,
+        -27.63153237
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=528%2F2013%2FOW"
+    },
+    {
+      "application_number": "5120/2012/SSP",
+      "id": 480417,
+      "description": "Plan of New Road on SP257229",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2012-10-10",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.83696996,
+        -27.56001817
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5120%2F2012%2FSSP"
+    },
+    {
+      "application_number": "2885/2011/RAL",
+      "id": 455639,
+      "description": "Two (2) Lots into Two (2) Lots - Boundary Realignment",
+      "status": "Past",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2011-05-26",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77049227,
+        -27.59717192
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=2885%2F2011%2FRAL"
+    },
+    {
+      "application_number": "8634/2010/MCU",
+      "id": 448628,
+      "description": "Material Change of Use - Dual Occupancy",
+      "status": "Past",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2010-12-20",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.768098,
+        -27.59978081
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8634%2F2010%2FMCU"
+    },
+    {
+      "application_number": "7320/2009/MCU",
+      "id": 426535,
+      "description": "Single Residential",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2009-11-19",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77242032,
+        -27.60438441
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=7320%2F2009%2FMCU"
+    },
+    {
+      "application_number": "3589/2009/OD",
+      "id": 417232,
+      "description": "Building Work not Associated with a MCU (Garage Within an Urban Stormwater Flow Path)",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2009-06-16",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.83811721,
+        -27.57492374
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3589%2F2009%2FOD"
+    },
+    {
+      "application_number": "9546/2008/MCU",
+      "id": 407965,
+      "description": "Material Change of Use - Dual Occupancy",
+      "status": "Past",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2008-12-24",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77091894,
+        -27.60367149
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=9546%2F2008%2FMCU"
+    },
+    {
+      "application_number": "7253/2008/RAL",
+      "id": 401730,
+      "description": "One (1) Lot into Two (2) Lots",
+      "status": "Past",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2008-09-15",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84044798,
+        -27.56140099
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=7253%2F2008%2FRAL"
+    },
+    {
+      "application_number": "6927/2008/RAL",
+      "id": 400948,
+      "description": "One (1) Lot into Four (4) Lots",
+      "status": "Past",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2008-09-02",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84524291,
+        -27.56776037
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=6927%2F2008%2FRAL"
+    },
+    {
+      "application_number": "5620/2008/MCU",
+      "id": 397800,
+      "description": "Material Change of Use - Dual Occupancy",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2008-07-15",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77215753,
+        -27.60581892
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=5620%2F2008%2FMCU"
+    },
+    {
+      "application_number": "4058/2008/MCU",
+      "id": 394047,
+      "description": "Single Residential within a Constraints Overlay",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2008-05-28",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84629951,
+        -27.58048385
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4058%2F2008%2FMCU"
+    },
+    {
+      "application_number": "3297/2008/MCU",
+      "id": 391940,
+      "description": "Multiple Residential (9 Units)",
+      "status": "Past",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2008-04-29",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.7708879,
+        -27.60385164
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3297%2F2008%2FMCU"
+    },
+    {
+      "application_number": "514/2008/MCU",
+      "id": 384221,
+      "description": "Material Change of Use - Dual Occupancy (Relative's Accommodation)",
+      "status": "Past",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2008-01-24",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84163678,
+        -27.57889055
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=514%2F2008%2FMCU"
+    },
+    {
+      "application_number": "8683/2007/MCU",
+      "id": 376334,
+      "description": "Single Residential",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2007-10-25",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.77174913,
+        -27.60291459
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=8683%2F2007%2FMCU"
+    },
+    {
+      "application_number": "3288/2007/MCU",
+      "id": 353917,
+      "description": "Dual Occupancy - Relatives Accommodation",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2007-04-26",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.83621668,
+        -27.57549971
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=3288%2F2007%2FMCU"
+    },
+    {
+      "application_number": "2010/2007/MCU",
+      "id": 349285,
+      "description": "Dual Occupancy (Relatives Accommodation)",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2007-03-16",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84050232,
+        -27.57174988
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=2010%2F2007%2FMCU"
+    },
+    {
+      "application_number": "1823/2006/MCU",
+      "id": 319609,
+      "description": "Single Residential within a Development Constraints Overlay",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2006-03-16",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.76908242,
+        -27.59768172
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=1823%2F2006%2FMCU"
+    },
+    {
+      "application_number": "594/2006/MA",
+      "id": 315997,
+      "description": "Extension of Currency Period (3732/01)",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2006-01-31",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.84634745,
+        -27.56709884
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=594%2F2006%2FMA"
+    },
+    {
+      "application_number": "4866/2005/MCU",
+      "id": 303192,
+      "description": "Dual Occupancy - Relatives Accommodation",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2005-08-15",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.83761774,
+        -27.56074428
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4866%2F2005%2FMCU"
+    },
+    {
+      "application_number": "4415/2005/MCU",
+      "id": 301647,
+      "description": "Dual Occupancy",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2005-07-21",
+      "suburb": "Barellan Point",
+      "coords": [
+        152.85006539,
+        -27.57496222
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=4415%2F2005%2FMCU"
+    },
+    {
+      "application_number": "1702/2005/MCU",
+      "id": 293759,
+      "description": "ERA 28 - Motor Vehicle Workshop",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2005-03-22",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.76995904,
+        -27.59856833
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=1702%2F2005%2FMCU"
+    },
+    {
+      "application_number": "1335/2005/MCU",
+      "id": 292831,
+      "description": "Single Dwelling on property less than 450sqm",
+      "status": "Decided",
+      "application_type": null,
+      "assessment_level": null,
+      "date_received": "2005-03-08",
+      "suburb": "Basin Pocket",
+      "coords": [
+        152.7724751,
+        -27.6040722
+      ],
+      "source_url": "https://developmenti.ipswich.qld.gov.au/Home/ApplicationDetail?type=plan_development_apps_unique&id=1335%2F2005%2FMCU"
+    }
+  ]
+}

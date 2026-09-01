@@ -60,6 +60,10 @@ jobs:
           # Shape Your Ipswich consultations — daily (not time-sensitive like
           # closures, so not in the hourly refresh).
           python -m scrape.shape_your_ipswich --out data/consultations.json
+          # Development applications (Development.i) — daily. DAs move often but
+          # not hourly; this is Council's own register surfaced as a link +
+          # basic-facts layer (Invariant 7).
+          python -m scrape.development_applications --out data/development_applications.json
 
       # The hourly closures workflow reuses this instead of re-hitting
       # infocouncil every hour (that would be ~4k requests/day at Council).
@@ -84,6 +88,15 @@ jobs:
         with:
           path: data/consultations.json
           key: consultations-${{ github.run_id }}
+
+      # And Development.i — the hourly build reuses today's DA snapshot instead
+      # of re-enumerating every locality on Council's portal every hour. The
+      # --strict floor needs the file present, so the hourly job restores it.
+      - name: Cache development applications for hourly builds
+        uses: actions/cache/save@v4
+        with:
+          path: data/development_applications.json
+          key: development-applications-${{ github.run_id }}
 
       - name: Build
         # --strict: refuse to publish if a scraper silently returned nothing

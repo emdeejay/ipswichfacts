@@ -22,7 +22,9 @@ from build.build_site import (  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
-# Invariant 7: PlanningAlerts owns DAs — don't scrape them, DO link out.
+# Invariant 7 (revised): DAs are a link + factual-metadata layer from Council's
+# own Development.i register — NOT full reproduction. PlanningAlerts stays as the
+# email-alerts complement. Both pointers appear on street/suburb pages.
 
 
 def test_street_and_suburb_pages_point_at_planningalerts():
@@ -32,16 +34,30 @@ def test_street_and_suburb_pages_point_at_planningalerts():
     assert "Gordon Street" in html
 
 
-def test_about_page_states_the_da_boundary():
-    html = render_about()
-    assert PLANNINGALERTS_URL in html
-    assert "not scraped or republished" in html
-
-
-def test_we_never_claim_to_cover_das():
-    """Invariant 7 is 'link out', not 'do it ourselves'."""
+def test_da_aside_points_at_council_register_and_keeps_planningalerts_as_complement():
+    """Council's Development.i is the source of truth we surface; PlanningAlerts
+    is the watch-my-street complement. Both must be present, and the aside must
+    not claim to be the whole register."""
     html = _planningalerts_html("Somewhere")
-    assert "doesn't cover development applications" in html
+    assert "developmenti.ipswich.qld.gov.au" in html   # Council register
+    assert "source of truth" in html
+    assert PLANNINGALERTS_URL in html                   # complement, not the source
+    assert "not the whole register" in html
+
+
+def test_about_page_states_the_da_boundary():
+    """The honest boundary: we surface Council's basic DA facts and link back,
+    and we do NOT reproduce officer reports, decisions or submissions."""
+    html = render_about()
+    assert "developmenti.ipswich.qld.gov.au" in html
+    assert PLANNINGALERTS_URL in html
+    # We must be explicit about what we do NOT reproduce.
+    low = html.lower()
+    assert "submissions" in low
+    assert "recommendation" in low
+    assert "not reproduce" in low or "not shown here" in low
+    # The old, now-false claim must be gone.
+    assert "not scraped or republished" not in html
 
 
 # ---------------------------------------------------------------------------

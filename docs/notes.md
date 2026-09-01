@@ -191,6 +191,75 @@ redirects `shapeyouripswich.com.au` → `https://www.shapeyouripswich.com.au/`
 - Status wording is Council's own (`Open`/`Active` = taking input, `Closed` =
   archived); reproduced verbatim, never characterised.
 
+### Development.i — development applications (scrape/development_applications.py)
+
+Council's own DA portal ("Development.i", an ASP.NET Core app):
+`https://developmenti.ipswich.qld.gov.au`. No robots.txt (404). This is a
+**link + factual-metadata layer only** — see Invariant 7 for what we surface and
+the long list of what we deliberately don't.
+
+- **Applications endpoint:** `POST /Geo/GetApplicationFilterResults`,
+  `Content-Type: application/json`, header `X-Requested-With: XMLHttpRequest`.
+  Returns a GeoJSON `FeatureCollection`.
+- **Anti-forgery gate (the main gotcha).** The POST returns **500** unless you
+  first `GET /` to receive the `.AspNetCore.Antiforgery._*` cookie AND read the
+  hidden `<input name="__RequestVerificationToken">` from the home HTML, then
+  send that token in a `RequestVerificationToken` request header (with the
+  cookie) on the POST. httpx's `Client` keeps the cookie automatically; the
+  token is scraped from the HTML. No login/account needed.
+- **Body schema quirk:** the working body uses `SortField:"submitted"` and
+  `SortAscending` (a **bool**), NOT `SortDirection`. It also carries
+  `BBox/PixelWidth/PixelHeight`. Sending `SortDirection` (as an early capture
+  suggested) 500s. `IncludeDA:true, IncludeBA:false, IncludePlumb:false` =
+  development applications only. `Progress:"all"` spans In Progress + Decided +
+  Past. Pagination via `PagingStartIndex` + `MaxRecords` (200/page).
+- **Enumeration:** `GET /Geo/GetLocality` returns a FeatureCollection of the ~82
+  suburb polygons; each `feature.id` is the gazetted locality name. The geo
+  features carry **no locality field**, so iterate the localities and set
+  `LocalityId` per request — that scopes the query and hands you the suburb
+  bucket for free (no geocoding). Verified: a whole-LGA `ViewPort` with
+  `LocalityId` set returns the same result as `ViewPort:null`, so we send
+  `ViewPort:null` and just vary `LocalityId`. The geo layer returns one feature
+  per land parcel, so a multi-parcel application repeats — **de-dupe by
+  `application_number`**.
+- **COMPLETENESS — read this.** `GetApplicationFilterResults` is the **map
+  layer** and returns only a small **mapped subset** of each locality's register
+  — roughly **4%**. Measured: Swanbank returns ~14–15 unique apps via geo, but
+  Council's own list endpoint (`POST /Home/ApplicationTileSearch`, same body,
+  returns HTML tiles) reports **345** for Swanbank, 46 for Amberley, 954 for
+  Brassall, **27,558 citywide**. The geo count also fluctuates slightly per call
+  (22↔25 features). We ship the geo/mapped set faithfully, framed as Council's
+  *mapped* applications with a prominent link to the full Development.i register,
+  and **never assert a total DA count** on any page. If the product ever wants
+  the complete register, switch to `ApplicationTileSearch` (HTML tiles, carries a
+  real "N of M applications" total) or the CSV export
+  (`POST /Home/ApplicationFilterCSVPaged`) — both are heavier (HTML/CSV parsing,
+  ~27k rows) and were out of scope for the link-layer.
+- **Validation case (pinned in tests):** `LocalityId:"Swanbank", Progress:"all"`
+  includes `application_number` **"12285/2026/MCU"**, description **"Material
+  Change of Use - Warehouse (Data Centre)"**, `progress` "In Progress".
+- **Fields on `feature.properties`** (confirmed): `pdonline_id,
+  application_number, description, progress, date_received, date_determined,
+  application_type, assessment_level, uselevel1, uselevel2, land_no,
+  category_desc, group_desc, group_code, submissionindicator, publicnotification,
+  project_officer, decision_desc, appeal_result, ...`. We WHITELIST to
+  `application_number, pdonline_id (as id), description, progress→status,
+  application_type, assessment_level, date_received, suburb (=LocalityId),
+  coords`. **Never emitted:** `project_officer`, `decision_desc`,
+  `appeal_result`, `submissionindicator`, `publicnotification` (Invariant 7).
+- **Per-application Council permalink:** there is **no full-page** detail route
+  (`/Application/ApplicationDetails/{id}` etc. all 404). The site opens details
+  via a modal AJAX partial:
+  `GET /Home/ApplicationDetail?type=plan_development_apps_unique&id={application_number}`
+  (application number URL-encoded) — a working 200 that renders the specific
+  application. That's the "go to Council for the detail" pointer we deep-link to;
+  it's chrome-less (a modal fragment) but it's Council's own authoritative view
+  of that application. The `type` value is the record-type the result tiles use
+  (`data-record-type`), not `development`.
+- **Address:** not in the list feed (only `land_no` + point `coords`).
+  `GET /Geo/GetPropertyDetailsByLandNumber` could enrich, but that's one request
+  per DA — skipped. DAs are suburb-bucketed via `LocalityId`, which is enough.
+
 ## Data-model gotchas
 
 - **Division fields** come through as `DIVISION 1`, `DIVISION 2`, `DIVISION 3`, `DIVISION 4` — with a space, uppercase. Values are `"T"` (in division) or `null`. Only 4 divisions on the map layer even though the LGA has more councillors — because the map is scoped to civic-project reporting. Full councillor mapping requires a separate scrape.
