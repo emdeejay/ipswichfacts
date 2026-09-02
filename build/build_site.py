@@ -1109,6 +1109,16 @@ def _capworks_funding_html(slug: str, graph) -> str:
     )
 
 
+def _project_docs_items(p) -> str:
+    """<li> links to a project's Council notices/documents (its `extras`), or
+    "" if it has none. These are Council's own updates and works notices —
+    including the notices issued to affected residents — linked to source."""
+    return "".join(
+        f'<li><a href="{h(e["url"])}" rel="noopener">{h(e.get("title") or e["url"])}</a></li>'
+        for e in (p.get("extras") or [])
+    )
+
+
 def render_project(p, closures, graph) -> str:
     slug = p["slug"]
     divisions = p.get("divisions") or []
@@ -1120,12 +1130,15 @@ def render_project(p, closures, graph) -> str:
     ) or "—"
 
     extras_html = ""
-    if p.get("extras"):
-        items = "".join(
-            f'<li><a href="{h(e["url"])}" rel="noopener">{h(e.get("title") or e["url"])}</a></li>'
-            for e in p["extras"]
+    docs_items = _project_docs_items(p)
+    if docs_items:
+        extras_html = (
+            "<h3>Council's notices &amp; documents</h3>"
+            "<p class=\"meta\">Council's own updates and works notices for this "
+            "project — including the notices issued to affected residents. "
+            "Linked to Council's source.</p>"
+            f"<ul>{docs_items}</ul>"
         )
-        extras_html = f"<h3>Council links</h3><ul>{items}</ul>"
 
     streets = graph["project_streets"].get(slug, [])
     streets_html = ""
@@ -1580,6 +1593,24 @@ def render_street(name, projects, closures, graph) -> str:
             "<tr><th>Project</th><th>Phase</th><th>Suburb</th></tr></thead><tbody>" \
             f"{rows}</tbody></table>"
 
+    # Council's own works notices for projects on this street, surfaced here so
+    # "search your street" reaches the candid resident notice without a
+    # click-through — the closure detail (and its duration) often lives only in
+    # these, not in the soft map summary.
+    docs_html = ""
+    docs_blocks = "".join(
+        f'<li><a href="/project/{p["slug"]}/">{h(p["name"])}</a><ul>{items}</ul></li>'
+        for p in matching_projects
+        if (items := _project_docs_items(p))
+    )
+    if docs_blocks:
+        docs_html = (
+            "<h2>Council's works notices &amp; documents</h2>"
+            "<p class=\"meta\">Council's own notices for works on this street — "
+            "including the notices sent to affected residents. Linked to source.</p>"
+            f"<ul>{docs_blocks}</ul>"
+        )
+
     clos_html = ""
     if matching_closures:
         rows = "".join(
@@ -1604,6 +1635,7 @@ def render_street(name, projects, closures, graph) -> str:
   <h1>{h(name)}</h1>
   <p class="meta">Everything Council has published for this street.</p>
   {proj_html}
+  {docs_html}
   {clos_html}
   {cons_html}
   {da_html}
