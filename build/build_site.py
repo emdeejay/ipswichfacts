@@ -219,14 +219,72 @@ _IMPACT_TIERS = [
 ]
 
 
+def _classify_impact_text(text: str | None) -> tuple[int, str | None]:
+    """Highest traffic-impact tier named in one piece of Council wording."""
+    for severity, label, rx in _IMPACT_TIERS:
+        if text and rx.search(text):
+            return severity, label
+    return 0, None
+
+
 def classify_traffic_impact(p) -> tuple[int, str | None]:
     """(severity, label) from a project's status + what_to_expect; (0, None)
     when Council's wording describes no traffic interruption."""
     text = " ".join(filter(None, [p.get("status"), p.get("what_to_expect")]))
-    for severity, label, rx in _IMPACT_TIERS:
-        if rx.search(text):
-            return severity, label
-    return 0, None
+    return _classify_impact_text(text)
+
+
+def impact_discrepancy(p) -> dict[str, Any] | None:
+    """Flag a project whose public 'what to expect' summary names a *milder*
+    road impact than its own status field — Council's own two descriptions
+    disagreeing. This is the capital-works-revisions move (two of Council's own
+    statements side by side) applied to prose instead of dollars.
+
+    Conservative by design: only fires when the status names a real impact
+    (closure or lane closure) that the summary softens, so a finished project
+    (whose status carries no impact wording) or one described consistently never
+    trips it. It reports the gap and shows both verbatim; it never characterises
+    intent — the reader gets Council's own words and draws their own line."""
+    s_sev, s_label = _classify_impact_text(p.get("status"))
+    e_sev, e_label = _classify_impact_text(p.get("what_to_expect"))
+    if s_sev >= 2 and e_sev < s_sev:
+        return {
+            "status_severity": s_sev,
+            "status_label": s_label,
+            "status_text": p.get("status"),
+            "expect_severity": e_sev,
+            "expect_label": e_label or "no road impact named",
+            "expect_text": p.get("what_to_expect"),
+            "gap": s_sev - e_sev,
+        }
+    return None
+
+
+def _discrepancy_html(p) -> str:
+    """Neutral side-by-side of Council's two descriptions when they disagree.
+    Reproduce both, name our tier reading as ours, draw no conclusion."""
+    d = impact_discrepancy(p)
+    if not d:
+        return ""
+    return (
+        '<aside class="seealso discrepancy">'
+        "<h3>Council describes this project's road impact two ways</h3>"
+        '<p class="meta">Council\'s status field and its public "what to expect" '
+        "summary name different levels of road impact for these works. Both are "
+        "Council's own words, shown side by side so you can compare them — this "
+        "site draws no conclusion from the difference.</p>"
+        "<dl class=\"twoway\">"
+        f"<dt>Status</dt><dd>{h(d['status_text']) or '—'} "
+        f"<span class=\"tier\">(reads as: {h(d['status_label'])})</span></dd>"
+        f"<dt>What to expect</dt><dd>{h(d['expect_text']) or '—'} "
+        f"<span class=\"tier\">(reads as: {h(d['expect_label'])})</span></dd>"
+        "</dl>"
+        '<p class="attribution">Source: <a '
+        'href="https://maps.ipswich.qld.gov.au/civicprojects" rel="noopener">'
+        "Ipswich City Council Civic Projects</a> — CC BY 4.0. The tier reading is "
+        "this site's, from Council's own wording.</p>"
+        "</aside>"
+    )
 
 
 def _truncate(s: str | None, n: int) -> str:
@@ -1001,6 +1059,13 @@ def render_index(projects, closures, meetings, news, graph, capworks, consultati
             "<table class='data'><thead><tr><th>Impact</th><th>Project</th><th>Suburb</th>"
             f"<th>Status</th></tr></thead><tbody>{rows}</tbody></table>"
         )
+        disc_n = sum(1 for p in projects if impact_discrepancy(p))
+        if disc_n:
+            works_html += (
+                f'<p class="meta"><a href="/road-impact-wording/">'
+                f"Council's own records describe {disc_n} of these two different "
+                "ways — status versus public summary →</a></p>"
+            )
 
     body = f"""
 <section class="hero">
@@ -1238,6 +1303,8 @@ def render_project(p, closures, graph) -> str:
       <p>{h(p.get("status"))}</p>
 
       {what_html}
+
+      {_discrepancy_html(p)}
 
       {funding_html}
 
@@ -1900,6 +1967,50 @@ def render_projects_list(projects) -> str:
     )
     body = f"<h1>All projects</h1><ul class='biglist'>{lis}</ul>"
     return render_layout("All projects", "Every civic project on file.", "/projects/", body)
+
+
+def render_impact_discrepancies(projects) -> str:
+    """Citywide index: projects whose public summary understates their own
+    status wording. The pattern, reproduced not alleged — Council's own words."""
+    flagged = [(p, d) for p in projects if (d := impact_discrepancy(p))]
+    flagged.sort(key=lambda x: (-x[1]["gap"], x[0].get("name") or ""))
+    intro = (
+        '<p class="crumbs"><a href="/">Home</a> › Road-impact wording</p>'
+        "<h1>Where Council's road-impact wording differs from its own status</h1>"
+        '<p class="meta">Civic projects where Council\'s public &ldquo;what to '
+        "expect&rdquo; summary names a milder road impact than the project's own "
+        "status field. Both are Council's own words. This page reproduces the pair "
+        "and draws no conclusion — it exists because a road change you can see on "
+        "the ground should match the record, and here two parts of the record "
+        "don't match each other. Follow any project to read Council's own notices."
+        "</p>"
+    )
+    if not flagged:
+        body = intro + ("<p>No current mismatches — every active project's summary "
+                        "matches its status wording.</p>")
+    else:
+        rows = "".join(
+            f'<tr><td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
+            f'<td>{h(d["status_label"])}</td>'
+            f'<td>{h(d["expect_label"])}</td>'
+            f'<td>{h(p.get("suburb"))}</td></tr>'
+            for p, d in flagged
+        )
+        body = intro + (
+            f'<p class="meta">{len(flagged)} project'
+            f'{"s" if len(flagged) != 1 else ""} flagged.</p>'
+            "<table class='data'><thead><tr><th>Project</th>"
+            "<th>Status reads as</th><th>Summary reads as</th>"
+            "<th>Suburb</th></tr></thead>"
+            f"<tbody>{rows}</tbody></table>"
+        )
+    return render_layout(
+        title="Road-impact wording that differs",
+        description="Civic projects where Council's public summary names a milder "
+        "road impact than its own status field — Council's own words, side by side.",
+        path="/road-impact-wording/",
+        body=body,
+    )
 
 
 def render_phase_list(phase: str, projects) -> str:
@@ -2701,6 +2812,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
 
     # Projects
     write("/projects/", render_projects_list(projects))
+    write("/road-impact-wording/", render_impact_discrepancies(projects))
     for phase in sorted({p.get("phase") or "Unknown" for p in projects}):
         write(f"/projects/phase/{slugify(phase)}/", render_phase_list(phase, projects))
     for p in projects:
@@ -3083,7 +3195,13 @@ table.data th { color: var(--muted); font-weight: 600; }
            background: #fbfbfa; border-radius: 4px; padding: 0.5rem 1rem;
            margin: 1.5rem 0; }
 .seealso h2 { border-bottom: none; margin: 0.35rem 0 0.25rem; font-size: 1rem; }
+.seealso h3 { border-bottom: none; margin: 0.35rem 0 0.25rem; font-size: 1rem; }
 .seealso p { margin: 0.25rem 0; font-size: 0.9rem; }
+.discrepancy { border-left-color: #b5651d; background: #fdf7f0; }
+.discrepancy dl.twoway { margin: 0.4rem 0 0.2rem; }
+.discrepancy dl.twoway dt { font-weight: 600; margin-top: 0.4rem; }
+.discrepancy dl.twoway dd { margin: 0.1rem 0 0.3rem; font-size: 0.9rem; }
+.discrepancy .tier { color: var(--muted); font-size: 0.82rem; }
 .disclaimer { border: 1px solid #e6ddc4; background: #fffdf5; border-radius: 6px;
               padding: 0.75rem 1rem; margin: 1.25rem 0; font-size: 0.85rem;
               color: #4a4433; max-width: none; }

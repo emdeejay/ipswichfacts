@@ -237,6 +237,38 @@ def test_llms_txt_points_at_data_and_carries_the_boundaries():
     assert "not reproduced" in txt.lower() or "NOT reproduced" in txt  # DA limits
 
 
+def test_impact_discrepancy_flags_only_a_softened_summary():
+    """Fire only when Council's public 'what to expect' names a milder impact
+    than its own status — Gordon Street's shape — and never on consistent
+    wording or a finished project whose status carries no impact wording."""
+    from build.build_site import impact_discrepancy
+
+    gordon = {"status": "access will be closed to all traffic until completion",
+              "what_to_expect": "noise, dust, slight delays, temporary lane closures"}
+    d = impact_discrepancy(gordon)
+    assert d and d["status_severity"] > d["expect_severity"]
+    assert impact_discrepancy(
+        {"status": "road closure in place", "what_to_expect": "road closure, detours"}) is None
+    assert impact_discrepancy(
+        {"status": "Construction completed February 2026",
+         "what_to_expect": "lane closures"}) is None
+
+
+def test_discrepancy_box_reproduces_both_and_never_editorialises():
+    """Invariant 4: reproduce, don't characterise. The box shows both of
+    Council's own statements and imputes nothing about intent."""
+    from build.build_site import _discrepancy_html
+
+    html = _discrepancy_html(
+        {"status": "closed to all traffic until completion",
+         "what_to_expect": "slight delays, temporary lane closures"})
+    low = html.lower()
+    assert "closed to all traffic" in low and "temporary lane closures" in low
+    assert "draws no conclusion" in low
+    for word in ("misleading", "dishonest", "lie", "lying", "bullshit", "deceptive", "cover-up"):
+        assert word not in low, f"discrepancy box editorialises: {word!r}"
+
+
 def test_pages_have_a_social_card():
     html = render_layout("T", "D", "/", "<p>b</p>")
     assert 'property="og:image" content="https://ipswichfacts.au/og-image.png"' in html
