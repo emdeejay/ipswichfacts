@@ -2796,6 +2796,20 @@ def _dedupe(items, keyfn):
     return out
 
 
+def _division_recent(items, label, href_fn, title_fn, n=10) -> str:
+    """A short 'most recent' teaser for a division's news/meeting mentions.
+    Rolled up across a whole division these run into the thousands, so listing
+    them all is noise — show the newest few, honestly labelled 'N of M'."""
+    items = sorted([x for x in items if x.get("date")], key=lambda x: x["date"], reverse=True)
+    if not items:
+        return ""
+    rows = "".join(
+        f'<li><time>{h(format_ymd(x["date"]))}</time> '
+        f'<a href="{href_fn(x)}">{h(title_fn(x))}</a></li>' for x in items[:n])
+    more = f" ({n} most recent of {len(items)})" if len(items) > n else f" ({len(items)})"
+    return f"<h2>{h(label)}{more}</h2><ul class='biglist'>{rows}</ul>"
+
+
 def render_division(d: int, projects, closures, graph) -> str:
     crs = graph.get("councillors_by_division", {}).get(d, [])
     matching = [p for p in projects if d in (p.get("divisions") or [])]
@@ -2840,8 +2854,13 @@ def render_division(d: int, projects, closures, graph) -> str:
 
     da_html = _da_mentions_html(das, f"Division {d}")
     cons_html = _consultation_mentions_html(cons)
-    meet_html = _meeting_mentions_html(meets)
-    news_html = _news_mentions_html(newsx)
+    meet_html = _division_recent(
+        meets, "Recent Council meeting mentions",
+        lambda x: f'/meeting/{x["slug"]}/#{x.get("anchor", "")}',
+        lambda x: f'{x.get("committee", "")}: {x.get("title", "")}'.strip(": "))
+    news_html = _division_recent(
+        newsx, "Recent news mentions",
+        lambda x: f'/news/{x["slug"]}/', lambda x: x.get("title", ""))
 
     subs_html = ""
     if div_suburbs:
