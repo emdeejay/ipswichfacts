@@ -860,11 +860,22 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
                         }
                     )
 
+    # Suburb → division(s), inferred from projects that carry both a suburb and
+    # a division. Division boundaries don't follow suburb boundaries, so a
+    # suburb can belong to more than one; this powers division-level roll-up of
+    # suburb-tagged entities (DAs, consultations, closures, news, meetings).
+    suburb_divisions: dict[str, set[int]] = defaultdict(set)
+    for p in projects:
+        if p.get("suburb"):
+            for dv in (p.get("divisions") or []):
+                suburb_divisions[p["suburb"]].add(dv)
+
     return {
         "project_capworks": dict(project_capworks),
         "capworks_match": (capworks_matched, capworks_rows),
         "streets": sorted(streets_set),
         "suburbs": sorted(suburbs_set),
+        "suburb_divisions": {s: sorted(v) for s, v in suburb_divisions.items()},
         "project_streets": project_streets,
         "project_suburbs": project_suburbs,
         "closure_streets": closure_streets,
@@ -2635,7 +2646,18 @@ def render_councillors(councillors) -> str:
     )
 
 
-def render_division(d: int, projects, graph) -> str:
+def _dedupe(items, keyfn):
+    seen, out = set(), []
+    for it in items:
+        k = keyfn(it)
+        if k in seen:
+            continue
+        seen.add(k)
+        out.append(it)
+    return out
+
+
+def render_division(d: int, projects, closures, graph) -> str:
     crs = graph.get("councillors_by_division", {}).get(d, [])
     matching = [p for p in projects if d in (p.get("divisions") or [])]
     proj_html = ""
@@ -2652,17 +2674,65 @@ def render_division(d: int, projects, graph) -> str:
             f"</tr></thead><tbody>{rows}</tbody></table>"
         )
 
+    # Roll up suburb-tagged entities (DAs, consultations, closures, meetings,
+    # news) to the division via the suburb→division map. Deduped, since one item
+    # can mention several suburbs in the same division.
+    div_suburbs = sorted(s for s, divs in graph.get("suburb_divisions", {}).items()
+                         if d in divs)
+    subset = set(div_suburbs)
+    das = _dedupe([x for s in div_suburbs for x in graph.get("suburb_das", {}).get(s, [])],
+                  lambda x: x.get("application_number"))
+    cons = _dedupe([x for s in div_suburbs for x in graph.get("suburb_consultations", {}).get(s, [])],
+                   lambda x: x.get("slug") or x.get("name"))
+    meets = _dedupe([x for s in div_suburbs for x in graph.get("suburb_meeting_items", {}).get(s, [])],
+                    lambda x: (x.get("slug"), x.get("anchor")))
+    newsx = _dedupe([x for s in div_suburbs for x in graph.get("suburb_news_items", {}).get(s, [])],
+                    lambda x: x.get("slug"))
+    clos = [c for c in closures.get("closures", []) if c.get("suburb") in subset]
+
+    clos_html = ""
+    if clos:
+        rows = "".join(
+            f'<tr><td>{h(c.get("road_name"))}</td><td>{h(c.get("event_type"))}</td>'
+            f'<td>{h(c.get("impact"))}</td><td>{h(c.get("suburb"))}</td></tr>' for c in clos)
+        clos_html = (f"<h2>Active road impacts in Division {d} ({len(clos)})</h2>"
+                     "<table class='data'><thead><tr><th>Road</th><th>Type</th>"
+                     f"<th>Impact</th><th>Suburb</th></tr></thead><tbody>{rows}</tbody></table>")
+
+    da_html = _da_mentions_html(das, f"Division {d}")
+    cons_html = _consultation_mentions_html(cons)
+    meet_html = _meeting_mentions_html(meets)
+    news_html = _news_mentions_html(newsx)
+
+    subs_html = ""
+    if div_suburbs:
+        links = ", ".join(f'<a href="/suburb/{slugify(s)}/">{h(s)}</a>' for s in div_suburbs)
+        subs_html = (
+            "<aside class='seealso'><h3>How this division is assembled</h3>"
+            "<p class='meta'>Council tags projects by division; everything else — "
+            "development applications, consultations, road impacts, meeting and news "
+            "mentions — is tagged by suburb, so it's rolled up here via the suburbs "
+            "that projects place in this division. Division boundaries don't follow "
+            f"suburb boundaries, so a suburb can appear in more than one. Suburbs: {links}.</p>"
+            "</aside>")
+
     body = f"""
 <p class="crumbs"><a href="/">Home</a> › <a href="/councillors/">Councillors</a> › Division {d}</p>
 <h1>Division {d}</h1>
 <h2>Your councillors</h2>
 <ul class='councillors'>{"".join(_councillor_card(c) for c in crs)}</ul>
 {proj_html}
-<p class="attribution">Councillor details from <a href="https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors">Ipswich City Council</a>; projects from the Civic Projects Map (CC BY 4.0).</p>
+{clos_html}
+{cons_html}
+{da_html}
+{meet_html}
+{news_html}
+{subs_html}
+<p class="attribution">Councillor details from <a href="https://www.ipswich.qld.gov.au/About-Council/Mayor-Councillors">Ipswich City Council</a>; projects, applications and impacts from Council's own systems (CC BY 4.0).</p>
 """
     return render_layout(
-        title=f"Ipswich Division {d} — councillors and projects",
-        description=f"Division {d} of Ipswich City Council: your two councillors and every civic project in the division.",
+        title=f"Ipswich Division {d} — everything Council is doing here",
+        description=f"Division {d} of Ipswich City Council: your councillors, and every civic project, development application, consultation and road impact in the division.",
         path=f"/division/{d}/",
         body=body,
     )
@@ -2870,7 +2940,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
     if councillors:
         write("/councillors/", render_councillors(councillors))
         for d in sorted(graph.get("councillors_by_division", {})):
-            write(f"/division/{d}/", render_division(d, projects, graph))
+            write(f"/division/{d}/", render_division(d, projects, closures, graph))
 
     # About
     write("/about/", render_about())
