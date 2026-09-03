@@ -658,6 +658,12 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
         if len(_name_core(p.get("name"))) >= 12
     }
     project_meeting_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    # Inverse edges, so a news/meeting page can link to the projects it's about
+    # (not just the street it names). Same normalised-name match, recorded both
+    # directions.
+    pname = {p["slug"]: p.get("name") for p in projects}
+    meeting_projects: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    news_projects: dict[str, list[dict[str, Any]]] = defaultdict(list)
 
     # Consultations (Shape Your Ipswich). Suburbs come from Council's own
     # structured location tags (no free-text guessing, so no false positives) —
@@ -761,6 +767,7 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
             for pslug, core in project_cores.items():
                 if core in n_blob:
                     project_meeting_items[pslug].append(ref)
+                    meeting_projects[m["slug"]].append({"slug": pslug, "name": pname.get(pslug)})
             item["streets"] = i_streets
             item["suburbs"] = i_suburbs
             m_streets.update(i_streets)
@@ -802,6 +809,7 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
         for pslug, core in project_cores.items():
             if core in n_blob:
                 project_news_items[pslug].append(ref)
+                news_projects[post["slug"]].append({"slug": pslug, "name": pname.get(pslug)})
         news_streets[post["slug"]] = p_streets
         news_suburbs[post["slug"]] = p_suburbs
         streets_set.update(p_streets)
@@ -885,6 +893,8 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
         "street_meeting_items": dict(street_meeting_items),
         "suburb_meeting_items": dict(suburb_meeting_items),
         "project_meeting_items": dict(project_meeting_items),
+        "meeting_projects": dict(meeting_projects),
+        "news_projects": dict(news_projects),
         "news_streets": news_streets,
         "news_suburbs": news_suburbs,
         "street_news_items": dict(street_news_items),
@@ -1390,6 +1400,13 @@ def render_meeting(m, graph) -> str:
     <p class="muted"><a href="{h(_council_item_url(m, item))}" rel="noopener">View this item in the Council {h(doc_label.lower())}</a></p>
   </section>""")
 
+    mproj = _dedupe(graph.get("meeting_projects", {}).get(slug, []), lambda x: x["slug"])
+    proj_html = ""
+    if mproj:
+        links = " · ".join(
+            f'<a href="/project/{x["slug"]}/">{h(x["name"])}</a>' for x in mproj)
+        proj_html = f'<p class="muted">Projects discussed: {links}</p>'
+
     body = f"""
 <article class="meeting">
   <p class="crumbs"><a href="/">Home</a> › <a href="/meetings/">Meetings</a> › {h(title)}</p>
@@ -1398,6 +1415,7 @@ def render_meeting(m, graph) -> str:
     <span class="doc-type doc-type-{h((m.get('doc_type') or '').lower())}">{h(doc_label)}</span>
     · {len(m.get('items', []))} item{"s" if len(m.get('items', [])) != 1 else ""}
   </p>
+  {proj_html}
   {"".join(sections) or '<p>No agenda items in this document — see the Council source for the full paper (some meetings are cancelled or record only procedural resolutions).</p>'}
   <p class="attribution">Source: <a href="{h(m.get('source_url'))}">Ipswich City Council meeting {h(doc_label.lower())}</a> (CC BY 4.0).</p>
 </article>
@@ -1459,6 +1477,13 @@ def render_news_post(p, graph) -> str:
     mentions_html = (
         f'<p class="muted">Mentions: {" · ".join(mention_links)}</p>' if mention_links else ""
     )
+    proj_links = [
+        f'<a href="/project/{x["slug"]}/">{h(x["name"])}</a>'
+        for x in _dedupe(graph.get("news_projects", {}).get(slug, []), lambda x: x["slug"])
+    ]
+    about_html = (
+        f'<p class="muted">About: {" · ".join(proj_links)}</p>' if proj_links else ""
+    )
 
     body = f"""
 <article class="news-post">
@@ -1466,6 +1491,7 @@ def render_news_post(p, graph) -> str:
   <h1>{h(p.get("title"))}</h1>
   <p class="meta">{h(format_ymd(p.get("date")))}{cats_html}</p>
   {paras}
+  {about_html}
   {mentions_html}
   <p class="attribution">Source: <a href="{h(p.get('url'))}" rel="noopener">Ipswich First (Ipswich City Council)</a> — CC BY 4.0.</p>
 </article>
