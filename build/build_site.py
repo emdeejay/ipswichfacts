@@ -1132,6 +1132,10 @@ def render_index(projects, closures, meetings, news, graph, capworks, consultati
                 "ways — status versus public summary →</a></p>"
             )
 
+    div_nav = " · ".join(
+        f'<a href="/division/{d}/">Division {d}</a>'
+        for d in sorted(graph.get("councillors_by_division", {})))
+
     body = f"""
 <section class="hero">
   <h1>What your Council is doing, who decided it, and what it costs.</h1>
@@ -1166,6 +1170,7 @@ def render_index(projects, closures, meetings, news, graph, capworks, consultati
 
 <section>
   <h2>Explore</h2>
+  <p><b>Everything in your division:</b> {div_nav} — every project, application, consultation and road impact in your patch, and who to call about it.</p>
   <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a> · <a href="/news/">Ipswich First news</a> · <a href="/consultations/">Consultations</a> · <a href="/capital-works/">Capital works funding</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
 </section>
 
