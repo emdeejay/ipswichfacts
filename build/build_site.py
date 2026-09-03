@@ -1143,6 +1143,7 @@ def render_index(projects, closures, meetings, news, graph, capworks, consultati
   Here it's in one place: projects, road closures, meeting decisions, media
   releases and budgets, cross-referenced and searchable.</p>
   <div data-ipswichfacts-search></div>
+  <p class="div-jump"><b>Jump to your division:</b> {div_nav} — everything Council's doing in your patch, and who to call.</p>
 </section>
 
 <section class="stats">
@@ -1170,7 +1171,6 @@ def render_index(projects, closures, meetings, news, graph, capworks, consultati
 
 <section>
   <h2>Explore</h2>
-  <p><b>Everything in your division:</b> {div_nav} — every project, application, consultation and road impact in your patch, and who to call about it.</p>
   <p><a href="/suburbs/">All suburbs</a> · <a href="/streets/">All streets with mentions</a> · <a href="/projects/">All projects</a> · <a href="/meetings/">Council meetings</a> · <a href="/news/">Ipswich First news</a> · <a href="/consultations/">Consultations</a> · <a href="/capital-works/">Capital works funding</a> · <a href="/councillors/">Mayor &amp; councillors</a></p>
 </section>
 
@@ -3443,6 +3443,8 @@ ol.timeline time { color: var(--muted); font-variant-numeric: tabular-nums; marg
            padding: 0.05rem 0.4rem; margin-right: 0.4rem; text-align: center; }
 .tl-meeting { background: #5c6bc0; } .tl-news { background: #26a69a; }
 .tl-consultation { background: #ab47bc; } .tl-DA { background: #b5651d; }
+.hero .div-jump { margin-top: 0.9rem; font-size: 0.95rem; color: var(--muted); }
+.hero .div-jump a { white-space: nowrap; }
 .disclaimer { border: 1px solid #e6ddc4; background: #fffdf5; border-radius: 6px;
               padding: 0.75rem 1rem; margin: 1.25rem 0; font-size: 0.85rem;
               color: #4a4433; max-width: none; }
