@@ -909,6 +909,18 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
             for dv in (p.get("divisions") or []):
                 suburb_divisions[p["suburb"]].add(dv)
 
+    # Streets that appear together in the same project or road-impact text are
+    # connected on the ground — intersections, detours, adjoining works (the
+    # Gordon St pedestrian-link text names Gordon, Bremer and King Edward
+    # Parade). Only projects and closures (the "works" context), not news, which
+    # names streets for unrelated reasons.
+    related_streets: dict[str, set[str]] = defaultdict(set)
+    for group in list(project_streets.values()) + list(closure_streets.values()):
+        for a in group:
+            for b in group:
+                if a != b:
+                    related_streets[a].add(b)
+
     return {
         "project_capworks": dict(project_capworks),
         "capworks_match": (capworks_matched, capworks_rows),
@@ -938,6 +950,7 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
         "project_consultations": dict(project_consultations),
         "suburb_das": dict(suburb_das),
         "street_das": dict(street_das),
+        "related_streets": {k: sorted(v) for k, v in related_streets.items()},
     }
 
 
@@ -1784,6 +1797,7 @@ def render_street(name, projects, closures, graph) -> str:
   {meet_html}
   {news_html}
   {empty}
+  {_connected_streets_html(name, graph)}
   {_planningalerts_html(name, near=f"{name}, Ipswich, Queensland")}
 </article>
 """
@@ -2007,6 +2021,20 @@ def _timeline_html(events, cap=_MENTIONS_CAP):
             f'<li class="muted">…and {len(dated) - cap} earlier — see the sections below.</li>')
     return ("<h2>Timeline</h2><p class='meta'>Every dated cross-reference for this "
             f"place, newest first.</p><ol class='timeline'>{rows}{more}</ol>")
+
+
+def _connected_streets_html(name, graph) -> str:
+    """Streets that share a project or road impact with this one — the detour/
+    intersection graph, straight from Council's own project and closure text."""
+    rel = graph.get("related_streets", {}).get(name, [])
+    if not rel:
+        return ""
+    links = " · ".join(f'<a href="/street/{slugify(s)}/">{h(s)}</a>' for s in rel)
+    return (
+        "<aside class='seealso'><h3>Connected streets</h3>"
+        "<p class='meta'>Streets Council names alongside this one in the same "
+        "project or road impact — the intersections, detours and adjoining works "
+        f"a closure here reaches: {links}.</p></aside>")
 
 
 def render_suburb(name, projects, closures, graph) -> str:
