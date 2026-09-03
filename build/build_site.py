@@ -426,6 +426,20 @@ def _name_core(name: str | None) -> str:
     return re.sub(r" +", " ", n).strip()
 
 
+# Filler words that carry no identifying signal across Council's systems, so
+# two names for the same job can differ by these alone.
+_TOKEN_STOP = {"program", "project", "works", "work", "stage", "phase",
+               "the", "and", "of", "to", "a", "at"}
+
+
+def _sig_tokens(name: str | None) -> frozenset[str]:
+    """Distinctive words in a name: normalised, filler and bare numbers dropped.
+    Order-, duplicate- and formatting-independent, so "Redbank Plains Road- Road
+    Resurfacing" and "Redbank Plains Road Resurfacing" share one token set."""
+    return frozenset(t for t in _norm(name).split()
+                     if t not in _TOKEN_STOP and not t.isdigit())
+
+
 def dedupe(items: list[Any], key) -> list[Any]:
     seen: set = set()
     out: list = []
@@ -833,6 +847,13 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
         if len(c) >= 12:
             core_owners[c].add(p["slug"])
     proj_by_core = {c: next(iter(s)) for c, s in core_owners.items() if len(s) == 1}
+    # Same distinctive words, any order/formatting — the biggest source of the
+    # capital-works miss is Council punctuating the same job differently.
+    tokenset_owners: dict[frozenset[str], set[str]] = defaultdict(set)
+    for p in projects:
+        tokenset_owners[_sig_tokens(p.get("name"))].add(p["slug"])
+    proj_by_tokenset = {ts: next(iter(s)) for ts, s in tokenset_owners.items()
+                        if len(s) == 1 and len(ts) >= 3}
 
     project_capworks: dict[str, list[dict[str, Any]]] = defaultdict(list)
     capworks_rows = 0
@@ -849,6 +870,16 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
                     # *different* explicit stages ("… Stage 1" must not
                     # land on the "… Stage 2" project page).
                     cand = proj_by_core.get(c)
+                    if cand:
+                        rstage = _stage_tag(row.get("project"))
+                        pstage = proj_stage.get(cand)
+                        if not (rstage and pstage and rstage != pstage):
+                            pslug = cand
+                if not pslug:
+                    # Token-set equality: exactly one project shares the row's
+                    # distinctive words. High precision — a wrong budget on a
+                    # page is worse than a missing one — and stage-safe.
+                    cand = proj_by_tokenset.get(_sig_tokens(row.get("project")))
                     if cand:
                         rstage = _stage_tag(row.get("project"))
                         pstage = proj_stage.get(cand)
