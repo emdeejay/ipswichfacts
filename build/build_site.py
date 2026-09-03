@@ -1761,6 +1761,12 @@ def render_street(name, projects, closures, graph) -> str:
     news_html = _news_mentions_html(graph.get("street_news_items", {}).get(name, []))
     cons_html = _consultation_mentions_html(graph.get("street_consultations", {}).get(name, []))
     da_html = _da_mentions_html(graph.get("street_das", {}).get(name, []), name)
+    timeline_html = _timeline_html(_timeline_events(
+        graph.get("street_meeting_items", {}).get(name, []),
+        graph.get("street_news_items", {}).get(name, []),
+        graph.get("street_consultations", {}).get(name, []),
+        graph.get("street_das", {}).get(name, []),
+    ))
 
     empty = "" if (matching_projects or matching_closures or meet_html or news_html or cons_html or da_html) else "<p>No projects, road impacts, Council meeting, consultation, development application or news mentions recorded on this street.</p>"
 
@@ -1772,6 +1778,7 @@ def render_street(name, projects, closures, graph) -> str:
   {proj_html}
   {docs_html}
   {clos_html}
+  {timeline_html}
   {cons_html}
   {da_html}
   {meet_html}
@@ -1962,6 +1969,46 @@ def _consultation_mentions_html(refs: list[dict[str, Any]]) -> str:
     )
 
 
+_ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _timeline_events(meetings=(), news=(), cons=(), das=()):
+    """Flatten the dated cross-references for a place into
+    (date, kind, label, href) tuples for one merged chronology."""
+    ev = []
+    for m in meetings:
+        label = f'{m.get("committee", "")}: {m.get("title", "")}'.strip(": ")
+        ev.append((m.get("date"), "meeting", label,
+                   f'/meeting/{m["slug"]}/#{m.get("anchor", "")}'))
+    for n in news:
+        ev.append((n.get("date"), "news", n.get("title", ""), f'/news/{n["slug"]}/'))
+    for c in cons:
+        ev.append((c.get("date"), "consultation", c.get("name", ""),
+                   f'/consultation/{c["slug"]}/'))
+    for a in das:
+        label = f'{a.get("application_number", "")} — {a.get("description", "")}'
+        ev.append((a.get("date"), "DA", label, a.get("url", "")))
+    return ev
+
+
+def _timeline_html(events, cap=_MENTIONS_CAP):
+    """One reverse-chronological list interleaving every source — the 'what
+    happened here, in order' view. ISO dates only, so the sort is total."""
+    dated = [e for e in events if e[0] and _ISO_DATE.match(str(e[0]))]
+    if not dated:
+        return ""
+    dated.sort(key=lambda e: e[0], reverse=True)
+    rows = "".join(
+        f'<li><time datetime="{h(d)}">{h(format_ymd(d))}</time> '
+        f'<span class="tl-kind tl-{h(kind)}">{h(kind)}</span> '
+        f'<a href="{h(href)}">{h(label)}</a></li>'
+        for d, kind, label, href in dated[:cap])
+    more = ("" if len(dated) <= cap else
+            f'<li class="muted">…and {len(dated) - cap} earlier — see the sections below.</li>')
+    return ("<h2>Timeline</h2><p class='meta'>Every dated cross-reference for this "
+            f"place, newest first.</p><ol class='timeline'>{rows}{more}</ol>")
+
+
 def render_suburb(name, projects, closures, graph) -> str:
     slug = slugify(name)
     matching_projects = [p for p in projects if p.get("suburb") == name]
@@ -1996,6 +2043,12 @@ def render_suburb(name, projects, closures, graph) -> str:
     news_html = _news_mentions_html(graph.get("suburb_news_items", {}).get(name, []))
     cons_html = _consultation_mentions_html(graph.get("suburb_consultations", {}).get(name, []))
     da_html = _da_mentions_html(graph.get("suburb_das", {}).get(name, []), name)
+    timeline_html = _timeline_html(_timeline_events(
+        graph.get("suburb_meeting_items", {}).get(name, []),
+        graph.get("suburb_news_items", {}).get(name, []),
+        graph.get("suburb_consultations", {}).get(name, []),
+        graph.get("suburb_das", {}).get(name, []),
+    ))
 
     body = f"""
 <article>
@@ -2003,6 +2056,7 @@ def render_suburb(name, projects, closures, graph) -> str:
   <h1>{h(name)}</h1>
   {proj_html or "<p>No projects recorded for this suburb.</p>"}
   {clos_html}
+  {timeline_html}
   {cons_html}
   {da_html}
   {meet_html}
@@ -3329,6 +3383,14 @@ table.data th { color: var(--muted); font-weight: 600; }
 .discrepancy dl.twoway dt { font-weight: 600; margin-top: 0.4rem; }
 .discrepancy dl.twoway dd { margin: 0.1rem 0 0.3rem; font-size: 0.9rem; }
 .discrepancy .tier { color: var(--muted); font-size: 0.82rem; }
+ol.timeline { list-style: none; padding-left: 0; margin: 0.5rem 0; }
+ol.timeline li { padding: 0.2rem 0; border-bottom: 1px solid var(--line); font-size: 0.92rem; }
+ol.timeline time { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 0.4rem; }
+.tl-kind { display: inline-block; min-width: 5.5em; font-size: 0.72rem; text-transform: uppercase;
+           letter-spacing: 0.03em; color: #fff; background: var(--muted); border-radius: 3px;
+           padding: 0.05rem 0.4rem; margin-right: 0.4rem; text-align: center; }
+.tl-meeting { background: #5c6bc0; } .tl-news { background: #26a69a; }
+.tl-consultation { background: #ab47bc; } .tl-DA { background: #b5651d; }
 .disclaimer { border: 1px solid #e6ddc4; background: #fffdf5; border-radius: 6px;
               padding: 0.75rem 1rem; margin: 1.25rem 0; font-size: 0.85rem;
               color: #4a4433; max-width: none; }
