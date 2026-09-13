@@ -440,6 +440,19 @@ def _sig_tokens(name: str | None) -> frozenset[str]:
                      if t not in _TOKEN_STOP and not t.isdigit())
 
 
+def _project_registry_key(p) -> str:
+    """Stable, unique-in-practice identity for a civic project. The map's `id`
+    is a positional integer Council RECYCLES as projects finish — keying slugs
+    on it served 158 URLs the wrong project. `COUNCIL_REFERENCE` (`ref`) is
+    stable but a program/batch grouping (one ref covers many road-resurfacing
+    jobs), so it's not unique alone. The composite of ref + normalised name +
+    suburb is stable across the feed's reordering and unique for all but a
+    handful of true duplicates (which the collision discriminator settles). The
+    one cost: a genuine Council rename moves that project's URL — rare, and far
+    better than a URL that renders a different project entirely."""
+    return f"{p.get('ref')}|{_norm(p.get('name'))}|{p.get('suburb')}"
+
+
 def dedupe(items: list[Any], key) -> list[Any]:
     seen: set = set()
     out: list = []
@@ -514,11 +527,13 @@ def load(inp: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any
     changed = False
     changed |= assign_stable_slugs(
         registry, "project", projects,
-        id_fn=lambda p: p.get("id"),
+        # NOT p["id"] — that's a positional slot Council recycles (see
+        # _project_registry_key). Composite key: stable across feed reordering.
+        id_fn=_project_registry_key,
         base_fn=lambda p: p.get("name") or "project",
         # Council publishes several distinct works under one name (seven
         # "Redbank Plains Road- Road Resurfacing" jobs); suburb separates most,
-        # Council's feature id settles the rest.
+        # the composite key settles the rest.
         hint_fn=lambda p: [p.get("suburb")],
         today=today,
     )

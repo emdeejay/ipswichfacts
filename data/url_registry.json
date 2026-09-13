@@ -23019,2749 +23019,1709 @@
    }
   },
   "project": {
-   "10": {
-    "first_seen": "2026-07-16",
-    "slug": "deebing-creek-bikeway-stage-1"
-   },
-   "100": {
-    "first_seen": "2026-07-16",
-    "slug": "kholo-gardens-new-retaining-wall"
-   },
-   "101": {
-    "first_seen": "2026-08-21",
-    "slug": "burgoyne-street-road-rehabilitation-bundamba"
-   },
-   "102": {
-    "first_seen": "2026-08-21",
-    "slug": "riverside-drive-upgrade-stage-1-pine-mountain"
-   },
-   "103": {
-    "first_seen": "2026-07-16",
-    "slug": "ripley-road-and-reif-street-intersection-upgrade"
-   },
-   "104": {
-    "first_seen": "2026-07-16",
-    "slug": "woodend-catchment-drainage-rehabilitation-stage-1"
-   },
-   "105": {
-    "first_seen": "2026-07-16",
-    "slug": "woodend-catchment-drainage-rehabilitation-stage-2"
-   },
-   "106": {
-    "first_seen": "2026-07-16",
-    "slug": "east-ipswich-catchment-drainage-rehabilitation"
-   },
-   "107": {
-    "first_seen": "2026-07-16",
-    "slug": "east-ipswich-catchment-drainage-rehabilitation-stage-2"
-   },
-   "108": {
-    "first_seen": "2026-08-21",
-    "slug": "ripley-road-and-fischer-road-upgrade-stage-3-fischer-road-between-montere-ripley"
-   },
-   "109": {
-    "first_seen": "2026-08-21",
-    "slug": "smith-street-kerb-and-channel-north-ipswich"
-   },
-   "11": {
-    "first_seen": "2026-08-21",
-    "slug": "stanley-street-kerb-and-channel-goodna"
-   },
-   "110": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-upgrade-stage-4-cunningham-highway-to-collingwood-drive"
-   },
-   "111": {
-    "first_seen": "2026-07-16",
-    "slug": "downs-street-footpath-rehabilitation"
-   },
-   "113": {
-    "first_seen": "2026-07-16",
-    "slug": "cross-street-kerb-and-channel-rehabilitation"
-   },
-   "114": {
-    "first_seen": "2026-07-16",
-    "slug": "york-street-kerb-and-channel-rehabilitation"
-   },
-   "116": {
-    "first_seen": "2026-07-16",
-    "slug": "parcell-and-holt-street-drainage-improvements"
-   },
-   "117": {
-    "first_seen": "2026-07-16",
-    "slug": "strongs-road-bridge-replacement"
-   },
-   "118": {
-    "first_seen": "2026-07-16",
-    "slug": "purga-school-road-bridge-replacement-and-road-rehablitation-works"
-   },
-   "119": {
-    "first_seen": "2026-07-16",
-    "slug": "enterprise-street-road-rehabilitation"
-   },
-   "12": {
-    "first_seen": "2026-08-21",
-    "slug": "chermside-road-kerb-and-channel-basin-pocket"
-   },
-   "120": {
-    "first_seen": "2026-07-16",
-    "slug": "campbell-street-road-rehabilitation"
-   },
-   "121": {
-    "first_seen": "2026-08-21",
-    "slug": "ferguson-and-gulland-street-drainage-rehabilitation-north-ipswich"
-   },
-   "122": {
-    "first_seen": "2026-08-21",
-    "slug": "goodwin-street-drainage-rehabilitation-basin-pocket"
-   },
-   "123": {
-    "first_seen": "2026-08-21",
-    "slug": "harlin-road-drainage-rehabilitation-coalfalls"
-   },
-   "124": {
-    "first_seen": "2026-08-21",
-    "slug": "kingsmill-road-drainage-rehabilitation-coalfalls"
-   },
-   "125": {
-    "first_seen": "2026-08-21",
-    "slug": "lowry-and-downs-street-drainage-rehabilitation-north-ipswich"
-   },
-   "126": {
-    "first_seen": "2026-08-21",
-    "slug": "lowry-lane-and-colvin-street-drainage-rehabilitation-north-ipswich"
-   },
-   "127": {
-    "first_seen": "2026-08-21",
-    "slug": "palmer-street-drainage-rehabilitation-north-ipswich"
-   },
-   "129": {
-    "first_seen": "2026-07-16",
-    "slug": "prospect-street-footpath-rehabilitation"
-   },
-   "13": {
-    "first_seen": "2026-08-21",
-    "slug": "eastwood-street-kerb-and-channel-north-ipswich"
-   },
-   "130": {
-    "first_seen": "2026-07-16",
-    "slug": "cemetery-road-footpath-rehabilitation"
-   },
-   "131": {
-    "first_seen": "2026-07-16",
-    "slug": "whitehill-road-footpath-rehabilitation"
-   },
-   "132": {
-    "first_seen": "2026-07-16",
-    "slug": "fitzroy-sreet-gravel-turnaround"
-   },
-   "133": {
-    "first_seen": "2026-07-16",
-    "slug": "spencer-street-gravel-turnaround"
-   },
-   "134": {
-    "first_seen": "2026-08-21",
-    "slug": "lingard-street-drainage-rehabilitation-woodend"
-   },
-   "135": {
-    "first_seen": "2026-08-21",
-    "slug": "lawrence-street-drainage-rehabilitation-north-ipswich"
-   },
-   "136": {
-    "first_seen": "2026-08-21",
-    "slug": "69-pine-street-drainage-rehabilitation-north-ipswich"
-   },
-   "137": {
-    "first_seen": "2026-07-16",
-    "slug": "macgregor-street-footpath-rehabilitation"
-   },
-   "138": {
-    "first_seen": "2026-07-16",
-    "slug": "tallon-street-footpath-rehabilitation"
-   },
-   "139": {
-    "first_seen": "2026-07-16",
-    "slug": "sharpless-road-footpath-rehabilitation"
-   },
-   "14": {
-    "first_seen": "2026-08-21",
-    "slug": "gulland-street-kerb-and-channel-north-ipswich"
-   },
-   "140": {
-    "first_seen": "2026-08-21",
-    "slug": "cummings-road-gravel-road-upgrade-calvert"
-   },
-   "141": {
-    "first_seen": "2026-07-16",
-    "slug": "gladstone-road-kerb-and-channel-rehabilitation"
-   },
-   "142": {
-    "first_seen": "2026-07-16",
-    "slug": "tallegalla-road-culvert-rehabilitation"
-   },
-   "143": {
-    "first_seen": "2026-07-16",
-    "slug": "school-road-upgrade"
-   },
-   "144": {
-    "first_seen": "2026-08-21",
-    "slug": "augusta-parkway-road-rehabilitation-brookwater"
-   },
-   "145": {
-    "first_seen": "2026-07-16",
-    "slug": "blackstone-road-thomas-street-and-creek-street-intersection-upgrade"
-   },
-   "146": {
-    "first_seen": "2026-07-16",
-    "slug": "shanahan-parade-footbridge-replacement"
-   },
-   "147": {
-    "first_seen": "2026-08-21",
-    "slug": "barnes-court-kerb-and-channel-rehabilitation-silkstone"
-   },
-   "148": {
-    "first_seen": "2026-08-21",
-    "slug": "church-street-road-rehabilitation-goodna"
-   },
-   "149": {
-    "first_seen": "2026-07-16",
-    "slug": "gordon-street-pedestrian-link-ipswich"
-   },
-   "15": {
-    "first_seen": "2026-07-16",
-    "slug": "queens-park-tennis-court-lighting-replacement"
-   },
-   "150": {
-    "first_seen": "2026-07-16",
-    "slug": "whitwood-road-south-historical-landfill-remediation"
-   },
-   "151": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-road-rehabilitation-redbank-plains"
-   },
-   "152": {
-    "first_seen": "2026-07-17",
-    "slug": "castle-hill-blackstone-reserve-carpark-refurbishment"
-   },
-   "153": {
-    "first_seen": "2026-07-16",
-    "slug": "hazelwood-park-pathway"
-   },
-   "154": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-park-fitness-equipment"
-   },
-   "155": {
-    "first_seen": "2026-08-21",
-    "slug": "reif-street-road-rehabilitation-flinders-view"
-   },
-   "156": {
-    "first_seen": "2026-08-21",
-    "slug": "whitehill-road-rehabilitation-raceview"
-   },
-   "157": {
-    "first_seen": "2026-08-21",
-    "slug": "creek-street-road-rehabilitation-bundamba"
-   },
-   "158": {
-    "first_seen": "2026-08-21",
-    "slug": "griffith-road-rehabilitation"
-   },
-   "159": {
-    "first_seen": "2026-08-21",
-    "slug": "brisbane-terrace-road-rehabilitation-stage-2-goodna"
-   },
-   "16": {
-    "first_seen": "2026-08-21",
-    "slug": "gladstone-road-kerb-and-channel-coalfalls"
-   },
-   "160": {
-    "first_seen": "2026-07-16",
-    "slug": "rosewood-aquatic-centre-facility-upgrade"
-   },
-   "161": {
-    "first_seen": "2026-08-21",
-    "slug": "bayley-road-road-resurfacing"
-   },
-   "162": {
-    "first_seen": "2026-08-21",
-    "slug": "seminary-road-road-resurfacing"
-   },
-   "163": {
-    "first_seen": "2026-08-21",
-    "slug": "tallegalla-two-tree-hill-road-road-resurfacing-tallegalla"
-   },
-   "164": {
-    "first_seen": "2026-08-21",
-    "slug": "velvet-street-road-resurfacing"
-   },
-   "165": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-park-top-carpark-lighting-stage-2"
-   },
-   "166": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-park-new-toilets"
-   },
-   "167": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-park-new-dog-off-leash-area"
-   },
-   "168": {
-    "first_seen": "2026-07-16",
-    "slug": "camira-recreation-reserve-sport-field-irrigation"
-   },
-   "169": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-recreation-reserve-internal-road-lighting"
-   },
-   "17": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-park-carpark-extension-southern-corner"
-   },
-   "171": {
-    "first_seen": "2026-08-21",
-    "slug": "grande-park-playground-mountain-slide-replacement-springfield-lakes"
-   },
-   "172": {
-    "first_seen": "2026-08-21",
-    "slug": "regatta-walk-combo-climber-unit-replacement-springfield-lakes"
-   },
-   "173": {
-    "first_seen": "2026-08-21",
-    "slug": "bob-gibbs-park-sports-field-lighting-replacement-springfield"
-   },
-   "174": {
-    "first_seen": "2026-08-21",
-    "slug": "evan-marginson-park-retaining-wall-rehabilitation-goodna"
-   },
-   "175": {
-    "first_seen": "2026-08-21",
-    "slug": "queens-park-healing-place-ipswich"
-   },
-   "176": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-city-centre-bikeway-stage-1-ipswich"
-   },
-   "177": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-city-centre-bikeway-stage-2-ipswich"
-   },
-   "179": {
-    "first_seen": "2026-08-21",
-    "slug": "willow-road-atap-footpath-stage-1-redbank-plains"
-   },
-   "18": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-upgrade-stage-3"
-   },
-   "180": {
-    "first_seen": "2026-08-21",
-    "slug": "willow-road-atap-footpath-stage-2-redbank-plains"
-   },
-   "181": {
-    "first_seen": "2026-08-21",
-    "slug": "keidges-road-footpath-upgrade-redbank-plains"
-   },
-   "182": {
-    "first_seen": "2026-08-21",
-    "slug": "mansfield-place-atap-footpath-ipswich"
-   },
-   "184": {
-    "first_seen": "2026-08-21",
-    "slug": "wulkuraka-connection-and-keswick-road-intersection-upgrade-karrabin"
-   },
-   "185": {
-    "first_seen": "2026-08-21",
-    "slug": "hooper-moffatt-and-pound-street-intersection-upgrade-west-ipswich"
-   },
-   "186": {
-    "first_seen": "2026-08-21",
-    "slug": "champions-way-willowbank-drainage-rehabilitation-works-willowbank"
-   },
-   "187": {
-    "first_seen": "2026-08-21",
-    "slug": "parking-meter-upgrade-ipswich"
-   },
-   "188": {
-    "first_seen": "2026-08-21",
-    "slug": "blackstone-road-drainage-rehabilitation-188"
-   },
-   "189": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-nature-centre-pathway-shelter-ipswich"
-   },
-   "19": {
-    "first_seen": "2026-08-21",
-    "slug": "jasmine-street-road-rehabilitation-bellbird-park"
-   },
-   "190": {
-    "first_seen": "2026-08-21",
-    "slug": "dunrab-road-gravel-road-upgrade-goolman"
-   },
-   "191": {
-    "first_seen": "2026-08-21",
-    "slug": "jim-donald-parklands-footpath-silkstone"
-   },
-   "192": {
-    "first_seen": "2026-08-21",
-    "slug": "organic-softfall-replacement"
-   },
-   "193": {
-    "first_seen": "2026-08-21",
-    "slug": "deebing-creek-road-footpath-yamanto"
-   },
-   "194": {
-    "first_seen": "2026-07-16",
-    "slug": "gordon-street-road-resurfacing-ipswich"
-   },
-   "195": {
-    "first_seen": "2026-08-21",
-    "slug": "lawrence-street-footpath-north-ipswich"
-   },
-   "196": {
-    "first_seen": "2026-08-21",
-    "slug": "wandera-court-footpath-redbank-plains"
-   },
-   "197": {
-    "first_seen": "2026-08-21",
-    "slug": "bannerman-street-footpath-riverview"
-   },
-   "198": {
-    "first_seen": "2026-08-21",
-    "slug": "haigslea-amberley-road-footpath-walloon"
-   },
-   "199": {
-    "first_seen": "2026-08-21",
-    "slug": "stuart-street-and-bellevue-road-footpath-goodna"
-   },
-   "2": {
+   "CCC00083|limestone park ipswich netball safety rails|Ipswich": {
     "first_seen": "2026-07-16",
     "slug": "limestone-park-ipswich-netball-safety-rails"
    },
-   "20": {
-    "first_seen": "2026-07-16",
-    "slug": "stanley-street-kerb-and-channel"
-   },
-   "200": {
-    "first_seen": "2026-08-21",
-    "slug": "queens-park-drainage-rehabilitation-ipswich"
-   },
-   "201": {
-    "first_seen": "2026-08-21",
-    "slug": "springfield-lakes-boulevard-road-rehabilitation-springfield-lakes"
-   },
-   "202": {
-    "first_seen": "2026-08-21",
-    "slug": "cedar-road-rehabilitation-stage-1-redbank-plains"
-   },
-   "203": {
-    "first_seen": "2026-08-21",
-    "slug": "limestone-park-netball-facilities-lighting-replacement-ipswich"
-   },
-   "204": {
-    "first_seen": "2026-08-21",
-    "slug": "elaine-street-stormwater-drainage-relining-karalee"
-   },
-   "205": {
-    "first_seen": "2026-08-21",
-    "slug": "fawkner-crescent-stormwater-drainage-relining-barellan-point"
-   },
-   "206": {
-    "first_seen": "2026-08-21",
-    "slug": "hanlon-street-stormwater-drainage-relining-bundamba"
-   },
-   "207": {
-    "first_seen": "2026-08-21",
-    "slug": "harold-summervilles-road-stormwater-drainage-relining-karalee"
-   },
-   "208": {
-    "first_seen": "2026-08-21",
-    "slug": "high-street-stormwater-drainage-relining-brassall"
-   },
-   "209": {
-    "first_seen": "2026-08-21",
-    "slug": "kruger-parade-stormwater-drainage-relining-redbank"
-   },
-   "21": {
-    "first_seen": "2026-08-21",
-    "slug": "mcinnerney-street-road-rehabilitation-collingwood-park"
-   },
-   "210": {
-    "first_seen": "2026-08-21",
-    "slug": "pine-mountain-road-minor-culvert-relining-brassall"
-   },
-   "211": {
-    "first_seen": "2026-08-21",
-    "slug": "railway-street-stormwater-drainage-relining-rosewood"
-   },
-   "212": {
-    "first_seen": "2026-08-21",
-    "slug": "bergins-hill-road-culvert-rehabilitation-bundamba"
-   },
-   "213": {
-    "first_seen": "2026-08-21",
-    "slug": "bergins-hill-road-drainage-channel-rehabilitation-bundamba"
-   },
-   "214": {
-    "first_seen": "2026-08-21",
-    "slug": "chermside-road-drainage-rehabilitation-east-ipswich"
-   },
-   "215": {
-    "first_seen": "2026-08-21",
-    "slug": "cultural-heart-nicholas-street-ipswich"
-   },
-   "216": {
-    "first_seen": "2026-08-21",
-    "slug": "lobley-park-and-glode-avenue-drainage-improvements-churchill"
-   },
-   "217": {
-    "first_seen": "2026-08-21",
-    "slug": "brisbane-st-id-311199-bu23-bus-stop-upgrade-west-ipswich"
-   },
-   "218": {
-    "first_seen": "2026-08-21",
-    "slug": "booval-station-id-310040-bu23-bus-stop-upgrade-booval"
-   },
-   "219": {
-    "first_seen": "2026-07-16",
-    "slug": "springfield-parkway-road-upgrade-stage-2-springfield"
-   },
-   "22": {
-    "first_seen": "2026-07-16",
-    "slug": "chermside-road-kerb-and-channel"
-   },
-   "220": {
-    "first_seen": "2026-08-21",
-    "slug": "bellbird-park-stormwater-drainage-improvements-bellbird-park"
-   },
-   "221": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-recreation-reserve-carpark-extension-redbank-plains"
-   },
-   "222": {
-    "first_seen": "2026-08-21",
-    "slug": "silver-jubilee-sports-facility-clubhouse-spring-mountain"
-   },
-   "223": {
-    "first_seen": "2026-08-21",
-    "slug": "bundamba-creek-streambank-rehabilitation-bundamba"
-   },
-   "226": {
-    "first_seen": "2026-08-21",
-    "slug": "riverview-recycling-and-refuse-centre-line-marking-riverview"
-   },
-   "227": {
-    "first_seen": "2026-08-21",
-    "slug": "riverview-recycling-and-refuse-centre-reflooring-of-pit-riverview"
-   },
-   "228": {
-    "first_seen": "2026-08-21",
-    "slug": "riverview-recycling-and-refuse-centre-bin-storage-hardstand-riverview"
-   },
-   "229": {
-    "first_seen": "2026-07-16",
-    "slug": "riverview-recycling-and-refuse-centre-green-waste-hardstand"
-   },
-   "23": {
-    "first_seen": "2026-07-16",
-    "slug": "eastwood-street-kerb-and-channel"
-   },
-   "230": {
-    "first_seen": "2026-08-21",
-    "slug": "marburg-detention-basin-rehabilitation-marburg"
-   },
-   "231": {
-    "first_seen": "2026-07-16",
-    "slug": "woogaroo-closed-landfill-leachate-and-gas-management"
-   },
-   "234": {
-    "first_seen": "2026-08-21",
-    "slug": "spring-lake-park-boardwalk-rehabilitation"
-   },
-   "235": {
-    "first_seen": "2026-08-21",
-    "slug": "riverview-depot-pre-wash-down-bay-upgrade"
-   },
-   "236": {
-    "first_seen": "2026-08-21",
-    "slug": "jacaranda-st-dr-24-north-booval"
-   },
-   "237": {
-    "first_seen": "2026-08-21",
-    "slug": "opossum-creek-parklands-upgrade-brookwater"
-   },
-   "238": {
-    "first_seen": "2026-08-21",
-    "slug": "tivoli-sporting-complex-upgrade-tivoli"
-   },
-   "239": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-recreation-reserve-new-sports-facility-redbank-plains"
-   },
-   "24": {
-    "first_seen": "2026-07-16",
-    "slug": "gulland-street-kerb-and-channel"
-   },
-   "240": {
-    "first_seen": "2026-08-21",
-    "slug": "brisbane-street-refresh-top-of-town-ipswich"
-   },
-   "241": {
-    "first_seen": "2026-08-21",
-    "slug": "workshops-street-atap-footpath"
-   },
-   "242": {
-    "first_seen": "2026-08-21",
-    "slug": "goodna-ses-connection-to-sewerage-goodna"
-   },
-   "243": {
-    "first_seen": "2026-07-16",
-    "slug": "ripley-road-and-reif-street-intersection-upgrade-flinders-view"
-   },
-   "244": {
-    "first_seen": "2026-08-21",
-    "slug": "springfield-lakes-lower-dam-spillway-access-springfield"
-   },
-   "245": {
-    "first_seen": "2026-07-16",
-    "slug": "blackstone-road-bus-stop-upgrade-id-312136"
-   },
-   "246": {
-    "first_seen": "2026-08-21",
-    "slug": "tallegalla-road-stormwater-culvert-rehabilitation-stage-1"
-   },
-   "247": {
-    "first_seen": "2026-07-16",
-    "slug": "southern-resource-recovery-centre"
-   },
-   "248": {
-    "first_seen": "2026-08-21",
-    "slug": "lower-william-street-stormwater-drainage-relining-goodna"
-   },
-   "249": {
-    "first_seen": "2026-07-16",
-    "slug": "bremer-street-footpath-stage-2"
-   },
-   "25": {
-    "first_seen": "2026-07-16",
-    "slug": "ferguson-street-kerb-and-channel"
-   },
-   "250": {
-    "first_seen": "2026-08-21",
-    "slug": "norman-street-roof-replacement-east-ipswich"
-   },
-   "251": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-art-gallery-retaining-wall-renewal-251"
-   },
-   "252": {
-    "first_seen": "2026-08-21",
-    "slug": "burnett-street-retaining-wall-sadliers-crossing"
-   },
-   "253": {
-    "first_seen": "2026-07-16",
-    "slug": "lions-22b-sports-facility"
-   },
-   "254": {
-    "first_seen": "2026-08-21",
-    "slug": "kerners-road-drainage-improvements-yamanto"
-   },
-   "255": {
-    "first_seen": "2026-08-21",
-    "slug": "kentucky-street-drainage-improvement"
-   },
-   "256": {
-    "first_seen": "2026-08-21",
-    "slug": "woodend-catchment-drainage-rehabilitation-stage-3-woodend"
-   },
-   "257": {
-    "first_seen": "2026-08-21",
-    "slug": "robelle-domain-water-play-area-rehabilitation-works-springfield-central"
-   },
-   "258": {
-    "first_seen": "2026-08-21",
-    "slug": "augusta-parkway-and-sinnathamby-boulevard-springfield-central-augustine-heights"
-   },
-   "259": {
-    "first_seen": "2026-08-21",
-    "slug": "brittains-road-closed-landfill-stormwater-infrastructure-remed-augustine-heights"
-   },
-   "26": {
-    "first_seen": "2026-07-16",
-    "slug": "gladstone-road-kerb-and-channel"
-   },
-   "260": {
-    "first_seen": "2026-07-16",
-    "slug": "moores-pocket-road-kerb-and-channel"
-   },
-   "261": {
-    "first_seen": "2026-07-16",
-    "slug": "william-street-kerb-and-channel"
-   },
-   "263": {
-    "first_seen": "2026-08-21",
-    "slug": "181-st-augustines-drive-sediment-forebay-replacement-augustine-heights"
-   },
-   "264": {
-    "first_seen": "2026-08-21",
-    "slug": "creedy-street-road-resurfacing-rosewood"
-   },
-   "265": {
-    "first_seen": "2026-08-21",
-    "slug": "station-lane-road-resurfacing-walloon"
-   },
-   "266": {
-    "first_seen": "2026-08-21",
-    "slug": "limestone-street-road-resurfacing-ipswich"
-   },
-   "268": {
-    "first_seen": "2026-07-16",
-    "slug": "burgoyne-street-road-rehabilitation"
-   },
-   "269": {
-    "first_seen": "2026-08-21",
-    "slug": "brisbane-street-road-resurfacing-269"
-   },
-   "27": {
-    "first_seen": "2026-07-16",
-    "slug": "warwick-road-kerb-and-channel"
-   },
-   "270": {
-    "first_seen": "2026-08-21",
-    "slug": "brisbane-street-road-resurfacing-270"
-   },
-   "271": {
-    "first_seen": "2026-08-21",
-    "slug": "gordon-street-road-resurfacing-271"
-   },
-   "279": {
-    "first_seen": "2026-07-16",
-    "slug": "riverside-drive-upgrade-stage-1"
-   },
-   "28": {
-    "first_seen": "2026-07-16",
-    "slug": "short-street-kerb-and-channel"
-   },
-   "280": {
-    "first_seen": "2026-07-16",
-    "slug": "old-logan-rd-at-julieanne-st-id317733-bus-stop-upgrade"
-   },
-   "281": {
-    "first_seen": "2026-08-21",
-    "slug": "downs-street-road-resurfacing-281"
-   },
-   "282": {
-    "first_seen": "2026-08-21",
-    "slug": "elizabeth-street-road-resurfacing-woodend"
-   },
-   "283": {
-    "first_seen": "2026-08-21",
-    "slug": "cuffes-lane-road-resurfacing-north-ipswich"
-   },
-   "284": {
-    "first_seen": "2026-07-16",
-    "slug": "workshops-st-at-sutton-park-bus-stop-upgrade-id313972"
-   },
-   "285": {
-    "first_seen": "2026-08-21",
-    "slug": "gledson-street-road-resurfacing-north-booval"
-   },
-   "286": {
-    "first_seen": "2026-08-21",
-    "slug": "byrne-street-road-resurfacing-bundamba"
-   },
-   "287": {
-    "first_seen": "2026-08-21",
-    "slug": "mining-street-road-resurfacing-bundamba"
-   },
-   "288": {
-    "first_seen": "2026-08-21",
-    "slug": "william-street-road-resurfacing-dinmore"
-   },
-   "29": {
-    "first_seen": "2026-08-21",
-    "slug": "springfield-parkway-road-upgrade-stage-2-29"
-   },
-   "290": {
-    "first_seen": "2026-07-16",
-    "slug": "ripley-road-and-fischer-road-upgrade-stage-1-between-cunningham-highway-to-monte"
-   },
-   "291": {
-    "first_seen": "2026-07-16",
-    "slug": "ripley-road-and-fischer-road-upgrade-stage-3-fischer-road-between-monterea-road"
-   },
-   "292": {
-    "first_seen": "2026-07-16",
-    "slug": "smith-street-kerb-and-channel"
-   },
-   "293": {
-    "first_seen": "2026-08-21",
-    "slug": "robertson-road-road-resurfacing-293"
-   },
-   "294": {
-    "first_seen": "2026-08-21",
-    "slug": "robertson-road-road-resurfacing-294"
-   },
-   "295": {
-    "first_seen": "2026-08-21",
-    "slug": "walkers-lane-road-resurfacing-booval"
-   },
-   "296": {
-    "first_seen": "2026-08-21",
-    "slug": "brisbane-terrace-road-resurfacing-296"
-   },
-   "297": {
-    "first_seen": "2026-08-21",
-    "slug": "brisbane-terrace-road-resurfacing-297"
-   },
-   "298": {
-    "first_seen": "2026-08-21",
-    "slug": "church-street-road-resurfacing-goodna"
-   },
-   "3": {
-    "first_seen": "2026-08-21",
-    "slug": "marie-street-embankment-stabilisation-goodna"
-   },
-   "30": {
-    "first_seen": "2026-08-21",
-    "slug": "springfield-greenbank-arterial-road-upgrad-springfield-central-springfield-lakes"
-   },
-   "300": {
-    "first_seen": "2026-07-16",
-    "slug": "alfred-street-kerb-and-channel"
-   },
-   "301": {
-    "first_seen": "2026-07-16",
-    "slug": "blackall-street-drainage-rehabilitation"
-   },
-   "302": {
-    "first_seen": "2026-07-16",
-    "slug": "blackall-street-stormwater-pipe-rehabilitation"
-   },
-   "303": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-road-road-resurfacing-303"
-   },
-   "304": {
-    "first_seen": "2026-07-16",
-    "slug": "campbell-street-drainage-rehabilitation"
-   },
-   "305": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-road-road-resurfacing-305"
-   },
-   "306": {
-    "first_seen": "2026-07-16",
-    "slug": "ferguson-and-gulland-street-drainage-rehabilitation"
-   },
-   "307": {
-    "first_seen": "2026-07-16",
-    "slug": "goodwin-street-drainage-rehabilitation"
-   },
-   "308": {
-    "first_seen": "2026-07-16",
-    "slug": "harlin-road-drainage-rehabilitation"
-   },
-   "309": {
-    "first_seen": "2026-07-16",
-    "slug": "kingsmill-road-drainage-rehabilitation"
-   },
-   "31": {
-    "first_seen": "2026-07-16",
-    "slug": "jasmine-street-road-rehabilitation"
-   },
-   "310": {
-    "first_seen": "2026-07-16",
-    "slug": "lowry-and-downs-street-drainage-rehabilitation"
-   },
-   "311": {
-    "first_seen": "2026-07-16",
-    "slug": "lowry-lane-and-colvin-street-drainage-rehabilitation"
-   },
-   "312": {
-    "first_seen": "2026-07-16",
-    "slug": "palmer-street-drainage-rehabilitation"
-   },
-   "313": {
-    "first_seen": "2026-08-21",
-    "slug": "santa-monica-drive-road-resurfacing-augustine-heights"
-   },
-   "314": {
-    "first_seen": "2026-07-16",
-    "slug": "pelican-canning-and-pine-street-drainage-rehabilitation"
-   },
-   "315": {
-    "first_seen": "2026-07-16",
-    "slug": "shenton-and-ashgrove-street-drainage-rehabilitation"
-   },
-   "316": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-recreation-reserve-storage-facility-25-redbank-plains"
-   },
-   "317": {
-    "first_seen": "2026-07-16",
-    "slug": "woodend-road-drainage-rehabilitation"
-   },
-   "318": {
-    "first_seen": "2026-07-16",
-    "slug": "lamington-road-drainage-rehabilitation"
-   },
-   "319": {
-    "first_seen": "2026-07-16",
-    "slug": "pine-mountain-road-drainage-rehabilitation"
-   },
-   "32": {
-    "first_seen": "2026-08-21",
-    "slug": "emery-street-kerb-and-channel-rehabilitation-carole-park"
-   },
-   "320": {
-    "first_seen": "2026-07-16",
-    "slug": "lingard-street-drainage-rehabilitation"
-   },
-   "321": {
-    "first_seen": "2026-07-16",
-    "slug": "osullivan-street-drainage-rehabilitation"
-   },
-   "322": {
-    "first_seen": "2026-07-16",
-    "slug": "lawrence-street-drainage-rehabilitation"
-   },
-   "323": {
-    "first_seen": "2026-07-16",
-    "slug": "69-pine-street-drainage-rehabilitation"
-   },
-   "324": {
-    "first_seen": "2026-07-16",
-    "slug": "penny-lane-gravel-road-upgrade"
-   },
-   "326": {
-    "first_seen": "2026-07-16",
-    "slug": "hedricks-road-gravel-road-upgrade"
-   },
-   "327": {
-    "first_seen": "2026-07-16",
-    "slug": "ferling-road-gravel-road-upgrade"
-   },
-   "328": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-road-at-redbank-plains-town-square-bus-expansion-redbank-plains"
-   },
-   "329": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-road-near-west-street-bus-expansion-redbank-plains"
-   },
-   "33": {
-    "first_seen": "2026-08-21",
-    "slug": "jones-road-redbank-plains-road-and-keidges-road-intersection-traf-redbank-plains"
-   },
-   "330": {
-    "first_seen": "2026-07-16",
-    "slug": "cummings-road-gravel-road-upgrade"
-   },
-   "331": {
-    "first_seen": "2026-07-16",
-    "slug": "paten-road-gravel-road-upgrade"
-   },
-   "332": {
-    "first_seen": "2026-08-21",
-    "slug": "bellevue-rd-id-312242-bu-24-goodna"
-   },
-   "333": {
-    "first_seen": "2026-08-21",
-    "slug": "bourke-street-bus-stop-id-313977-upgrade-brassall"
-   },
-   "334": {
-    "first_seen": "2026-08-21",
-    "slug": "braeside-road-id-311665-bus-stop-upgrade"
-   },
-   "335": {
-    "first_seen": "2026-08-21",
-    "slug": "chermside-rd-jacaranda-st-bus-stop-upgrade"
-   },
-   "336": {
-    "first_seen": "2026-07-16",
-    "slug": "bellview-road-gravel-road-upgrade"
-   },
-   "337": {
-    "first_seen": "2026-08-21",
-    "slug": "wildey-street-id-312905-bus-stop-upgrade"
-   },
-   "338": {
-    "first_seen": "2026-08-21",
-    "slug": "east-ipswich-honour-playground-dog-bowl"
-   },
-   "339": {
-    "first_seen": "2026-08-21",
-    "slug": "fail-park-dog-bowl-north-booval"
-   },
-   "34": {
-    "first_seen": "2026-07-16",
-    "slug": "johnston-street-road-rehabilitation"
-   },
-   "340": {
-    "first_seen": "2026-07-16",
-    "slug": "adelong-avenue-road-rehabilitation"
-   },
-   "341": {
-    "first_seen": "2026-07-16",
-    "slug": "augusta-parkway-road-rehabilitation"
-   },
-   "342": {
-    "first_seen": "2026-07-16",
-    "slug": "kingfisher-court-road-rehabilitation"
-   },
-   "343": {
-    "first_seen": "2026-07-16",
-    "slug": "willowtree-drive-road-rehabilitation"
-   },
-   "344": {
-    "first_seen": "2026-07-16",
-    "slug": "barnes-court-kerb-and-channel-rehabilitation"
-   },
-   "345": {
-    "first_seen": "2026-07-16",
-    "slug": "church-street-road-rehabilitation"
-   },
-   "346": {
-    "first_seen": "2026-07-16",
-    "slug": "junction-road-rehabilitation"
-   },
-   "347": {
-    "first_seen": "2026-07-16",
-    "slug": "old-logan-road-rehabilitation"
-   },
-   "348": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-rehabilitation"
-   },
-   "349": {
-    "first_seen": "2026-07-16",
-    "slug": "mica-street-road-rehabilitation"
-   },
-   "35": {
-    "first_seen": "2026-07-16",
-    "slug": "mcinnerney-street-road-rehabilitation"
-   },
-   "350": {
-    "first_seen": "2026-07-16",
-    "slug": "lobb-street-road-rehabilitation"
-   },
-   "351": {
-    "first_seen": "2026-07-16",
-    "slug": "mary-street-road-rehabilitation"
-   },
-   "352": {
-    "first_seen": "2026-07-16",
-    "slug": "reif-street-road-rehabilitation"
-   },
-   "353": {
-    "first_seen": "2026-07-16",
-    "slug": "whitehill-road-rehabilitation"
-   },
-   "354": {
-    "first_seen": "2026-07-16",
-    "slug": "creek-street-road-rehabilitation"
-   },
-   "355": {
-    "first_seen": "2026-08-21",
-    "slug": "warwick-road-footpath-rehabilitation-ipswich"
-   },
-   "356": {
-    "first_seen": "2026-07-16",
-    "slug": "brisbane-terrace-road-rehabilitation-stage-2"
-   },
-   "357": {
-    "first_seen": "2026-07-16",
-    "slug": "cedar-road-rehabilitation-stage-2"
-   },
-   "358": {
-    "first_seen": "2026-08-21",
-    "slug": "warrill-park-lawn-cemetery-master-plan-willowbank"
-   },
-   "359": {
-    "first_seen": "2026-08-21",
-    "slug": "warrill-park-cemetery-road-upgrade-willowbank"
-   },
-   "36": {
-    "first_seen": "2026-07-16",
-    "slug": "vivian-street-road-rehabilitation"
-   },
-   "360": {
-    "first_seen": "2026-07-16",
-    "slug": "tallegalla-two-tree-hill-road-road-resurfacing"
-   },
-   "361": {
-    "first_seen": "2026-08-21",
-    "slug": "heit-family-park-perimeter-upgrade-willowbank"
-   },
-   "362": {
-    "first_seen": "2026-08-21",
-    "slug": "langley-park-b-25-camira"
-   },
-   "363": {
-    "first_seen": "2026-08-21",
-    "slug": "cooneana-ch-re-26-new-chum"
-   },
-   "364": {
-    "first_seen": "2026-08-21",
-    "slug": "norm-craswell-park-playground-renewal-redbank-plains"
-   },
-   "365": {
-    "first_seen": "2026-08-21",
-    "slug": "sutton-park-fitness-equipment-renewal-brassall"
-   },
-   "366": {
-    "first_seen": "2026-08-21",
-    "slug": "evan-marginson-park-goodna"
-   },
-   "367": {
-    "first_seen": "2026-08-21",
-    "slug": "mt-forbes-rfb-b-hs-25-willowbank"
-   },
-   "368": {
-    "first_seen": "2026-08-21",
-    "slug": "lobb-street-road-safety-improvements-churchill"
-   },
-   "369": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-library-retaining-wall-redbank-plains"
-   },
-   "37": {
-    "first_seen": "2026-07-16",
-    "slug": "dowden-street-road-rehabilitation"
-   },
-   "370": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-motorsport-precinct-lighting-renewal-willowbank"
-   },
-   "371": {
-    "first_seen": "2026-08-21",
-    "slug": "orion-lagoon-switchboard-springfield-central"
-   },
-   "372": {
-    "first_seen": "2026-08-21",
-    "slug": "bill-paterson-oval-switchboard-ipswich"
-   },
-   "373": {
-    "first_seen": "2026-08-21",
-    "slug": "bundamba-swim-centre-doser-unit-bundamba"
-   },
-   "374": {
-    "first_seen": "2026-08-21",
-    "slug": "orion-lagoon-doser-unit-springfield-central"
-   },
-   "375": {
-    "first_seen": "2026-08-21",
-    "slug": "jo-ann-miller-drive-traffic-islands-collingwood-park"
-   },
-   "376": {
-    "first_seen": "2026-08-21",
-    "slug": "paddington-park-playground-renewal-flinders-view"
-   },
-   "377": {
-    "first_seen": "2026-08-21",
-    "slug": "spring-lake-park-amenities-block-springfield-lakes"
-   },
-   "378": {
-    "first_seen": "2026-08-21",
-    "slug": "134-136-lyndon-way-drainage-rehabilitation-karalee"
-   },
-   "379": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-civic-centre-driveway-ipswich"
-   },
-   "38": {
-    "first_seen": "2026-07-16",
-    "slug": "river-road-road-rehabilitation"
-   },
-   "380": {
-    "first_seen": "2026-08-21",
-    "slug": "woodend-catchment-drainage-rehabilitation-stage-4-woodend"
-   },
-   "381": {
-    "first_seen": "2026-08-21",
-    "slug": "robelle-domain-greater-springfield-rotary-club-peace-pole-springfield-central"
-   },
-   "382": {
-    "first_seen": "2026-08-21",
-    "slug": "home-assist-depot-thermal-upgrades-riverview"
-   },
-   "383": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-civic-centre-plant-deck-ipswich"
-   },
-   "384": {
-    "first_seen": "2026-08-21",
-    "slug": "incinerator-theatre-chimney-rehabilitation"
-   },
-   "385": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-art-gallery-roof-safety-system-ipswich"
-   },
-   "386": {
-    "first_seen": "2026-08-21",
-    "slug": "prospect-street-south-kerb-26-silkstone"
-   },
-   "387": {
-    "first_seen": "2026-08-21",
-    "slug": "prospect-street-north-kerb-26-silkstone"
-   },
-   "388": {
-    "first_seen": "2026-08-21",
-    "slug": "molloy-street-kerb-26-silkstone"
-   },
-   "389": {
-    "first_seen": "2026-08-21",
-    "slug": "green-street-kerb-26-booval"
-   },
-   "39": {
-    "first_seen": "2026-07-16",
-    "slug": "jalrock-place-road-rehabilitation"
-   },
-   "390": {
-    "first_seen": "2026-08-21",
-    "slug": "arthur-summervilles-road-speed-awareness-signs-karalee"
-   },
-   "391": {
-    "first_seen": "2026-08-21",
-    "slug": "diamantina-boulevard-soeed-awareness-signs-brassall"
-   },
-   "393": {
-    "first_seen": "2026-08-21",
-    "slug": "blackwood-street-kerb-ramps-east-ipswich"
-   },
-   "394": {
-    "first_seen": "2026-08-21",
-    "slug": "sarah-drive-park-bmx-upgrade-yamanto"
-   },
-   "395": {
-    "first_seen": "2026-08-21",
-    "slug": "regents-drive-safety-improvements-redbank-plains"
-   },
-   "396": {
-    "first_seen": "2026-08-21",
-    "slug": "george-and-eilenn-hastings-sporting-complex-amentities-building-one-mile"
-   },
-   "397": {
-    "first_seen": "2026-08-21",
-    "slug": "queens-park-playground-upgrade-ipswich"
-   },
-   "398": {
-    "first_seen": "2026-08-21",
-    "slug": "goupong-park-upgrade-collingwood-park"
-   },
-   "399": {
-    "first_seen": "2026-08-21",
-    "slug": "lobb-street-speed-awareness-signs-churchill"
-   },
-   "4": {
-    "first_seen": "2026-08-21",
-    "slug": "rosewood-showgrounds-cattle-ramp-renewal-rosewood"
-   },
-   "40": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-civic-centre-foyer-ceiling-rehabilitation-ipswich"
-   },
-   "400": {
-    "first_seen": "2026-08-21",
-    "slug": "downs-street-road-resurfacing-400"
-   },
-   "401": {
-    "first_seen": "2026-07-16",
-    "slug": "ware-street-road-resurfacing"
-   },
-   "402": {
-    "first_seen": "2026-08-21",
-    "slug": "limestone-park-athletics-accessibility-upgrade-ipswich"
-   },
-   "403": {
-    "first_seen": "2026-08-21",
-    "slug": "gledson-street-kerb-ramps-north-booval"
-   },
-   "404": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-rsl-floor-levels-refurbishment-ipswich"
-   },
-   "405": {
-    "first_seen": "2026-08-21",
-    "slug": "chelmsford-avenue-footpath-upgrade-ipswich"
-   },
-   "406": {
-    "first_seen": "2026-08-21",
-    "slug": "bottlebrush-drive-school-crossing-deebing-heights"
-   },
-   "407": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-park-netball-facilities-court-resurfacing"
-   },
-   "408": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-recreation-reserve-lighting-replacement"
-   },
-   "409": {
-    "first_seen": "2026-08-21",
-    "slug": "rosewood-library-improvements-rosewood"
-   },
-   "41": {
-    "first_seen": "2026-08-21",
-    "slug": "trumper-street-kerb-and-channel-rehabilitation-east-ipswich"
-   },
-   "411": {
-    "first_seen": "2026-08-21",
-    "slug": "queens-park-toilet-accessibility-improvements-ipswich"
-   },
-   "412": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-road-road-resurfacing-412"
-   },
-   "413": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-road-road-resurfacing-413"
-   },
-   "414": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-upgrade-stage-3-redbank-plains"
-   },
-   "415": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-art-gallery-forecourt-refurbishment"
-   },
-   "416": {
-    "first_seen": "2026-08-21",
-    "slug": "queens-park-retaining-wall-kerb-extension-ipswich"
-   },
-   "417": {
-    "first_seen": "2026-07-16",
-    "slug": "grande-park-playground-mountain-slide-replacement"
-   },
-   "418": {
-    "first_seen": "2026-07-16",
-    "slug": "regatta-walk-combo-climber-unit-replacement"
-   },
-   "419": {
-    "first_seen": "2026-08-21",
-    "slug": "middle-road-culvert-replacement-purga"
-   },
-   "42": {
-    "first_seen": "2026-07-16",
-    "slug": "gordon-street-pedestrian-link"
-   },
-   "420": {
-    "first_seen": "2026-07-16",
-    "slug": "bob-gibbs-park-sports-field-lighting-replacement"
-   },
-   "421": {
-    "first_seen": "2026-07-16",
-    "slug": "evan-marginson-park-retaining-wall-rehabilitation"
-   },
-   "422": {
-    "first_seen": "2026-07-16",
-    "slug": "queens-park-healing-place"
-   },
-   "423": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-city-centre-bikeway-stage-1"
-   },
-   "424": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-city-centre-bikeway-stage-2"
-   },
-   "425": {
-    "first_seen": "2026-08-21",
-    "slug": "south-station-road-bus-stop-upgrade-id311019-silkstone"
-   },
-   "426": {
-    "first_seen": "2026-08-21",
-    "slug": "whitehill-road-bus-stop-upgrade-id312748-and-id317763-newtown"
-   },
-   "427": {
-    "first_seen": "2026-07-16",
-    "slug": "willow-road-atap-footpath-stage-1"
-   },
-   "428": {
-    "first_seen": "2026-07-16",
-    "slug": "willow-road-atap-footpath-stage-2"
-   },
-   "429": {
-    "first_seen": "2026-07-16",
-    "slug": "keidges-road-footpath-upgrade"
-   },
-   "43": {
-    "first_seen": "2026-07-16",
-    "slug": "mary-street-and-william-street-intersection-upgrade"
-   },
-   "430": {
-    "first_seen": "2026-07-16",
-    "slug": "mansfield-place-atap-footpath"
-   },
-   "431": {
-    "first_seen": "2026-08-21",
-    "slug": "nerima-gardens-fencing-and-gates-works-ipswich"
-   },
-   "432": {
-    "first_seen": "2026-07-16",
-    "slug": "wulkuraka-connection-and-keswick-road-intersection-upgrade"
-   },
-   "433": {
-    "first_seen": "2026-07-16",
-    "slug": "hooper-moffatt-and-pound-street-intersection-upgrade"
-   },
-   "434": {
-    "first_seen": "2026-08-21",
-    "slug": "rosewood-aquatic-facility-flooring-renewal-rosewood"
-   },
-   "435": {
-    "first_seen": "2026-08-21",
-    "slug": "queens-park-caf\u00e9-flooring-ipswich"
-   },
-   "436": {
-    "first_seen": "2026-07-16",
-    "slug": "champions-way-willowbank-drainage-rehabilitation-works"
-   },
-   "437": {
-    "first_seen": "2026-08-21",
-    "slug": "frederick-street-kerb-and-channel-reconstruction-newtown"
-   },
-   "438": {
-    "first_seen": "2026-08-21",
-    "slug": "west-street-kerb-and-channel-reconstruction-woodend"
-   },
-   "439": {
-    "first_seen": "2026-07-16",
-    "slug": "parking-meter-upgrade"
-   },
-   "44": {
-    "first_seen": "2026-07-16",
-    "slug": "springfield-parkway-and-springfield-greenbank-arterial-road-upgrade-stage-1"
-   },
-   "440": {
-    "first_seen": "2026-08-21",
-    "slug": "bundamba-swim-centre-starting-blocks-refurbishment-bundamba"
-   },
-   "441": {
-    "first_seen": "2026-07-16",
-    "slug": "blackstone-road-drainage-rehabilitation"
-   },
-   "442": {
-    "first_seen": "2026-08-21",
-    "slug": "limestone-park-bollard-replacement-works"
-   },
-   "443": {
-    "first_seen": "2026-08-21",
-    "slug": "hunter-street-kerb-ramp-improvements-brassall"
-   },
-   "444": {
-    "first_seen": "2026-08-21",
-    "slug": "bertha-street-guardrail-installation-goodna"
-   },
-   "445": {
-    "first_seen": "2026-08-21",
-    "slug": "atlantic-drive-sporting-complex-footpath-replacement-springfield-lakes"
-   },
-   "446": {
+   "CCC00155|tivoli sporting complex clubhouse design and construction stage 2|Tivoli": {
     "first_seen": "2026-08-21",
     "slug": "tivoli-sporting-complex-clubhouse-design-and-construction-stage-2-tivoli"
    },
-   "447": {
-    "first_seen": "2026-08-21",
-    "slug": "rotary-bicentennial-park-synthetic-softfall-installation-redbank-plains"
-   },
-   "448": {
-    "first_seen": "2026-08-21",
-    "slug": "ipswich-art-gallery-retaining-wall-renewal-448"
-   },
-   "449": {
-    "first_seen": "2026-08-21",
-    "slug": "springfield-lakes-boulevard-pedestrian-refuge-island-springfield-lakes"
-   },
-   "45": {
-    "first_seen": "2026-07-16",
-    "slug": "springfield-parkway-road-upgrade-stage-2"
-   },
-   "451": {
+   "CCC00155|tivoli sporting complex clubhouse|Tivoli": {
     "first_seen": "2026-08-21",
     "slug": "tivoli-sporting-complex-clubhouse-tivoli"
    },
-   "452": {
-    "first_seen": "2026-08-21",
-    "slug": "hume-street-footpath-upgrade-woodend"
-   },
-   "453": {
-    "first_seen": "2026-08-21",
-    "slug": "mount-juillerat-drive-safety-improvements-redbank-plains"
-   },
-   "454": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-recreation-reserve-entrance"
-   },
-   "455": {
+   "CCC00161 |queens park bowls club amenities|Ipswich": {
     "first_seen": "2026-08-21",
     "slug": "queens-park-bowls-club-amenities"
    },
-   "456": {
+   "CCC00162 |redbank plains recreation reserve entrance|Redbank Plains": {
     "first_seen": "2026-08-21",
-    "slug": "lobb-street-road-safety-improvements-456"
+    "slug": "redbank-plains-recreation-reserve-entrance"
    },
-   "457": {
+   "IDM01002|marie street embankment stabilisation|Goodna": {
     "first_seen": "2026-08-21",
-    "slug": "lobb-street-guardrail"
+    "slug": "marie-street-embankment-stabilisation-goodna"
    },
-   "458": {
-    "first_seen": "2026-08-21",
-    "slug": "north-ipswich-bowls-club-carpark-resurfacing"
-   },
-   "459": {
-    "first_seen": "2026-08-21",
-    "slug": "caledonian-park-amenities-upgrade"
-   },
-   "46": {
-    "first_seen": "2026-08-21",
-    "slug": "cameron-park-upgrade-including-playground-booval"
-   },
-   "460": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-nature-centre-pathway-shelter"
-   },
-   "461": {
-    "first_seen": "2026-08-21",
-    "slug": "stallard-park-multisport-goals-installation"
-   },
-   "462": {
-    "first_seen": "2026-08-21",
-    "slug": "marburg-community-oval-basketball-netball-court-resurfacing-and-netball-hoop-rep"
-   },
-   "463": {
-    "first_seen": "2026-08-21",
-    "slug": "riverview-depot-carpark-pavement-rehabilitation"
-   },
-   "464": {
-    "first_seen": "2026-08-21",
-    "slug": "griffiths-park-playground-equipment-replacement"
-   },
-   "465": {
-    "first_seen": "2026-07-16",
-    "slug": "dunrab-road-gravel-road-upgrade"
-   },
-   "466": {
-    "first_seen": "2026-07-16",
-    "slug": "jim-donald-parklands-footpath"
-   },
-   "467": {
-    "first_seen": "2026-08-21",
-    "slug": "albert-theaker-park-bollard-rail-and-gate-installation"
-   },
-   "47": {
-    "first_seen": "2026-08-21",
-    "slug": "ivor-marsden-memorial-sports-centre-sports-field-lighting-upgrade-amberley"
-   },
-   "473": {
-    "first_seen": "2026-08-21",
-    "slug": "warrill-park-cemetary-nursing-area"
-   },
-   "474": {
+   "IEE20000 10.01|stone quarry cemetery master planning|Jeebropilly": {
     "first_seen": "2026-08-21",
     "slug": "stone-quarry-cemetery-master-planning"
    },
-   "475": {
-    "first_seen": "2026-08-27",
-    "slug": "essex-street-bus-stop-id-322352"
-   },
-   "476": {
-    "first_seen": "2026-08-28",
-    "slug": "providence-parade-bus-stop-id-322346"
-   },
-   "477": {
-    "first_seen": "2026-08-28",
-    "slug": "bottlebrush-drive-bus-stop-id-319921"
-   },
-   "478": {
-    "first_seen": "2026-09-01",
-    "slug": "rawlings-road-at-deebing-heights-state-school-id-320554"
-   },
-   "479": {
-    "first_seen": "2026-09-01",
-    "slug": "parkview-parade-bus-stop-id-320575"
-   },
-   "48": {
-    "first_seen": "2026-08-21",
-    "slug": "kholo-gardens-new-retaining-wall-muirlea"
-   },
-   "480": {
-    "first_seen": "2026-09-01",
-    "slug": "diamantina-boulevard-bus-stop-id322684"
-   },
-   "481": {
-    "first_seen": "2026-09-01",
-    "slug": "dixon-street-bus-stop-id320004"
-   },
-   "482": {
-    "first_seen": "2026-09-01",
-    "slug": "windle-road-bus-stop-id322685"
-   },
-   "483": {
-    "first_seen": "2026-09-03",
-    "slug": "diamantina-boulevard-bus-stop-id322688"
-   },
-   "484": {
-    "first_seen": "2026-09-03",
-    "slug": "mary-street-pedestrian-bridge-replacement"
-   },
-   "485": {
-    "first_seen": "2026-09-03",
-    "slug": "grampien-drive-bus-stop-id322348"
-   },
-   "486": {
-    "first_seen": "2026-09-03",
-    "slug": "grampien-drive-bus-stop-id322342"
-   },
-   "487": {
-    "first_seen": "2026-07-16",
-    "slug": "deebing-creek-road-footpath"
-   },
-   "488": {
-    "first_seen": "2026-07-16",
-    "slug": "thagoona-haigslea-road-footpath"
-   },
-   "489": {
-    "first_seen": "2026-07-16",
-    "slug": "lawrence-street-footpath"
-   },
-   "49": {
-    "first_seen": "2026-08-21",
-    "slug": "ripley-road-and-reif-street-intersection-upgrade-49"
-   },
-   "490": {
-    "first_seen": "2026-07-16",
-    "slug": "wandera-court-footpath"
-   },
-   "491": {
-    "first_seen": "2026-07-16",
-    "slug": "bannerman-street-footpath"
-   },
-   "492": {
-    "first_seen": "2026-07-16",
-    "slug": "haigslea-amberley-road-footpath"
-   },
-   "493": {
-    "first_seen": "2026-07-16",
-    "slug": "stuart-street-and-bellevue-road-footpath"
-   },
-   "5": {
-    "first_seen": "2026-07-16",
-    "slug": "marie-street-embankment-stabilisation"
-   },
-   "50": {
-    "first_seen": "2026-08-21",
-    "slug": "woodend-catchment-drainage-rehabilitation-stage-1-woodend"
-   },
-   "51": {
-    "first_seen": "2026-08-21",
-    "slug": "woodend-catchment-drainage-rehabilitation-stage-2-woodend"
-   },
-   "518": {
-    "first_seen": "2026-07-16",
-    "slug": "queens-park-drainage-rehabilitation"
-   },
-   "519": {
-    "first_seen": "2026-07-16",
-    "slug": "springfield-lakes-boulevard-road-rehabilitation"
-   },
-   "52": {
-    "first_seen": "2026-08-21",
-    "slug": "east-ipswich-catchment-drainage-rehabilitation-east-ipswich"
-   },
-   "520": {
-    "first_seen": "2026-07-16",
-    "slug": "cedar-road-rehabilitation-stage-1"
-   },
-   "521": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-park-netball-facilities-lighting-replacement"
-   },
-   "523": {
-    "first_seen": "2026-07-16",
-    "slug": "elaine-street-stormwater-drainage-relining"
-   },
-   "524": {
-    "first_seen": "2026-07-16",
-    "slug": "fawkner-crescent-stormwater-drainage-relining"
-   },
-   "525": {
-    "first_seen": "2026-07-16",
-    "slug": "hanlon-street-stormwater-drainage-relining"
-   },
-   "526": {
-    "first_seen": "2026-07-16",
-    "slug": "harold-summervilles-road-stormwater-drainage-relining"
-   },
-   "527": {
-    "first_seen": "2026-07-16",
-    "slug": "high-street-stormwater-drainage-relining"
-   },
-   "528": {
-    "first_seen": "2026-07-16",
-    "slug": "kruger-parade-stormwater-drainage-relining"
-   },
-   "529": {
-    "first_seen": "2026-07-16",
-    "slug": "pine-mountain-road-minor-culvert-relining"
-   },
-   "53": {
-    "first_seen": "2026-08-21",
-    "slug": "east-ipswich-catchment-drainage-rehabilitation-stage-2-east-ipswich"
-   },
-   "530": {
-    "first_seen": "2026-07-16",
-    "slug": "railway-street-stormwater-drainage-relining"
-   },
-   "531": {
-    "first_seen": "2026-07-16",
-    "slug": "bergins-hill-road-culvert-rehabilitation"
-   },
-   "532": {
-    "first_seen": "2026-07-16",
-    "slug": "bergins-hill-road-drainage-channel-rehabilitation"
-   },
-   "533": {
-    "first_seen": "2026-07-16",
-    "slug": "chermside-road-drainage-rehabilitation"
-   },
-   "534": {
-    "first_seen": "2026-07-16",
-    "slug": "cultural-heart-nicholas-street"
-   },
-   "536": {
-    "first_seen": "2026-07-16",
-    "slug": "lobley-park-and-glode-avenue-drainage-improvements"
-   },
-   "537": {
-    "first_seen": "2026-07-16",
-    "slug": "brisbane-st-id-311199-bu23-bus-stop-upgrade"
-   },
-   "539": {
-    "first_seen": "2026-07-16",
-    "slug": "booval-station-id-310040-bu23-bus-stop-upgrade"
-   },
-   "54": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-road-upgrade-stage-4"
-   },
-   "546": {
-    "first_seen": "2026-07-16",
-    "slug": "cochrane-st-camira-fp23"
-   },
-   "549": {
-    "first_seen": "2026-07-16",
-    "slug": "bellbird-park-stormwater-drainage-improvements"
-   },
-   "55": {
-    "first_seen": "2026-08-21",
-    "slug": "downs-street-footpath-rehabilitation-north-ipswich"
-   },
-   "550": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-recreation-reserve-carpark-extension"
-   },
-   "551": {
-    "first_seen": "2026-07-16",
-    "slug": "silver-jubilee-sports-facility-clubhouse"
-   },
-   "552": {
-    "first_seen": "2026-07-16",
-    "slug": "bundamba-creek-streambank-rehabilitation"
-   },
-   "559": {
-    "first_seen": "2026-07-16",
-    "slug": "riverview-recycling-and-refuse-centre-line-marking"
-   },
-   "56": {
-    "first_seen": "2026-08-21",
-    "slug": "cross-street-kerb-and-channel-rehabilitation-raceview"
-   },
-   "561": {
-    "first_seen": "2026-07-16",
-    "slug": "riverview-recycling-and-refuse-centre-reflooring-of-pit"
-   },
-   "562": {
-    "first_seen": "2026-07-16",
-    "slug": "riverview-recycling-and-refuse-centre-bin-storage-hardstand"
-   },
-   "57": {
-    "first_seen": "2026-07-16",
-    "slug": "springfield-greenbank-arterial-road-upgrade-stage-3"
-   },
-   "570": {
-    "first_seen": "2026-07-16",
-    "slug": "jones-road-upgrade-stage-1"
-   },
-   "573": {
-    "first_seen": "2026-07-16",
-    "slug": "marburg-detention-basin-rehabilitation"
-   },
-   "58": {
-    "first_seen": "2026-08-21",
-    "slug": "parcell-and-holt-street-drainage-improvements-brassall"
-   },
-   "59": {
-    "first_seen": "2026-07-16",
-    "slug": "tregair-street-and-whitehill-road-drainage-rehabilitation"
-   },
-   "595": {
-    "first_seen": "2026-07-16",
-    "slug": "jacaranda-st-dr-24"
-   },
-   "6": {
+   "INF01910|deebing creek bikeway stage 1|Yamanto": {
     "first_seen": "2026-08-21",
     "slug": "deebing-creek-bikeway-stage-1-yamanto"
    },
-   "60": {
-    "first_seen": "2026-08-21",
-    "slug": "purga-school-road-bridge-replacement-and-road-rehablitation-works-purga"
-   },
-   "607": {
-    "first_seen": "2026-07-16",
-    "slug": "opossum-creek-parklands-upgrade"
-   },
-   "609": {
-    "first_seen": "2026-07-16",
-    "slug": "tivoli-sporting-complex-upgrade"
-   },
-   "61": {
-    "first_seen": "2026-07-16",
-    "slug": "emery-street-kerb-and-channel-rehabilitation"
-   },
-   "610": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-recreation-reserve-new-sports-facility"
-   },
-   "611": {
-    "first_seen": "2026-07-16",
-    "slug": "brisbane-street-refresh-top-of-town"
-   },
-   "613": {
-    "first_seen": "2026-07-16",
-    "slug": "goodna-ses-connection-to-sewerage"
-   },
-   "618": {
-    "first_seen": "2026-07-16",
-    "slug": "east-ipswich-catchment-drainage-rehabilitation-stage-3"
-   },
-   "619": {
-    "first_seen": "2026-07-16",
-    "slug": "springfield-lakes-lower-dam-spillway-access"
-   },
-   "62": {
-    "first_seen": "2026-08-21",
-    "slug": "campbell-street-road-rehabilitation-woodend"
-   },
-   "620": {
-    "first_seen": "2026-07-16",
-    "slug": "bundamba-pool-streetlight-replacement-and-carpark-lighting"
-   },
-   "622": {
-    "first_seen": "2026-07-16",
-    "slug": "mount-walker-west-road-stormwater-drainage-relining"
-   },
-   "623": {
-    "first_seen": "2026-07-16",
-    "slug": "lower-william-street-stormwater-drainage-relining"
-   },
-   "624": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-general-cemetery-shed-replacement"
-   },
-   "625": {
-    "first_seen": "2026-07-16",
-    "slug": "norman-street-roof-replacement"
-   },
-   "626": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-art-gallery-retaining-wall-renewal"
-   },
-   "627": {
-    "first_seen": "2026-07-16",
-    "slug": "burnett-street-retaining-wall"
-   },
-   "628": {
-    "first_seen": "2026-07-16",
-    "slug": "smith-street-drainage-improvements"
-   },
-   "629": {
-    "first_seen": "2026-07-16",
-    "slug": "kerners-road-drainage-improvements"
-   },
-   "63": {
-    "first_seen": "2026-08-21",
-    "slug": "prospect-street-footpath-rehabilitation-silkstone"
-   },
-   "630": {
-    "first_seen": "2026-07-16",
-    "slug": "hawthorne-street-drainage-improvements"
-   },
-   "632": {
-    "first_seen": "2026-07-16",
-    "slug": "woodend-catchment-drainage-rehabilitation-stage-3"
-   },
-   "633": {
-    "first_seen": "2026-07-16",
-    "slug": "robelle-domain-water-play-area-rehabilitation-works"
-   },
-   "635": {
-    "first_seen": "2026-07-16",
-    "slug": "augusta-parkway-and-sinnathamby-boulevard-road-upgrade"
-   },
-   "636": {
-    "first_seen": "2026-07-16",
-    "slug": "robelle-domain-solar-system-stage-1"
-   },
-   "637": {
-    "first_seen": "2026-07-16",
-    "slug": "brittains-road-closed-landfill-stormwater-infrastructure-remediation"
-   },
-   "638": {
-    "first_seen": "2026-07-16",
-    "slug": "bremervale-park-bioretention-basin-rehabilitation"
-   },
-   "639": {
-    "first_seen": "2026-07-16",
-    "slug": "riverview-recycling-and-refuse-centre-weighbridge-camera-enhancement"
-   },
-   "64": {
-    "first_seen": "2026-07-16",
-    "slug": "jones-road-redbank-plains-road-and-keidges-road-intersection-traffic-signal-refu"
-   },
-   "644": {
-    "first_seen": "2026-07-16",
-    "slug": "181-st-augustines-drive-sediment-forebay-replacement"
-   },
-   "645": {
-    "first_seen": "2026-07-16",
-    "slug": "creedy-street-road-resurfacing"
-   },
-   "646": {
-    "first_seen": "2026-07-16",
-    "slug": "station-lane-road-resurfacing"
-   },
-   "647": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-street-road-resurfacing"
-   },
-   "649": {
-    "first_seen": "2026-07-16",
-    "slug": "brisbane-street-road-resurfacing"
-   },
-   "65": {
-    "first_seen": "2026-08-21",
-    "slug": "whitehill-road-footpath-rehabilitation-eastern-heights"
-   },
-   "650": {
-    "first_seen": "2026-07-16",
-    "slug": "brisbane-street-road-resurfacing-west-ipswich"
-   },
-   "651": {
-    "first_seen": "2026-07-16",
-    "slug": "brisbane-street-road-resurfacing-ipswich"
-   },
-   "652": {
-    "first_seen": "2026-07-16",
-    "slug": "gordon-street-road-resurfacing"
-   },
-   "658": {
-    "first_seen": "2026-07-16",
-    "slug": "ripley-road-and-fischer-road-upgrade-stage-1"
-   },
-   "66": {
-    "first_seen": "2026-07-16",
-    "slug": "brisbane-and-hooper-street-traffic-signal-refurbishment"
-   },
-   "660": {
-    "first_seen": "2026-07-16",
-    "slug": "ellenborough-street-road-resurfacing"
-   },
-   "661": {
-    "first_seen": "2026-07-16",
-    "slug": "lowry-street-road-resurfacing"
-   },
-   "662": {
-    "first_seen": "2026-07-16",
-    "slug": "downs-street-road-resurfacing"
-   },
-   "663": {
-    "first_seen": "2026-07-16",
-    "slug": "elizabeth-street-road-resurfacing"
-   },
-   "664": {
-    "first_seen": "2026-07-16",
-    "slug": "cuffes-lane-road-resurfacing"
-   },
-   "665": {
-    "first_seen": "2026-07-16",
-    "slug": "dorman-lane-road-resurfacing"
-   },
-   "666": {
-    "first_seen": "2026-07-16",
-    "slug": "gledson-street-road-resurfacing"
-   },
-   "667": {
-    "first_seen": "2026-07-16",
-    "slug": "byrne-street-road-resurfacing"
-   },
-   "668": {
-    "first_seen": "2026-07-16",
-    "slug": "mining-street-road-resurfacing"
-   },
-   "669": {
-    "first_seen": "2026-07-16",
-    "slug": "william-street-road-resurfacing"
-   },
-   "67": {
-    "first_seen": "2026-07-16",
-    "slug": "old-logan-road-and-formation-street-traffic-signal-refurbishment"
-   },
-   "671": {
-    "first_seen": "2026-07-16",
-    "slug": "cullen-street-road-resurfacing"
-   },
-   "672": {
-    "first_seen": "2026-07-16",
-    "slug": "wade-street-road-resurfacing"
-   },
-   "673": {
-    "first_seen": "2026-07-16",
-    "slug": "cascade-street-road-resurfacing"
-   },
-   "674": {
-    "first_seen": "2026-07-16",
-    "slug": "robertson-road-road-resurfacing"
-   },
-   "675": {
-    "first_seen": "2026-07-16",
-    "slug": "robertson-road-road-resurfacing-raceview"
-   },
-   "676": {
-    "first_seen": "2026-07-16",
-    "slug": "walkers-lane-road-resurfacing"
-   },
-   "677": {
-    "first_seen": "2026-07-16",
-    "slug": "brisbane-terrace-road-resurfacing"
-   },
-   "678": {
-    "first_seen": "2026-07-16",
-    "slug": "brisbane-terrace-road-resurfacing-goodna"
-   },
-   "679": {
-    "first_seen": "2026-07-16",
-    "slug": "church-street-road-resurfacing"
-   },
-   "68": {
-    "first_seen": "2026-07-16",
-    "slug": "eagle-street-and-kruger-parade-traffic-signal-refurbishment"
-   },
-   "681": {
-    "first_seen": "2026-07-16",
-    "slug": "smiths-road-road-resurfacing"
-   },
-   "682": {
-    "first_seen": "2026-07-16",
-    "slug": "alice-street-road-resurfacing"
-   },
-   "683": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-road-resurfacing"
-   },
-   "684": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-road-resurfacing-redbank-plains"
-   },
-   "685": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-road-resurfacing-685"
-   },
-   "686": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-road-resurfacing-bellbird-park"
-   },
-   "687": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-road-resurfacing-swanbank"
-   },
-   "688": {
-    "first_seen": "2026-07-16",
-    "slug": "augusta-parkway-road-resurfacing"
-   },
-   "689": {
-    "first_seen": "2026-07-16",
-    "slug": "collingwood-drive-road-resurfacing"
-   },
-   "690": {
-    "first_seen": "2026-07-16",
-    "slug": "kruger-parade-road-resurfacing"
-   },
-   "692": {
-    "first_seen": "2026-07-16",
-    "slug": "namatjira-drive-road-resurfacing"
-   },
-   "693": {
-    "first_seen": "2026-07-16",
-    "slug": "jones-road-road-resurfacing"
-   },
-   "694": {
-    "first_seen": "2026-07-16",
-    "slug": "santa-monica-drive-road-resurfacing"
-   },
-   "695": {
-    "first_seen": "2026-07-16",
-    "slug": "augusta-parkway-road-resurfacing-augustine-heights"
-   },
-   "696": {
-    "first_seen": "2026-07-16",
-    "slug": "willowbank-lease-a-drainage-renewal"
-   },
-   "697": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-recreation-reserve-storage-facility-25"
-   },
-   "698": {
-    "first_seen": "2026-07-16",
-    "slug": "jim-finimore-park-overflow-carpark-bollards-and-lighting"
-   },
-   "699": {
-    "first_seen": "2026-07-16",
-    "slug": "springfield-greenbank-art-id-310253-bu-25"
-   },
-   "7": {
-    "first_seen": "2026-07-16",
-    "slug": "rosewood-showgrounds-cattle-ramp-renewal"
-   },
-   "70": {
-    "first_seen": "2026-08-21",
-    "slug": "macgregor-street-footpath-rehabilitation-woodend"
-   },
-   "700": {
-    "first_seen": "2026-07-16",
-    "slug": "school-street-rosewood-state-school-fp25"
-   },
-   "701": {
-    "first_seen": "2026-07-16",
-    "slug": "summit-drive-sas-25"
-   },
-   "703": {
-    "first_seen": "2026-07-16",
-    "slug": "demolition-of-existing-structure-design-and-construction-of-the-new-western-gran"
-   },
-   "704": {
-    "first_seen": "2026-07-16",
-    "slug": "cribb-pk-lfda-f-25"
-   },
-   "705": {
-    "first_seen": "2026-07-16",
-    "slug": "entrance-upgrade-at-riverview-recycling-and-refuse-centre"
-   },
-   "708": {
-    "first_seen": "2026-07-16",
-    "slug": "jim-donald-place-disability-car-park"
-   },
-   "709": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-at-redbank-plains-town-square-bus-expansion"
-   },
-   "71": {
-    "first_seen": "2026-08-21",
-    "slug": "tallon-street-footpath-rehabilitation-sadliers-crossing"
-   },
-   "710": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-near-west-street-bus-expansion"
-   },
-   "711": {
-    "first_seen": "2026-07-16",
-    "slug": "coopers-road-willowbank-footpath-connection"
-   },
-   "712": {
-    "first_seen": "2026-07-16",
-    "slug": "russells-road-traffic-island"
-   },
-   "713": {
-    "first_seen": "2026-07-16",
-    "slug": "bellevue-rd-id-312242-bu-24"
-   },
-   "714": {
-    "first_seen": "2026-07-16",
-    "slug": "bourke-street-bus-stop-id-313977-upgrade"
-   },
-   "715": {
-    "first_seen": "2026-07-16",
-    "slug": "braeside-rd-id-311665-bu-24"
-   },
-   "716": {
-    "first_seen": "2026-07-16",
-    "slug": "chermside-rd-jacaranda-st-bu-24"
-   },
-   "717": {
-    "first_seen": "2026-07-16",
-    "slug": "gorry-st-dowden-st-bu-24"
-   },
-   "718": {
-    "first_seen": "2026-07-16",
-    "slug": "wildey-st-id-312905-bu-24"
-   },
-   "72": {
-    "first_seen": "2026-08-21",
-    "slug": "sharpless-road-footpath-rehabilitation-springfield"
-   },
-   "720": {
-    "first_seen": "2026-07-16",
-    "slug": "fail-park-dog-bowl"
-   },
-   "721": {
-    "first_seen": "2026-07-16",
-    "slug": "collingwood-dr-sas-25"
-   },
-   "722": {
-    "first_seen": "2026-07-16",
-    "slug": "ferrett-street-and-burnett-street-intersection-kerb-ramps"
-   },
-   "723": {
-    "first_seen": "2026-07-16",
-    "slug": "argyle-street-kerb-and-channel-rehabilitation"
-   },
-   "724": {
-    "first_seen": "2026-07-16",
-    "slug": "holt-street-kerb-and-channel-rehabilitation"
-   },
-   "725": {
-    "first_seen": "2026-07-16",
-    "slug": "royal-george-lane-kerb-and-channel-rehabilitation"
-   },
-   "726": {
-    "first_seen": "2026-07-16",
-    "slug": "russell-drive-kerb-and-channel-rehabilitation"
-   },
-   "727": {
-    "first_seen": "2026-07-16",
-    "slug": "trevlac-street-kerb-and-channel-rehabilitation"
-   },
-   "728": {
-    "first_seen": "2026-07-16",
-    "slug": "view-street-kerb-and-channel-rehabilitation"
-   },
-   "729": {
-    "first_seen": "2026-07-16",
-    "slug": "albert-st-lr-29"
-   },
-   "73": {
-    "first_seen": "2026-08-21",
-    "slug": "gladstone-road-kerb-and-channel-rehabilitation-sadliers-crossing"
-   },
-   "730": {
-    "first_seen": "2026-07-16",
-    "slug": "boundary-street-rehabilitation"
-   },
-   "731": {
-    "first_seen": "2026-07-16",
-    "slug": "lansdowne-way-road-rehabilitation"
-   },
-   "733": {
-    "first_seen": "2026-07-16",
-    "slug": "taloma-avenue-road-rehabilitation"
-   },
-   "734": {
-    "first_seen": "2026-07-16",
-    "slug": "taloma-avenue-lr-30"
-   },
-   "735": {
-    "first_seen": "2026-07-16",
-    "slug": "woodend-road-rehabilitation"
-   },
-   "736": {
-    "first_seen": "2026-07-16",
-    "slug": "warwick-road-footpath-rehabilitation"
-   },
-   "737": {
-    "first_seen": "2026-07-16",
-    "slug": "tallegalla-cemetery-expansion"
-   },
-   "738": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-cemetery-headstone-l22-ie"
-   },
-   "739": {
-    "first_seen": "2026-07-16",
-    "slug": "warrill-park-lawn-cemetery-master-plan"
-   },
-   "74": {
-    "first_seen": "2026-08-21",
-    "slug": "tallegalla-road-culvert-rehabilitation-tallegalla"
-   },
-   "740": {
-    "first_seen": "2026-07-16",
-    "slug": "warrill-park-cemetery-road-upgrade"
-   },
-   "741": {
-    "first_seen": "2026-07-16",
-    "slug": "stone-quarry-cemetery"
-   },
-   "742": {
-    "first_seen": "2026-07-16",
-    "slug": "heit-family-park-perimeter-upgrade"
-   },
-   "743": {
-    "first_seen": "2026-07-16",
-    "slug": "langley-park-b-25"
-   },
-   "744": {
-    "first_seen": "2026-07-16",
-    "slug": "cooneana-ch-re-26"
-   },
-   "745": {
-    "first_seen": "2026-07-16",
-    "slug": "norm-craswell-park-playground-renewal"
-   },
-   "746": {
-    "first_seen": "2026-07-16",
-    "slug": "sutton-park-fitness-equipment-renewal"
-   },
-   "747": {
-    "first_seen": "2026-07-16",
-    "slug": "evan-marginson-park"
-   },
-   "748": {
-    "first_seen": "2026-07-16",
-    "slug": "mt-forbes-rfb-b-hs-25"
-   },
-   "749": {
-    "first_seen": "2026-07-16",
-    "slug": "lobb-street-road-safety-improvements"
-   },
-   "75": {
-    "first_seen": "2026-08-21",
-    "slug": "school-road-upgrade-redbank-plains"
-   },
-   "750": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-library-retaining-wall"
-   },
-   "751": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-motorsport-precinct-lighting-renewal"
-   },
-   "752": {
-    "first_seen": "2026-07-16",
-    "slug": "brassall-bikeway-electricity-box"
-   },
-   "753": {
-    "first_seen": "2026-07-16",
-    "slug": "orion-lagoon-switchboard"
-   },
-   "754": {
-    "first_seen": "2026-07-16",
-    "slug": "bill-paterson-oval-switchboard"
-   },
-   "755": {
-    "first_seen": "2026-07-16",
-    "slug": "bundamba-swim-centre-doser-unit"
-   },
-   "756": {
-    "first_seen": "2026-07-16",
-    "slug": "orion-lagoon-doser-unit"
-   },
-   "757": {
-    "first_seen": "2026-07-16",
-    "slug": "jo-ann-miller-drive-traffic-islands"
-   },
-   "758": {
-    "first_seen": "2026-07-16",
-    "slug": "paddington-park-playground-renewal"
-   },
-   "759": {
-    "first_seen": "2026-07-16",
-    "slug": "spring-lake-park-amenities-block"
-   },
-   "76": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-civic-centre-forecourt-upgrade"
-   },
-   "760": {
-    "first_seen": "2026-07-16",
-    "slug": "134-136-lyndon-way-drainage-rehabilitation"
-   },
-   "761": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-civic-centre-driveway"
-   },
-   "762": {
-    "first_seen": "2026-07-16",
-    "slug": "woodend-catchment-drainage-rehabilitation-stage-4"
-   },
-   "763": {
-    "first_seen": "2026-07-16",
-    "slug": "robelle-domain-greater-springfield-rotary-club-peace-pole"
-   },
-   "764": {
-    "first_seen": "2026-07-16",
-    "slug": "home-assist-depot-thermal-upgrades"
-   },
-   "765": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-civic-centre-plant-deck"
-   },
-   "766": {
-    "first_seen": "2026-07-16",
-    "slug": "incinerator-theatre-chimney-re26"
-   },
-   "767": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-art-gallery-roof-safety-system"
-   },
-   "768": {
-    "first_seen": "2026-07-16",
-    "slug": "prospect-street-south-kerb-26"
-   },
-   "769": {
-    "first_seen": "2026-07-16",
-    "slug": "prospect-street-north-kerb-26"
-   },
-   "77": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-civic-centre-gallery-toilets-rehabilitation"
-   },
-   "770": {
-    "first_seen": "2026-07-16",
-    "slug": "molloy-street-kerb-26"
-   },
-   "771": {
-    "first_seen": "2026-07-16",
-    "slug": "green-street-kerb-26"
-   },
-   "773": {
-    "first_seen": "2026-07-16",
-    "slug": "arthur-summervilles-road-speed-awareness-signs"
-   },
-   "774": {
-    "first_seen": "2026-07-16",
-    "slug": "diamantina-boulevard-soeed-awareness-signs"
-   },
-   "775": {
-    "first_seen": "2026-07-16",
-    "slug": "leslie-street-kerb-ramps"
-   },
-   "776": {
-    "first_seen": "2026-07-16",
-    "slug": "blackwood-street-kerb-ramps"
-   },
-   "777": {
-    "first_seen": "2026-07-16",
-    "slug": "sarah-drive-park-bmx-upgrade"
-   },
-   "778": {
-    "first_seen": "2026-07-16",
-    "slug": "regents-drive-safety-improvements"
-   },
-   "779": {
-    "first_seen": "2026-07-16",
-    "slug": "george-and-eilenn-hastings-sporting-complex-amentities-building"
-   },
-   "78": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-civic-centre-foyer-ceiling-rehabilitation"
-   },
-   "780": {
-    "first_seen": "2026-07-16",
-    "slug": "queens-park-playground-upgrade"
-   },
-   "781": {
-    "first_seen": "2026-07-16",
-    "slug": "goupong-park-upgrade"
-   },
-   "782": {
-    "first_seen": "2026-07-16",
-    "slug": "lobb-street-speed-awareness-signs"
-   },
-   "783": {
-    "first_seen": "2026-07-16",
-    "slug": "downs-street-road-resurfacing-north-ipswich"
-   },
-   "784": {
-    "first_seen": "2026-07-16",
-    "slug": "albert-street-drainage-rehabilitation"
-   },
-   "785": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-park-athletics-accessibility-upgrade"
-   },
-   "786": {
-    "first_seen": "2026-07-16",
-    "slug": "gledson-street-kerb-ramps"
-   },
-   "787": {
-    "first_seen": "2026-07-16",
-    "slug": "ipswich-rsl-floor-levels-refurbishment"
-   },
-   "788": {
-    "first_seen": "2026-07-16",
-    "slug": "chelmsford-avenue-footpath-upgrade"
-   },
-   "789": {
-    "first_seen": "2026-07-16",
-    "slug": "bottlebrush-drive-school-crossing"
-   },
-   "79": {
-    "first_seen": "2026-08-21",
-    "slug": "castle-hill-blackstone-reserve-carpark-refurbishment-blackstone"
-   },
-   "790": {
-    "first_seen": "2026-07-16",
-    "slug": "raceview-street-footpath-upgrade"
-   },
-   "791": {
-    "first_seen": "2026-07-16",
-    "slug": "nerima-garden-pond-rehabilitation"
-   },
-   "792": {
-    "first_seen": "2026-07-16",
-    "slug": "rosewood-library-improvements"
-   },
-   "794": {
-    "first_seen": "2026-07-16",
-    "slug": "queens-park-toilet-accessibility-improvements"
-   },
-   "795": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-road-resurfacing-795"
-   },
-   "796": {
-    "first_seen": "2026-07-16",
-    "slug": "redbank-plains-road-road-resurfacing-796"
-   },
-   "798": {
-    "first_seen": "2026-07-16",
-    "slug": "toongarra-road-resurfacing"
-   },
-   "799": {
-    "first_seen": "2026-07-16",
-    "slug": "queens-park-retaining-wall-kerb-extension"
-   },
-   "8": {
-    "first_seen": "2026-07-16",
-    "slug": "toongarra-road-upgrade"
-   },
-   "80": {
-    "first_seen": "2026-08-21",
-    "slug": "hazelwood-park-pathway-flinders-view"
-   },
-   "800": {
-    "first_seen": "2026-07-16",
-    "slug": "kevin-bull-field-shelters"
-   },
-   "801": {
-    "first_seen": "2026-07-16",
-    "slug": "peter-phelan-memorial-field-shelters"
-   },
-   "802": {
-    "first_seen": "2026-07-16",
-    "slug": "middle-road-culvert-replacement"
-   },
-   "803": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-park-bill-patterson-oval-irrigation-rehabilitation"
-   },
-   "804": {
-    "first_seen": "2026-07-16",
-    "slug": "queens-park-dog-bowl"
-   },
-   "805": {
-    "first_seen": "2026-07-16",
-    "slug": "avon-street-bus-stop-upgrade-id312495"
-   },
-   "806": {
-    "first_seen": "2026-07-16",
-    "slug": "josey-street-bus-stop-upgrade-id312942"
-   },
-   "807": {
-    "first_seen": "2026-07-16",
-    "slug": "kruger-parade-bus-stop-upgrade-id312906"
-   },
-   "808": {
-    "first_seen": "2026-07-16",
-    "slug": "south-station-road-bus-stop-upgrade-id311019"
-   },
-   "809": {
-    "first_seen": "2026-07-16",
-    "slug": "whitehill-road-bus-stop-upgrade-id312748-and-id317763"
-   },
-   "81": {
-    "first_seen": "2026-07-16",
-    "slug": "trumper-street-kerb-and-channel-rehabilitation"
-   },
-   "810": {
-    "first_seen": "2026-07-16",
-    "slug": "park-street-drainage-rehabilitation"
-   },
-   "811": {
-    "first_seen": "2026-07-16",
-    "slug": "blackstone-road-drainage-rehabilitation-silkstone"
-   },
-   "813": {
-    "first_seen": "2026-07-16",
-    "slug": "nerima-gardens-pathway-shelters"
-   },
-   "814": {
-    "first_seen": "2026-07-16",
-    "slug": "nerima-gardens-fencing-and-gates-works"
-   },
-   "815": {
-    "first_seen": "2026-07-16",
-    "slug": "nerima-gardens-main-entry-improvements"
-   },
-   "816": {
-    "first_seen": "2026-07-16",
-    "slug": "nerima-gardens-bridge-rehabilitation"
-   },
-   "817": {
-    "first_seen": "2026-07-16",
-    "slug": "rosewood-aquatic-facility-flooring-renewal"
-   },
-   "818": {
-    "first_seen": "2026-07-16",
-    "slug": "queens-park-caf\u00e9-flooring"
-   },
-   "819": {
-    "first_seen": "2026-07-16",
-    "slug": "dellvene-crescent-road-pavement-reconstruction"
-   },
-   "82": {
-    "first_seen": "2026-08-21",
-    "slug": "rosewood-aquatic-centre-facility-upgrade-rosewood"
-   },
-   "820": {
-    "first_seen": "2026-07-16",
-    "slug": "frederick-street-kerb-and-channel-reconstruction"
-   },
-   "821": {
-    "first_seen": "2026-07-16",
-    "slug": "west-street-kerb-and-channel-reconstruction"
-   },
-   "822": {
-    "first_seen": "2026-07-16",
-    "slug": "view-street-road-rehabilitation"
-   },
-   "823": {
-    "first_seen": "2026-07-16",
-    "slug": "bundamba-swim-centre-starting-blocks-refurbishment"
-   },
-   "824": {
-    "first_seen": "2026-07-16",
-    "slug": "moffatt-street-drainage-rehabilitation"
-   },
-   "825": {
-    "first_seen": "2026-07-16",
-    "slug": "limestone-pk-bollard-replacement-works"
-   },
-   "826": {
-    "first_seen": "2026-07-16",
-    "slug": "hunter-street-kerb-ramp-improvements"
-   },
-   "827": {
-    "first_seen": "2026-07-17",
-    "slug": "bertha-street-guardrail-installation"
-   },
-   "828": {
-    "first_seen": "2026-07-22",
-    "slug": "atlantic-drive-sporting-complex-footpath-replacement"
-   },
-   "829": {
-    "first_seen": "2026-07-24",
-    "slug": "tivoli-sporting-complex-clubhouse-design-and-construction-stage-2"
-   },
-   "83": {
-    "first_seen": "2026-07-16",
-    "slug": "robertson-and-whitehill-road-intersection-upgrade"
-   },
-   "830": {
-    "first_seen": "2026-07-22",
-    "slug": "rotary-bicentennial-park-synthetic-softfall-installation"
-   },
-   "831": {
-    "first_seen": "2026-07-24",
-    "slug": "ipswich-art-gallery-retaining-wall-renewal-ipswich"
-   },
-   "832": {
-    "first_seen": "2026-07-24",
-    "slug": "springfield-lakes-boulevard-pedestrian-refuge-island"
-   },
-   "834": {
-    "first_seen": "2026-07-24",
-    "slug": "tivoli-sporting-complex-clubhouse"
-   },
-   "835": {
-    "first_seen": "2026-07-24",
-    "slug": "hume-street-footpath-upgrade"
-   },
-   "836": {
-    "first_seen": "2026-07-24",
-    "slug": "mount-juillerat-drive-safety-improvements"
-   },
-   "84": {
-    "first_seen": "2026-07-16",
-    "slug": "pryde-street-and-hume-street-drainage-rehabilitation"
-   },
-   "85": {
-    "first_seen": "2026-08-21",
-    "slug": "limestone-park-new-toilets-ipswich"
-   },
-   "86": {
-    "first_seen": "2026-07-16",
-    "slug": "hiddenvale-road-bridge-replacement"
-   },
-   "87": {
-    "first_seen": "2026-08-21",
-    "slug": "camira-recreation-reserve-sport-field-irrigation-camira"
-   },
-   "88": {
-    "first_seen": "2026-08-21",
-    "slug": "redbank-plains-recreation-reserve-internal-road-lighting-redbank-plains"
-   },
-   "89": {
-    "first_seen": "2026-08-21",
-    "slug": "riverview-recycling-and-refuse-centre-green-waste-hardstand-riverview"
-   },
-   "9": {
+   "INF02094|queens park tennis court lighting replacement|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "queens-park-tennis-court-lighting-replacement"
+   },
+   "INF02130|limestone park carpark extension southern corner|Ipswich": {
     "first_seen": "2026-08-21",
     "slug": "limestone-park-carpark-extension-southern-corner-ipswich"
    },
-   "90": {
+   "INF02414|redbank plains road upgrade stage 3|Bellbird Park \nRedbank Plains ": {
+    "first_seen": "2026-09-13",
+    "slug": "redbank-plains-road-upgrade-stage-3"
+   },
+   "INF02642|stanley street kerb and channel|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "stanley-street-kerb-and-channel-goodna"
+   },
+   "INF02653|chermside road kerb and channel|Basin Pocket": {
+    "first_seen": "2026-08-21",
+    "slug": "chermside-road-kerb-and-channel-basin-pocket"
+   },
+   "INF02654|eastwood street kerb and channel|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "eastwood-street-kerb-and-channel-north-ipswich"
+   },
+   "INF02655|gulland street kerb and channel|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "gulland-street-kerb-and-channel-north-ipswich"
+   },
+   "INF02656|ferguson street kerb and channel|North Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "ferguson-street-kerb-and-channel"
+   },
+   "INF02666|gladstone road kerb and channel|Coalfalls": {
+    "first_seen": "2026-08-21",
+    "slug": "gladstone-road-kerb-and-channel-coalfalls"
+   },
+   "INF02673|warwick road kerb and channel|Churchill": {
+    "first_seen": "2026-09-13",
+    "slug": "warwick-road-kerb-and-channel"
+   },
+   "INF02681|short street kerb and channel|Walloon": {
+    "first_seen": "2026-09-13",
+    "slug": "short-street-kerb-and-channel"
+   },
+   "INF02762|jasmine street road rehabilitation|Bellbird Park": {
+    "first_seen": "2026-08-21",
+    "slug": "jasmine-street-road-rehabilitation-bellbird-park"
+   },
+   "INF02764|johnston street road rehabilitation|Bellbird Park": {
+    "first_seen": "2026-09-13",
+    "slug": "johnston-street-road-rehabilitation"
+   },
+   "INF02765|mcinnerney street road rehabilitation|Collingwood Park": {
+    "first_seen": "2026-08-21",
+    "slug": "mcinnerney-street-road-rehabilitation-collingwood-park"
+   },
+   "INF02766|vivian street road rehabilitation|Eastern Heights": {
+    "first_seen": "2026-09-13",
+    "slug": "vivian-street-road-rehabilitation"
+   },
+   "INF02767|dowden street road rehabilitation|Goodna": {
+    "first_seen": "2026-09-13",
+    "slug": "dowden-street-road-rehabilitation"
+   },
+   "INF02768|river road road rehabilitation|Redbank": {
+    "first_seen": "2026-09-13",
+    "slug": "river-road-road-rehabilitation"
+   },
+   "INF02770|jalrock place road rehabilitation|Carole Park": {
+    "first_seen": "2026-09-13",
+    "slug": "jalrock-place-road-rehabilitation"
+   },
+   "INF03146|spring lake park amenities block|Springfield Lakes": {
+    "first_seen": "2026-08-21",
+    "slug": "spring-lake-park-amenities-block-springfield-lakes"
+   },
+   "INF03149|gordon street pedestrian link|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "gordon-street-pedestrian-link"
+   },
+   "INF03206|mary street and william street intersection upgrade|Blackstone": {
+    "first_seen": "2026-09-13",
+    "slug": "mary-street-and-william-street-intersection-upgrade"
+   },
+   "INF03218|springfield parkway and springfield greenbank arterial road upgrade stage 1|Springfield": {
+    "first_seen": "2026-09-13",
+    "slug": "springfield-parkway-and-springfield-greenbank-arterial-road-upgrade-stage-1"
+   },
+   "INF03219|springfield parkway road upgrade stage 2|Springfield": {
+    "first_seen": "2026-08-21",
+    "slug": "springfield-parkway-road-upgrade-stage-2-29"
+   },
+   "INF03882|springfield greenbank arterial road upgrade stage 3|Springfield Central \nSpringfield Lakes ": {
+    "first_seen": "2026-09-13",
+    "slug": "springfield-greenbank-arterial-road-upgrade-stage-3"
+   },
+   "INF03896|tregair street and whitehill road drainage rehabilitation|Newtown": {
+    "first_seen": "2026-09-13",
+    "slug": "tregair-street-and-whitehill-road-drainage-rehabilitation"
+   },
+   "INF03902|emery street kerb and channel rehabilitation|Carole Park": {
+    "first_seen": "2026-08-21",
+    "slug": "emery-street-kerb-and-channel-rehabilitation-carole-park"
+   },
+   "INF03970|jones road redbank plains road and keidges road intersection traffic signal refurbishment|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "jones-road-redbank-plains-road-and-keidges-road-intersection-traffic-signal-refu"
+   },
+   "INF03972|brisbane and hooper street traffic signal refurbishment|West Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "brisbane-and-hooper-street-traffic-signal-refurbishment"
+   },
+   "INF03973|old logan road and formation street traffic signal refurbishment|Carole Park": {
+    "first_seen": "2026-09-13",
+    "slug": "old-logan-road-and-formation-street-traffic-signal-refurbishment"
+   },
+   "INF03974|eagle street and kruger parade traffic signal refurbishment|Collingwood Park \nRedbank\nRedbank Plain\nBellbird Park": {
+    "first_seen": "2026-09-13",
+    "slug": "eagle-street-and-kruger-parade-traffic-signal-refurbishment"
+   },
+   "INF04031|ipswich civic centre forecourt upgrade|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "ipswich-civic-centre-forecourt-upgrade"
+   },
+   "INF04033|ipswich civic centre gallery toilets rehabilitation|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "ipswich-civic-centre-gallery-toilets-rehabilitation"
+   },
+   "INF04036|ipswich civic centre foyer ceiling rehabilitation|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-civic-centre-foyer-ceiling-rehabilitation-ipswich"
+   },
+   "INF04083|trumper street kerb and channel rehabilitation|East Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "trumper-street-kerb-and-channel-rehabilitation-east-ipswich"
+   },
+   "INF04087|robertson and whitehill road intersection upgrade|Eastern Heights": {
+    "first_seen": "2026-09-13",
+    "slug": "robertson-and-whitehill-road-intersection-upgrade"
+   },
+   "INF04089|pryde street and hume street drainage rehabilitation|Woodend": {
+    "first_seen": "2026-09-13",
+    "slug": "pryde-street-and-hume-street-drainage-rehabilitation"
+   },
+   "INF04177|hiddenvale road bridge replacement|Calvert": {
+    "first_seen": "2026-09-13",
+    "slug": "hiddenvale-road-bridge-replacement"
+   },
+   "INF04190|rex hawke park dog off leash area fence replacement|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "rex-hawke-park-dog-off-leash-area-fence-replacement"
+   },
+   "INF04205|cameron park upgrade including playground|Booval": {
+    "first_seen": "2026-08-21",
+    "slug": "cameron-park-upgrade-including-playground-booval"
+   },
+   "INF04207|ivor marsden memorial sports centre sports field lighting upgrade|Amberley": {
+    "first_seen": "2026-08-21",
+    "slug": "ivor-marsden-memorial-sports-centre-sports-field-lighting-upgrade-amberley"
+   },
+   "INF04215|kholo gardens new retaining wall|Muirlea": {
+    "first_seen": "2026-08-21",
+    "slug": "kholo-gardens-new-retaining-wall-muirlea"
+   },
+   "INF04243|ripley road and reif street intersection upgrade|Flinders View": {
+    "first_seen": "2026-08-21",
+    "slug": "ripley-road-and-reif-street-intersection-upgrade-49"
+   },
+   "INF04249|woodend catchment drainage rehabilitation stage 1|Woodend": {
+    "first_seen": "2026-08-21",
+    "slug": "woodend-catchment-drainage-rehabilitation-stage-1-woodend"
+   },
+   "INF04250|woodend catchment drainage rehabilitation stage 2|Woodend": {
+    "first_seen": "2026-08-21",
+    "slug": "woodend-catchment-drainage-rehabilitation-stage-2-woodend"
+   },
+   "INF04251|east ipswich catchment drainage rehabilitation|East Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "east-ipswich-catchment-drainage-rehabilitation-east-ipswich"
+   },
+   "INF04252|east ipswich drainage rehabilitation stage 2|East Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "east-ipswich-drainage-rehabilitation-stage-2"
+   },
+   "INF04259|redbank plains road upgrade stage 4|Collingwood Park \nNew Chum \nRedbank Plains ": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-road-upgrade-stage-4"
+   },
+   "INF04283|downs street footpath rehabilitation|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "downs-street-footpath-rehabilitation-north-ipswich"
+   },
+   "INF04292|cross street kerb and channel rehabilitation|Raceview": {
+    "first_seen": "2026-08-21",
+    "slug": "cross-street-kerb-and-channel-rehabilitation-raceview"
+   },
+   "INF04293|york street kerb and channel rehabilitation|East Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "york-street-kerb-and-channel-rehabilitation"
+   },
+   "INF04308|parcell and holt street drainage improvements|Brassall": {
+    "first_seen": "2026-08-21",
+    "slug": "parcell-and-holt-street-drainage-improvements-brassall"
+   },
+   "INF04313|strongs road bridge replacement|Lanefield": {
+    "first_seen": "2026-09-13",
+    "slug": "strongs-road-bridge-replacement"
+   },
+   "INF04314|purga school road bridge replacement and road rehablitation works|Purga ": {
+    "first_seen": "2026-08-21",
+    "slug": "purga-school-road-bridge-replacement-and-road-rehablitation-works-purga"
+   },
+   "INF04319|enterprise street road rehabilitation|Wulkuraka": {
+    "first_seen": "2026-09-13",
+    "slug": "enterprise-street-road-rehabilitation"
+   },
+   "INF04320|campbell street road rehabilitation|Woodend": {
+    "first_seen": "2026-08-21",
+    "slug": "campbell-street-road-rehabilitation-woodend"
+   },
+   "INF04336|prospect street footpath rehabilitation|Silkstone": {
+    "first_seen": "2026-08-21",
+    "slug": "prospect-street-footpath-rehabilitation-silkstone"
+   },
+   "INF04337|cemetery road footpath rehabilitation|Eastern Heights": {
+    "first_seen": "2026-09-13",
+    "slug": "cemetery-road-footpath-rehabilitation"
+   },
+   "INF04339|whitehill road footpath rehabilitation|Eastern Heights": {
+    "first_seen": "2026-08-21",
+    "slug": "whitehill-road-footpath-rehabilitation-eastern-heights"
+   },
+   "INF04347|fitzroy sreet gravel turnaround|Churchill": {
+    "first_seen": "2026-09-13",
+    "slug": "fitzroy-sreet-gravel-turnaround"
+   },
+   "INF04348|spencer street gravel turnaround|Churchill": {
+    "first_seen": "2026-09-13",
+    "slug": "spencer-street-gravel-turnaround"
+   },
+   "INF04353|macgregor street footpath rehabilitation|Woodend": {
+    "first_seen": "2026-08-21",
+    "slug": "macgregor-street-footpath-rehabilitation-woodend"
+   },
+   "INF04354|tallon street footpath rehabilitation|Sadliers Crossing": {
+    "first_seen": "2026-08-21",
+    "slug": "tallon-street-footpath-rehabilitation-sadliers-crossing"
+   },
+   "INF04355|sharpless road footpath rehabilitation|Springfield": {
+    "first_seen": "2026-08-21",
+    "slug": "sharpless-road-footpath-rehabilitation-springfield"
+   },
+   "INF04360|gladstone road kerb and channel rehabilitation|Sadliers Crossing": {
+    "first_seen": "2026-08-21",
+    "slug": "gladstone-road-kerb-and-channel-rehabilitation-sadliers-crossing"
+   },
+   "INF04362|tallegalla road culvert rehabilitation|Tallegalla": {
+    "first_seen": "2026-08-21",
+    "slug": "tallegalla-road-culvert-rehabilitation-tallegalla"
+   },
+   "INF04371|school road upgrade|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "school-road-upgrade-redbank-plains"
+   },
+   "INF04372|blackstone road thomas street and creek street intersection upgrade|Silkstone": {
+    "first_seen": "2026-09-13",
+    "slug": "blackstone-road-thomas-street-and-creek-street-intersection-upgrade"
+   },
+   "INF04374|shanahan parade footbridge replacement|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "shanahan-parade-footbridge-replacement"
+   },
+   "INF04396|whitwood road south historical landfill remediation|New Chum": {
+    "first_seen": "2026-09-13",
+    "slug": "whitwood-road-south-historical-landfill-remediation"
+   },
+   "INF04401|castle hill blackstone reserve carpark refurbishment|Blackstone ": {
+    "first_seen": "2026-08-21",
+    "slug": "castle-hill-blackstone-reserve-carpark-refurbishment-blackstone"
+   },
+   "INF04402|hazelwood park pathway|Flinders View": {
+    "first_seen": "2026-08-21",
+    "slug": "hazelwood-park-pathway-flinders-view"
+   },
+   "INF04404|limestone park fitness equipment|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "limestone-park-fitness-equipment"
+   },
+   "INF04416|rosewood aquatic centre facility upgrade|Rosewood": {
+    "first_seen": "2026-08-21",
+    "slug": "rosewood-aquatic-centre-facility-upgrade-rosewood"
+   },
+   "INF04424|limestone park top carpark lighting stage 2|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "limestone-park-top-carpark-lighting-stage-2"
+   },
+   "INF04425|limestone park new toilets|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "limestone-park-new-toilets-ipswich"
+   },
+   "INF04426|limestone park new dog off leash area|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "limestone-park-new-dog-off-leash-area"
+   },
+   "INF04427|camira recreation reserve sport field irrigation|Camira": {
+    "first_seen": "2026-08-21",
+    "slug": "camira-recreation-reserve-sport-field-irrigation-camira"
+   },
+   "INF04428|redbank plains recreation reserve internal road lighting|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-recreation-reserve-internal-road-lighting-redbank-plains"
+   },
+   "INF044417|limestone park bill patterson oval irrigation rehabilitation|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "limestone-park-bill-patterson-oval-irrigation-rehabilitation"
+   },
+   "INF04453|riverview recycling and refuse centre green waste hardstand|Riverview": {
+    "first_seen": "2026-08-21",
+    "slug": "riverview-recycling-and-refuse-centre-green-waste-hardstand-riverview"
+   },
+   "INF04475|woogaroo closed landfill leachate and gas management|Goodna": {
     "first_seen": "2026-08-21",
     "slug": "woogaroo-closed-landfill-leachate-and-gas-management-goodna"
    },
-   "92": {
-    "first_seen": "2026-07-16",
-    "slug": "rex-hawke-park-dog-off-leash-area-fence-replacement"
-   },
-   "94": {
+   "INF04553|blackstone road bus stop upgrade id 312136|Eastern Heights": {
     "first_seen": "2026-08-21",
     "slug": "blackstone-road-bus-stop-upgrade-id-312136-eastern-heights"
    },
-   "95": {
-    "first_seen": "2026-07-16",
-    "slug": "cameron-park-upgrade-including-playground"
+   "INF04564|southern resource recovery centre|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "southern-resource-recovery-centre"
    },
-   "96": {
-    "first_seen": "2026-07-16",
-    "slug": "ivor-marsden-memorial-sports-centre-sports-field-lighting-upgrade"
+   "INF04584|bremer street footpath stage 2|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "bremer-street-footpath-stage-2"
    },
-   "97": {
+   "INF04592|lions 22b sports facility|Springfield Central": {
     "first_seen": "2026-08-21",
     "slug": "lions-22b-sports-facility-springfield-central"
    },
-   "98": {
+   "INF04605|moores pocket road kerb and channel|Tivoli": {
     "first_seen": "2026-08-21",
     "slug": "moores-pocket-road-kerb-and-channel-tivoli"
    },
-   "99": {
+   "INF04606|william street kerb and channel|Goodna": {
     "first_seen": "2026-08-21",
     "slug": "william-street-kerb-and-channel-goodna"
+   },
+   "INF04631|burgoyne street road rehabilitation|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "burgoyne-street-road-rehabilitation-bundamba"
+   },
+   "INF04641|riverside drive upgrade stage 1|Pine Mountain": {
+    "first_seen": "2026-08-21",
+    "slug": "riverside-drive-upgrade-stage-1-pine-mountain"
+   },
+   "INF04642|old logan rd at julieanne st id317733 bus stop upgrade|Gailes": {
+    "first_seen": "2026-09-13",
+    "slug": "old-logan-rd-at-julieanne-st-id317733-bus-stop-upgrade"
+   },
+   "INF04647|workshops st at sutton park bus stop upgrade id313972|Brassall": {
+    "first_seen": "2026-09-13",
+    "slug": "workshops-st-at-sutton-park-bus-stop-upgrade-id313972"
+   },
+   "INF04658|ripley road and fischer road upgrade stage 1 between cunningham highway to monterea road|Ripley": {
+    "first_seen": "2026-09-13",
+    "slug": "ripley-road-and-fischer-road-upgrade-stage-1-between-cunningham-highway-to-monte"
+   },
+   "INF04659|ripley road and fischer road upgrade stage 3 fischer road between monterea road and nevis road|Ripley": {
+    "first_seen": "2026-09-13",
+    "slug": "ripley-road-and-fischer-road-upgrade-stage-3-fischer-road-between-monterea-road"
+   },
+   "INF04660|smith street kerb and channel|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "smith-street-kerb-and-channel-north-ipswich"
+   },
+   "INF04668|alfred street kerb and channel|Riverview": {
+    "first_seen": "2026-09-13",
+    "slug": "alfred-street-kerb-and-channel"
+   },
+   "INF04669|blackall street drainage rehabilitation|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "blackall-street-drainage-rehabilitation"
+   },
+   "INF04669|blackall street stormwater pipe rehabilitation|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "blackall-street-stormwater-pipe-rehabilitation"
+   },
+   "INF04671|campbell street drainage rehabilitation|Woodend": {
+    "first_seen": "2026-09-13",
+    "slug": "campbell-street-drainage-rehabilitation"
+   },
+   "INF04674|ferguson and pine street drainage rehabilitation|North Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "ferguson-and-pine-street-drainage-rehabilitation"
+   },
+   "INF04675|goodwin street drainage rehabilitation|Basin Pocket": {
+    "first_seen": "2026-08-21",
+    "slug": "goodwin-street-drainage-rehabilitation-basin-pocket"
+   },
+   "INF04676|harlin road drainage rehabilitation|Coalfalls": {
+    "first_seen": "2026-08-21",
+    "slug": "harlin-road-drainage-rehabilitation-coalfalls"
+   },
+   "INF04678|kingsmill road drainage rehabilitation|Coalfalls": {
+    "first_seen": "2026-08-21",
+    "slug": "kingsmill-road-drainage-rehabilitation-coalfalls"
+   },
+   "INF04679|lowry and downs street drainage rehabilitation|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "lowry-and-downs-street-drainage-rehabilitation-north-ipswich"
+   },
+   "INF04680|lowry lane and colvin street drainage rehabilitation|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "lowry-lane-and-colvin-street-drainage-rehabilitation-north-ipswich"
+   },
+   "INF04681|palmer street drainage rehabilitation|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "palmer-street-drainage-rehabilitation-north-ipswich"
+   },
+   "INF04684|pelican canning and pine street drainage rehabilitation|North Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "pelican-canning-and-pine-street-drainage-rehabilitation"
+   },
+   "INF04685|shenton and ashgrove street drainage rehabilitation|Coalfalls": {
+    "first_seen": "2026-09-13",
+    "slug": "shenton-and-ashgrove-street-drainage-rehabilitation"
+   },
+   "INF04688|woodend road drainage rehabilitation|Sadliers Crossing": {
+    "first_seen": "2026-09-13",
+    "slug": "woodend-road-drainage-rehabilitation"
+   },
+   "INF04690|lamington road drainage rehabilitation|North Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "lamington-road-drainage-rehabilitation"
+   },
+   "INF04691|pine mountain road drainage rehabilitation|North Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "pine-mountain-road-drainage-rehabilitation"
+   },
+   "INF04692|lingard street drainage rehabilitation|Woodend": {
+    "first_seen": "2026-08-21",
+    "slug": "lingard-street-drainage-rehabilitation-woodend"
+   },
+   "INF04694|lawrence street drainage rehabilitation|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "lawrence-street-drainage-rehabilitation-north-ipswich"
+   },
+   "INF04695|69 pine street drainage rehabilitation|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "69-pine-street-drainage-rehabilitation-north-ipswich"
+   },
+   "INF04697|penny lane gravel road upgrade|Calvert": {
+    "first_seen": "2026-09-13",
+    "slug": "penny-lane-gravel-road-upgrade"
+   },
+   "INF04699|hedricks road gravel road upgrade|Mount Forbes": {
+    "first_seen": "2026-09-13",
+    "slug": "hedricks-road-gravel-road-upgrade"
+   },
+   "INF04700|ferling road gravel road upgrade|Calvert": {
+    "first_seen": "2026-09-13",
+    "slug": "ferling-road-gravel-road-upgrade"
+   },
+   "INF04703|cummings road gravel road upgrade|Calvert": {
+    "first_seen": "2026-08-21",
+    "slug": "cummings-road-gravel-road-upgrade-calvert"
+   },
+   "INF04704|paten road gravel road upgrade|Calvert": {
+    "first_seen": "2026-09-13",
+    "slug": "paten-road-gravel-road-upgrade"
+   },
+   "INF04709|bellview road gravel road upgrade|Haigslea": {
+    "first_seen": "2026-09-13",
+    "slug": "bellview-road-gravel-road-upgrade"
+   },
+   "INF04714|adelong avenue road rehabilitation|Thagoona": {
+    "first_seen": "2026-09-13",
+    "slug": "adelong-avenue-road-rehabilitation"
+   },
+   "INF04715|augusta parkway road rehabilitation|Brookwater": {
+    "first_seen": "2026-08-21",
+    "slug": "augusta-parkway-road-rehabilitation-brookwater"
+   },
+   "INF04716|kingfisher court road rehabilitation|Bundamba": {
+    "first_seen": "2026-09-13",
+    "slug": "kingfisher-court-road-rehabilitation"
+   },
+   "INF04717|willowtree drive road rehabilitation|Flinders View": {
+    "first_seen": "2026-09-13",
+    "slug": "willowtree-drive-road-rehabilitation"
+   },
+   "INF04718|barnes court kerb and channel rehabilitation|Silkstone": {
+    "first_seen": "2026-08-21",
+    "slug": "barnes-court-kerb-and-channel-rehabilitation-silkstone"
+   },
+   "INF04720|church street road rehabilitation|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "church-street-road-rehabilitation-goodna"
+   },
+   "INF04721|junction road rehabilitation|Karalee": {
+    "first_seen": "2026-09-13",
+    "slug": "junction-road-rehabilitation"
+   },
+   "INF04722|old logan road rehabilitation|Camira": {
+    "first_seen": "2026-09-13",
+    "slug": "old-logan-road-rehabilitation"
+   },
+   "INF04723|redbank plains road rehabilitation|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-road-rehabilitation-redbank-plains"
+   },
+   "INF04724|mica street road rehabilitation|Carole Park": {
+    "first_seen": "2026-09-13",
+    "slug": "mica-street-road-rehabilitation"
+   },
+   "INF04726|lobb street road rehabilitation|Churchill": {
+    "first_seen": "2026-09-13",
+    "slug": "lobb-street-road-rehabilitation"
+   },
+   "INF04727|mary street road rehabilitation|Blackstone": {
+    "first_seen": "2026-09-13",
+    "slug": "mary-street-road-rehabilitation"
+   },
+   "INF04728|reif street road rehabilitation|Flinders View": {
+    "first_seen": "2026-08-21",
+    "slug": "reif-street-road-rehabilitation-flinders-view"
+   },
+   "INF04730|whitehill road rehabilitation|Raceview": {
+    "first_seen": "2026-08-21",
+    "slug": "whitehill-road-rehabilitation-raceview"
+   },
+   "INF04732|creek street road rehabilitation|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "creek-street-road-rehabilitation-bundamba"
+   },
+   "INF04733|griffith road rehabilitation|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "griffith-road-rehabilitation"
+   },
+   "INF04735|brisbane terrace road rehabilitation stage 2|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "brisbane-terrace-road-rehabilitation-stage-2-goodna"
+   },
+   "INF04736|cedar road rehabilitation stage 2|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "cedar-road-rehabilitation-stage-2"
+   },
+   "INF04739|bayley road road resurfacing|Blacksoil ": {
+    "first_seen": "2026-08-21",
+    "slug": "bayley-road-road-resurfacing"
+   },
+   "INF04739|seminary road road resurfacing|Marburg": {
+    "first_seen": "2026-08-21",
+    "slug": "seminary-road-road-resurfacing"
+   },
+   "INF04739|tallegalla two tree hill road road resurfacing|Tallegalla": {
+    "first_seen": "2026-08-21",
+    "slug": "tallegalla-two-tree-hill-road-road-resurfacing-tallegalla"
+   },
+   "INF04739|velvet street road resurfacing|Pine Mountain": {
+    "first_seen": "2026-08-21",
+    "slug": "velvet-street-road-resurfacing"
+   },
+   "INF04741|limestone street road resurfacing|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "limestone-street-road-resurfacing"
+   },
+   "INF04742|downs street road resurfacing|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "downs-street-road-resurfacing-400"
+   },
+   "INF04742|ware street road resurfacing|North Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "ware-street-road-resurfacing"
+   },
+   "INF04747|limestone park netball facilities court resurfacing|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "limestone-park-netball-facilities-court-resurfacing"
+   },
+   "INF04748|redbank plains recreation reserve lighting replacement|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "redbank-plains-recreation-reserve-lighting-replacement"
+   },
+   "INF04757|ipswich art gallery forecourt refurbishment|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "ipswich-art-gallery-forecourt-refurbishment"
+   },
+   "INF04759|grande park playground mountain slide replacement|Springfield Lakes": {
+    "first_seen": "2026-08-21",
+    "slug": "grande-park-playground-mountain-slide-replacement-springfield-lakes"
+   },
+   "INF04760|regatta walk combo climber unit replacement|Springfield Lakes": {
+    "first_seen": "2026-08-21",
+    "slug": "regatta-walk-combo-climber-unit-replacement-springfield-lakes"
+   },
+   "INF04762|bob gibbs park sports field lighting replacement|Springfield": {
+    "first_seen": "2026-08-21",
+    "slug": "bob-gibbs-park-sports-field-lighting-replacement-springfield"
+   },
+   "INF04763|evan marginson park retaining wall rehabilitation|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "evan-marginson-park-retaining-wall-rehabilitation-goodna"
+   },
+   "INF04764|queens park healing place|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "queens-park-healing-place-ipswich"
+   },
+   "INF04769|ipswich city centre bikeway stage 1|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-city-centre-bikeway-stage-1-ipswich"
+   },
+   "INF04770|ipswich city centre bikeway stage 2|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-city-centre-bikeway-stage-2-ipswich"
+   },
+   "INF04782|willow road atap footpath stage 1|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "willow-road-atap-footpath-stage-1-redbank-plains"
+   },
+   "INF04783|willow road atap footpath stage 2|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "willow-road-atap-footpath-stage-2-redbank-plains"
+   },
+   "INF04785|mansfield place atap footpath|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "mansfield-place-atap-footpath-ipswich"
+   },
+   "INF04790|wulkuraka connection and keswick road intersection upgrade|Karrabin": {
+    "first_seen": "2026-08-21",
+    "slug": "wulkuraka-connection-and-keswick-road-intersection-upgrade-karrabin"
+   },
+   "INF04791|hooper moffatt and pound street intersection upgrade|West Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "hooper-moffatt-and-pound-street-intersection-upgrade-west-ipswich"
+   },
+   "INF04800|champions way willowbank drainage rehabilitation works|Willowbank": {
+    "first_seen": "2026-08-21",
+    "slug": "champions-way-willowbank-drainage-rehabilitation-works-willowbank"
+   },
+   "INF04808|parking meter upgrade|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "parking-meter-upgrade-ipswich"
+   },
+   "INF04811|blackstone road drainage rehabilitation|Silkstone": {
+    "first_seen": "2026-08-21",
+    "slug": "blackstone-road-drainage-rehabilitation-188"
+   },
+   "INF04841|ipswich nature centre pathway shelter|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-nature-centre-pathway-shelter-ipswich"
+   },
+   "INF04854|dunrab road gravel road upgrade|Goolman": {
+    "first_seen": "2026-08-21",
+    "slug": "dunrab-road-gravel-road-upgrade-goolman"
+   },
+   "INF04855|jim donald parklands footpath|Silkstone": {
+    "first_seen": "2026-08-21",
+    "slug": "jim-donald-parklands-footpath-silkstone"
+   },
+   "INF04869|organic softfall replacement|Citywide": {
+    "first_seen": "2026-08-21",
+    "slug": "organic-softfall-replacement"
+   },
+   "INF04883|deebing creek road footpath|Yamanto": {
+    "first_seen": "2026-08-21",
+    "slug": "deebing-creek-road-footpath-yamanto"
+   },
+   "INF04886|thagoona haigslea road footpath|Haigslea": {
+    "first_seen": "2026-09-13",
+    "slug": "thagoona-haigslea-road-footpath"
+   },
+   "INF04888|lawrence street footpath|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "lawrence-street-footpath-north-ipswich"
+   },
+   "INF04890|wandera court footpath|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "wandera-court-footpath-redbank-plains"
+   },
+   "INF04891|bannerman street footpath|Riverview ": {
+    "first_seen": "2026-08-21",
+    "slug": "bannerman-street-footpath-riverview"
+   },
+   "INF04893|haigslea amberley road footpath|Walloon ": {
+    "first_seen": "2026-08-21",
+    "slug": "haigslea-amberley-road-footpath-walloon"
+   },
+   "INF04894|stuart street and bellevue road footpath|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "stuart-street-and-bellevue-road-footpath-goodna"
+   },
+   "INF04941|queens park drainage rehabilitation|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "queens-park-drainage-rehabilitation-ipswich"
+   },
+   "INF04945|springfield lakes boulevard road rehabilitation|Springfield Lakes ": {
+    "first_seen": "2026-08-21",
+    "slug": "springfield-lakes-boulevard-road-rehabilitation-springfield-lakes"
+   },
+   "INF04946|cedar road rehabilitation stage 1|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "cedar-road-rehabilitation-stage-1-redbank-plains"
+   },
+   "INF04949|limestone park netball facilities lighting replacement|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "limestone-park-netball-facilities-lighting-replacement-ipswich"
+   },
+   "INF04957|elaine street stormwater drainage relining|Karalee": {
+    "first_seen": "2026-08-21",
+    "slug": "elaine-street-stormwater-drainage-relining-karalee"
+   },
+   "INF04958|fawkner crescent stormwater drainage relining|Barellan Point": {
+    "first_seen": "2026-08-21",
+    "slug": "fawkner-crescent-stormwater-drainage-relining-barellan-point"
+   },
+   "INF04959|hanlon street stormwater drainage relining|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "hanlon-street-stormwater-drainage-relining-bundamba"
+   },
+   "INF04960|harold summervilles road stormwater drainage relining|Karalee": {
+    "first_seen": "2026-08-21",
+    "slug": "harold-summervilles-road-stormwater-drainage-relining-karalee"
+   },
+   "INF04961|high street stormwater drainage relining|Brassall": {
+    "first_seen": "2026-08-21",
+    "slug": "high-street-stormwater-drainage-relining-brassall"
+   },
+   "INF04962|kruger parade stormwater drainage relining|Redbank": {
+    "first_seen": "2026-08-21",
+    "slug": "kruger-parade-stormwater-drainage-relining-redbank"
+   },
+   "INF04965|pine mountain road minor culvert relining|Brassall": {
+    "first_seen": "2026-08-21",
+    "slug": "pine-mountain-road-minor-culvert-relining-brassall"
+   },
+   "INF04966|railway street stormwater drainage relining|Rosewood": {
+    "first_seen": "2026-08-21",
+    "slug": "railway-street-stormwater-drainage-relining-rosewood"
+   },
+   "INF04968|bergins hill road culvert rehabilitation|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "bergins-hill-road-culvert-rehabilitation-bundamba"
+   },
+   "INF04968|bergins hill road drainage channel rehabilitation|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "bergins-hill-road-drainage-channel-rehabilitation-bundamba"
+   },
+   "INF04969|chermside road drainage rehabilitation|East Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "chermside-road-drainage-rehabilitation-east-ipswich"
+   },
+   "INF04970|cultural heart nicholas street|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "cultural-heart-nicholas-street-ipswich"
+   },
+   "INF04982|lobley park and glode avenue drainage improvements|Churchill": {
+    "first_seen": "2026-08-21",
+    "slug": "lobley-park-and-glode-avenue-drainage-improvements-churchill"
+   },
+   "INF04983|brisbane st id 311199 bu23 bus stop upgrade|West Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "brisbane-st-id-311199-bu23-bus-stop-upgrade-west-ipswich"
+   },
+   "INF04985|booval station id 310040 bu23 bus stop upgrade|Booval": {
+    "first_seen": "2026-08-21",
+    "slug": "booval-station-id-310040-bu23-bus-stop-upgrade-booval"
+   },
+   "INF04993|cochrane st camira fp23|Camira": {
+    "first_seen": "2026-09-13",
+    "slug": "cochrane-st-camira-fp23"
+   },
+   "INF04999|bellbird park stormwater drainage improvements|Bellbird Park": {
+    "first_seen": "2026-08-21",
+    "slug": "bellbird-park-stormwater-drainage-improvements-bellbird-park"
+   },
+   "INF05002|redbank plains recreation reserve carpark extension|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-recreation-reserve-carpark-extension-redbank-plains"
+   },
+   "INF05004|silver jubilee sports facility clubhouse|Spring Mountain": {
+    "first_seen": "2026-08-21",
+    "slug": "silver-jubilee-sports-facility-clubhouse-spring-mountain"
+   },
+   "INF05007|bundamba creek streambank rehabilitation|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "bundamba-creek-streambank-rehabilitation-bundamba"
+   },
+   "INF05014|riverview recycling and refuse centre line marking|Riverview": {
+    "first_seen": "2026-08-21",
+    "slug": "riverview-recycling-and-refuse-centre-line-marking-riverview"
+   },
+   "INF05016|riverview recycling and refuse centre reflooring of pit|Riverview": {
+    "first_seen": "2026-08-21",
+    "slug": "riverview-recycling-and-refuse-centre-reflooring-of-pit-riverview"
+   },
+   "INF05018|riverview recycling and refuse centre bin storage hardstand|Riverview": {
+    "first_seen": "2026-08-21",
+    "slug": "riverview-recycling-and-refuse-centre-bin-storage-hardstand-riverview"
+   },
+   "INF05026|jones road upgrade stage 1|Bellbird Park": {
+    "first_seen": "2026-09-13",
+    "slug": "jones-road-upgrade-stage-1"
+   },
+   "INF05033|marburg detention basin rehabilitation|Marburg": {
+    "first_seen": "2026-08-21",
+    "slug": "marburg-detention-basin-rehabilitation-marburg"
+   },
+   "INF05055|spring lake park boardwalk rehabilitation|Springfield Lakes": {
+    "first_seen": "2026-08-21",
+    "slug": "spring-lake-park-boardwalk-rehabilitation"
+   },
+   "INF05056|riverview depot pre wash down bay upgrade|Riverview": {
+    "first_seen": "2026-08-21",
+    "slug": "riverview-depot-pre-wash-down-bay-upgrade"
+   },
+   "INF05063|jacaranda st dr 24|North Booval": {
+    "first_seen": "2026-08-21",
+    "slug": "jacaranda-st-dr-24-north-booval"
+   },
+   "INF05066|goupong park upgrade|Collingwood Park": {
+    "first_seen": "2026-08-21",
+    "slug": "goupong-park-upgrade-collingwood-park"
+   },
+   "INF05091|opossum creek parklands upgrade|Brookwater": {
+    "first_seen": "2026-08-21",
+    "slug": "opossum-creek-parklands-upgrade-brookwater"
+   },
+   "INF05094|tivoli sporting complex upgrade|Tivoli": {
+    "first_seen": "2026-08-21",
+    "slug": "tivoli-sporting-complex-upgrade-tivoli"
+   },
+   "INF05095|redbank plains recreation reserve new sports facility|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-recreation-reserve-new-sports-facility-redbank-plains"
+   },
+   "INF05098|brisbane street refresh top of town|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "brisbane-street-refresh-top-of-town-ipswich"
+   },
+   "INF05100|workshops street atap footpath|Brassall": {
+    "first_seen": "2026-08-21",
+    "slug": "workshops-street-atap-footpath"
+   },
+   "INF05110|goodna ses connection to sewerage|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "goodna-ses-connection-to-sewerage-goodna"
+   },
+   "INF05113|sutton park fitness equipment renewal|Brassall": {
+    "first_seen": "2026-08-21",
+    "slug": "sutton-park-fitness-equipment-renewal-brassall"
+   },
+   "INF05136|east ipswich catchment drainage rehabilitation stage 3|East Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "east-ipswich-catchment-drainage-rehabilitation-stage-3"
+   },
+   "INF05137|springfield lakes lower dam spillway access|Springfield": {
+    "first_seen": "2026-08-21",
+    "slug": "springfield-lakes-lower-dam-spillway-access-springfield"
+   },
+   "INF05138|bundamba pool streetlight replacement and carpark lighting|Bundamba": {
+    "first_seen": "2026-09-13",
+    "slug": "bundamba-pool-streetlight-replacement-and-carpark-lighting"
+   },
+   "INF05139|tallegalla road stormwater culvert rehabilitation stage 1|Tallegalla": {
+    "first_seen": "2026-08-21",
+    "slug": "tallegalla-road-stormwater-culvert-rehabilitation-stage-1"
+   },
+   "INF05141|lower william street stormwater drainage relining|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "lower-william-street-stormwater-drainage-relining-goodna"
+   },
+   "INF05143|ipswich general cemetery shed replacement|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "ipswich-general-cemetery-shed-replacement"
+   },
+   "INF05144|norman street roof replacement|East Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "norman-street-roof-replacement-east-ipswich"
+   },
+   "INF05145 |ipswich art gallery retaining wall renewal|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-art-gallery-retaining-wall-renewal-448"
+   },
+   "INF05145|ipswich art gallery retaining wall renewal|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-art-gallery-retaining-wall-renewal-251"
+   },
+   "INF05146|burnett street retaining wall|Sadliers Crossing": {
+    "first_seen": "2026-08-21",
+    "slug": "burnett-street-retaining-wall-sadliers-crossing"
+   },
+   "INF05147|smith street drainage improvements|North Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "smith-street-drainage-improvements"
+   },
+   "INF05148|kerners road drainage improvements|Yamanto": {
+    "first_seen": "2026-08-21",
+    "slug": "kerners-road-drainage-improvements-yamanto"
+   },
+   "INF05150|kentucky street drainage improvement|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "kentucky-street-drainage-improvement"
+   },
+   "INF05153|woodend catchment drainage rehabilitation stage 3|Woodend": {
+    "first_seen": "2026-08-21",
+    "slug": "woodend-catchment-drainage-rehabilitation-stage-3-woodend"
+   },
+   "INF05154|robelle domain water play area rehabilitation works|Springfield Central": {
+    "first_seen": "2026-08-21",
+    "slug": "robelle-domain-water-play-area-rehabilitation-works-springfield-central"
+   },
+   "INF05156|augusta parkway and sinnathamby boulevard road upgrade|Springfield Central \nAugustine Heights ": {
+    "first_seen": "2026-09-13",
+    "slug": "augusta-parkway-and-sinnathamby-boulevard-road-upgrade"
+   },
+   "INF05167|brittains road closed landfill stormwater infrastructure remediation|Augustine Heights": {
+    "first_seen": "2026-09-13",
+    "slug": "brittains-road-closed-landfill-stormwater-infrastructure-remediation"
+   },
+   "INF05171|riverview recycling and refuse centre weighbridge camera enhancement|Riverview": {
+    "first_seen": "2026-09-13",
+    "slug": "riverview-recycling-and-refuse-centre-weighbridge-camera-enhancement"
+   },
+   "INF05188|181 st augustine s drive sediment forebay replacement|Augustine Heights": {
+    "first_seen": "2026-08-21",
+    "slug": "181-st-augustines-drive-sediment-forebay-replacement-augustine-heights"
+   },
+   "INF05191|creedy street road resurfacing|Rosewood ": {
+    "first_seen": "2026-08-21",
+    "slug": "creedy-street-road-resurfacing-rosewood"
+   },
+   "INF05192|station lane road resurfacing|Walloon ": {
+    "first_seen": "2026-08-21",
+    "slug": "station-lane-road-resurfacing-walloon"
+   },
+   "INF05194|brisbane street road resurfacing|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "brisbane-street-road-resurfacing-270"
+   },
+   "INF05194|brisbane street road resurfacing|West Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "brisbane-street-road-resurfacing-269"
+   },
+   "INF05194|gordon street road resurfacing|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "gordon-street-road-resurfacing-271"
+   },
+   "INF05194|limestone street road resurfacing|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "limestone-street-road-resurfacing-ipswich"
+   },
+   "INF05195|cuffes lane road resurfacing|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "cuffes-lane-road-resurfacing-north-ipswich"
+   },
+   "INF05195|dorman lane road resurfacing|Brassall": {
+    "first_seen": "2026-09-13",
+    "slug": "dorman-lane-road-resurfacing"
+   },
+   "INF05195|downs street road resurfacing|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "downs-street-road-resurfacing-281"
+   },
+   "INF05195|elizabeth street road resurfacing|Woodend": {
+    "first_seen": "2026-08-21",
+    "slug": "elizabeth-street-road-resurfacing-woodend"
+   },
+   "INF05196|byrne street road resurfacing|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "byrne-street-road-resurfacing-bundamba"
+   },
+   "INF05196|cullen street road resurfacing|Bundamba": {
+    "first_seen": "2026-09-13",
+    "slug": "cullen-street-road-resurfacing"
+   },
+   "INF05196|gledson street road resurfacing|North Booval": {
+    "first_seen": "2026-08-21",
+    "slug": "gledson-street-road-resurfacing-north-booval"
+   },
+   "INF05196|mining street road resurfacing|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "mining-street-road-resurfacing-bundamba"
+   },
+   "INF05196|wade street road resurfacing|Bundamba": {
+    "first_seen": "2026-09-13",
+    "slug": "wade-street-road-resurfacing"
+   },
+   "INF05196|william street road resurfacing|Dinmore": {
+    "first_seen": "2026-08-21",
+    "slug": "william-street-road-resurfacing-dinmore"
+   },
+   "INF05197|cascade street road resurfacing|Raceview": {
+    "first_seen": "2026-09-13",
+    "slug": "cascade-street-road-resurfacing"
+   },
+   "INF05197|robertson road road resurfacing|Raceview": {
+    "first_seen": "2026-08-21",
+    "slug": "robertson-road-road-resurfacing-293"
+   },
+   "INF05197|walkers lane road resurfacing|Booval": {
+    "first_seen": "2026-08-21",
+    "slug": "walkers-lane-road-resurfacing-booval"
+   },
+   "INF05198|alice street road resurfacing|Goodna": {
+    "first_seen": "2026-09-13",
+    "slug": "alice-street-road-resurfacing"
+   },
+   "INF05198|brisbane terrace road resurfacing|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "brisbane-terrace-road-resurfacing-296"
+   },
+   "INF05198|redbank plains road road resurfacing|Bellbird Park": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-road-road-resurfacing-305"
+   },
+   "INF05199|augusta parkway road resurfacing|Augustine Heights": {
+    "first_seen": "2026-09-13",
+    "slug": "augusta-parkway-road-resurfacing"
+   },
+   "INF05199|santa monica drive road resurfacing|Augustine Heights": {
+    "first_seen": "2026-08-21",
+    "slug": "santa-monica-drive-road-resurfacing-augustine-heights"
+   },
+   "INF05200|willowbank lease a drainage renewal|Willowbank": {
+    "first_seen": "2026-09-13",
+    "slug": "willowbank-lease-a-drainage-renewal"
+   },
+   "INF05201|redbank plains recreation reserve storage facility 25|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-recreation-reserve-storage-facility-25-redbank-plains"
+   },
+   "INF05202|robelle domain greater springfield rotary club peace pole|Springfield Central": {
+    "first_seen": "2026-08-21",
+    "slug": "robelle-domain-greater-springfield-rotary-club-peace-pole-springfield-central"
+   },
+   "INF05203|jim finimore park overflow carpark bollards and lighting|Leichhardt": {
+    "first_seen": "2026-09-13",
+    "slug": "jim-finimore-park-overflow-carpark-bollards-and-lighting"
+   },
+   "INF05204|springfield greenbank art id 310253 bu 25|Springfield": {
+    "first_seen": "2026-09-13",
+    "slug": "springfield-greenbank-art-id-310253-bu-25"
+   },
+   "INF05205|school street rosewood state school fp25|Rosewood": {
+    "first_seen": "2026-09-13",
+    "slug": "school-street-rosewood-state-school-fp25"
+   },
+   "INF05220|summit drive speed awareness sign|Springfield Lakes": {
+    "first_seen": "2026-09-13",
+    "slug": "summit-drive-speed-awareness-sign"
+   },
+   "INF05223|woogaroo creek urban rivers and catchments restoration site|Goodna": {
+    "first_seen": "2026-09-13",
+    "slug": "woogaroo-creek-urban-rivers-and-catchments-restoration-site"
+   },
+   "INF05232|north ipswich reserve western grandstand|North Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "north-ipswich-reserve-western-grandstand"
+   },
+   "INF05233|cribb pk lfda f 25|North Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "cribb-pk-lfda-f-25"
+   },
+   "INF05235|entrance upgrade at riverview recycling and refuse centre|Riverview": {
+    "first_seen": "2026-09-13",
+    "slug": "entrance-upgrade-at-riverview-recycling-and-refuse-centre"
+   },
+   "INF05240|jim donald place disability car park|Silkstone": {
+    "first_seen": "2026-09-13",
+    "slug": "jim-donald-place-disability-car-park"
+   },
+   "INF05242|redbank plains road at redbank plains town square bus expansion|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-road-at-redbank-plains-town-square-bus-expansion-redbank-plains"
+   },
+   "INF05243|redbank plains road near west street bus expansion|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-road-near-west-street-bus-expansion-redbank-plains"
+   },
+   "INF05245|coopers road willowbank footpath connection|Willowbank": {
+    "first_seen": "2026-09-13",
+    "slug": "coopers-road-willowbank-footpath-connection"
+   },
+   "INF05249|russells road traffic island|Pine Mountain": {
+    "first_seen": "2026-09-13",
+    "slug": "russells-road-traffic-island"
+   },
+   "INF05251|heit family park perimeter upgrade|Willowbank": {
+    "first_seen": "2026-08-21",
+    "slug": "heit-family-park-perimeter-upgrade-willowbank"
+   },
+   "INF05252|mt forbes rfb b hs 25|Willowbank": {
+    "first_seen": "2026-08-21",
+    "slug": "mt-forbes-rfb-b-hs-25-willowbank"
+   },
+   "INF05261|bellevue rd bus stop relocation id 312242|Goodna": {
+    "first_seen": "2026-09-13",
+    "slug": "bellevue-rd-bus-stop-relocation-id-312242"
+   },
+   "INF05262|bourke street bus stop id 313977 upgrade|Brassall": {
+    "first_seen": "2026-08-21",
+    "slug": "bourke-street-bus-stop-id-313977-upgrade-brassall"
+   },
+   "INF05263|braeside road id 311665 bus stop upgrade|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "braeside-road-id-311665-bus-stop-upgrade"
+   },
+   "INF05264|chermside rd jacaranda st bus stop upgrade|East Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "chermside-rd-jacaranda-st-bus-stop-upgrade"
+   },
+   "INF05265|gorry st dowden st bus stop upgrade|Goodna": {
+    "first_seen": "2026-09-13",
+    "slug": "gorry-st-dowden-st-bus-stop-upgrade"
+   },
+   "INF05266|wildey street id 312905 bus stop upgrade|Raceview": {
+    "first_seen": "2026-08-21",
+    "slug": "wildey-street-id-312905-bus-stop-upgrade"
+   },
+   "INF05267|east ipswich honour playground dog bowl|East Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "east-ipswich-honour-playground-dog-bowl"
+   },
+   "INF05268|fail park dog bowl|North Booval": {
+    "first_seen": "2026-08-21",
+    "slug": "fail-park-dog-bowl-north-booval"
+   },
+   "INF05274|collingwood dr speed awareness sign|Collingwood Park": {
+    "first_seen": "2026-09-13",
+    "slug": "collingwood-dr-speed-awareness-sign"
+   },
+   "INF05275|ferrett street and burnett street intersection kerb ramps|Sadliers Crossing": {
+    "first_seen": "2026-09-13",
+    "slug": "ferrett-street-and-burnett-street-intersection-kerb-ramps"
+   },
+   "INF05300|argyle street kerb and channel rehabilitation|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "argyle-street-kerb-and-channel-rehabilitation"
+   },
+   "INF05301|holt street kerb and channel rehabilitation|Brassall": {
+    "first_seen": "2026-09-13",
+    "slug": "holt-street-kerb-and-channel-rehabilitation"
+   },
+   "INF05302|royal george lane kerb and channel rehabilitation|Rosewood ": {
+    "first_seen": "2026-09-13",
+    "slug": "royal-george-lane-kerb-and-channel-rehabilitation"
+   },
+   "INF05303|russell drive kerb and channel rehabilitation|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "russell-drive-kerb-and-channel-rehabilitation"
+   },
+   "INF05304|trevlac street kerb and channel rehabilitation|Rosewood ": {
+    "first_seen": "2026-09-13",
+    "slug": "trevlac-street-kerb-and-channel-rehabilitation"
+   },
+   "INF05305|view street kerb and channel rehabilitation|Woodend": {
+    "first_seen": "2026-09-13",
+    "slug": "view-street-kerb-and-channel-rehabilitation"
+   },
+   "INF05305|view street road rehabilitation|Woodend": {
+    "first_seen": "2026-09-13",
+    "slug": "view-street-road-rehabilitation"
+   },
+   "INF05306|albert street kerb and channel rehabilitation|Rosewood": {
+    "first_seen": "2026-09-13",
+    "slug": "albert-street-kerb-and-channel-rehabilitation"
+   },
+   "INF05307|boundary street rehabilitation|Moores Pocket": {
+    "first_seen": "2026-09-13",
+    "slug": "boundary-street-rehabilitation"
+   },
+   "INF05308|lansdowne way road rehabilitation|Chuwar": {
+    "first_seen": "2026-09-13",
+    "slug": "lansdowne-way-road-rehabilitation"
+   },
+   "INF05310|taloma avenue lr 30|Chuwar": {
+    "first_seen": "2026-09-13",
+    "slug": "taloma-avenue-lr-30"
+   },
+   "INF05310|taloma avenue road rehabilitation|Chuwar": {
+    "first_seen": "2026-09-13",
+    "slug": "taloma-avenue-road-rehabilitation"
+   },
+   "INF05311|woodend road rehabilitation|Woodend": {
+    "first_seen": "2026-09-13",
+    "slug": "woodend-road-rehabilitation"
+   },
+   "INF05322|west street kerb and channel reconstruction|Woodend": {
+    "first_seen": "2026-08-21",
+    "slug": "west-street-kerb-and-channel-reconstruction-woodend"
+   },
+   "INF05325|lowry street road resurfacing| North Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "lowry-street-road-resurfacing"
+   },
+   "INF05326|frederick street kerb and channel reconstruction|Newtown": {
+    "first_seen": "2026-08-21",
+    "slug": "frederick-street-kerb-and-channel-reconstruction-newtown"
+   },
+   "INF05328|brisbane terrace road resurfacing|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "brisbane-terrace-road-resurfacing-297"
+   },
+   "INF05328|church street road resurfacing|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "church-street-road-resurfacing-goodna"
+   },
+   "INF05328|collingwood drive road resurfacing|Collingwood Park": {
+    "first_seen": "2026-09-13",
+    "slug": "collingwood-drive-road-resurfacing"
+   },
+   "INF05328|redbank plains road road resurfacing|Bellbird Park": {
+    "first_seen": "2026-09-13",
+    "slug": "redbank-plains-road-road-resurfacing"
+   },
+   "INF05328|redbank plains road road resurfacing|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-road-road-resurfacing-303"
+   },
+   "INF05328|redbank plains road road resurfacing|Swanbank": {
+    "first_seen": "2026-09-13",
+    "slug": "redbank-plains-road-road-resurfacing-swanbank"
+   },
+   "INF05328|smiths road road resurfacing|Goodna": {
+    "first_seen": "2026-09-13",
+    "slug": "smiths-road-road-resurfacing"
+   },
+   "INF05329|dellvene crescent road pavement reconstruction|Rosewood": {
+    "first_seen": "2026-09-13",
+    "slug": "dellvene-crescent-road-pavement-reconstruction"
+   },
+   "INF05350|lobb street road safety improvements|Churchill": {
+    "first_seen": "2026-08-21",
+    "slug": "lobb-street-road-safety-improvements-churchill"
+   },
+   "INF05351|langley park b 25|Camira": {
+    "first_seen": "2026-08-21",
+    "slug": "langley-park-b-25-camira"
+   },
+   "INF05354|mill street footbridge replacement|Rosewood": {
+    "first_seen": "2026-09-13",
+    "slug": "mill-street-footbridge-replacement"
+   },
+   "INF05355|nerima garden pond rehabilitation|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "nerima-garden-pond-rehabilitation"
+   },
+   "INF05356|mary street footbridge replacement|Blackstone": {
+    "first_seen": "2026-09-13",
+    "slug": "mary-street-footbridge-replacement"
+   },
+   "INF05356|mary street pedestrian bridge replacement|Blackstone": {
+    "first_seen": "2026-09-03",
+    "slug": "mary-street-pedestrian-bridge-replacement"
+   },
+   "INF05357|warwick road footpath adjustment|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "warwick-road-footpath-adjustment"
+   },
+   "INF05358|134 136 lyndon way drainage rehabilitation|Karalee": {
+    "first_seen": "2026-08-21",
+    "slug": "134-136-lyndon-way-drainage-rehabilitation-karalee"
+   },
+   "INF05359|albert street drainage rehabilitation|Rosewood": {
+    "first_seen": "2026-09-13",
+    "slug": "albert-street-drainage-rehabilitation"
+   },
+   "INF05361|woodend catchment drainage rehabilitation stage 4|Woodend": {
+    "first_seen": "2026-08-21",
+    "slug": "woodend-catchment-drainage-rehabilitation-stage-4-woodend"
+   },
+   "INF05362|ipswich civic centre driveway|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-civic-centre-driveway-ipswich"
+   },
+   "INF05366|cooneana ch re 26|New Chum": {
+    "first_seen": "2026-08-21",
+    "slug": "cooneana-ch-re-26-new-chum"
+   },
+   "INF05367|ipswich rsl floor levels refurbishment|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-rsl-floor-levels-refurbishment-ipswich"
+   },
+   "INF05368|ipswich art gallery roof safety system|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-art-gallery-roof-safety-system-ipswich"
+   },
+   "INF05370|incinerator theatre chimney rehabilitation|Ipswich ": {
+    "first_seen": "2026-08-21",
+    "slug": "incinerator-theatre-chimney-rehabilitation"
+   },
+   "INF05371|ipswich civic centre plant deck|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-civic-centre-plant-deck-ipswich"
+   },
+   "INF05372|ipswich motorsport precinct lighting renewal|Willowbank": {
+    "first_seen": "2026-08-21",
+    "slug": "ipswich-motorsport-precinct-lighting-renewal-willowbank"
+   },
+   "INF05373|home assist depot thermal upgrades|Riverview": {
+    "first_seen": "2026-08-21",
+    "slug": "home-assist-depot-thermal-upgrades-riverview"
+   },
+   "INF05375|redbank plains library retaining wall|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "redbank-plains-library-retaining-wall-redbank-plains"
+   },
+   "INF05377|paddington park playground renewal|Flinders View": {
+    "first_seen": "2026-08-21",
+    "slug": "paddington-park-playground-renewal-flinders-view"
+   },
+   "INF05379|norm craswell park playground renewal|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "norm-craswell-park-playground-renewal-redbank-plains"
+   },
+   "INF05381|orion lagoon switchboard|Springfield Central": {
+    "first_seen": "2026-08-21",
+    "slug": "orion-lagoon-switchboard-springfield-central"
+   },
+   "INF05383|rosewood showgrounds cattle ramp renewal|Rosewood": {
+    "first_seen": "2026-08-21",
+    "slug": "rosewood-showgrounds-cattle-ramp-renewal-rosewood"
+   },
+   "INF05384|bill paterson oval switchboard|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "bill-paterson-oval-switchboard-ipswich"
+   },
+   "INF05387|bundamba swim centre doser unit|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "bundamba-swim-centre-doser-unit-bundamba"
+   },
+   "INF05389 |orion lagoon doser unit|Springfield Central": {
+    "first_seen": "2026-08-21",
+    "slug": "orion-lagoon-doser-unit-springfield-central"
+   },
+   "INF05393|toongarra road upgrade|Leichhardt": {
+    "first_seen": "2026-09-13",
+    "slug": "toongarra-road-upgrade"
+   },
+   "INF05394|queens park toilet accessibility improvements|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "queens-park-toilet-accessibility-improvements-ipswich"
+   },
+   "INF05396|queens park playground upgrade|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "queens-park-playground-upgrade-ipswich"
+   },
+   "INF05397|george and eilenn hastings sporting complex amentities building|One Mile": {
+    "first_seen": "2026-08-21",
+    "slug": "george-and-eilenn-hastings-sporting-complex-amentities-building-one-mile"
+   },
+   "INF05399|evan marginson park|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "evan-marginson-park-goodna"
+   },
+   "INF05415|jo ann miller drive traffic islands|Collingwood Park": {
+    "first_seen": "2026-08-21",
+    "slug": "jo-ann-miller-drive-traffic-islands-collingwood-park"
+   },
+   "INF05419|moffatt street drainage rehabilitation|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "moffatt-street-drainage-rehabilitation"
+   },
+   "INF05420 |sarah drive park bmx upgrade|Yamanto": {
+    "first_seen": "2026-08-21",
+    "slug": "sarah-drive-park-bmx-upgrade-yamanto"
+   },
+   "INF05426|park street drainage rehabilitation|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "park-street-drainage-rehabilitation"
+   },
+   "INF05428|arthur summervilles road speed awareness signs|Karalee": {
+    "first_seen": "2026-08-21",
+    "slug": "arthur-summervilles-road-speed-awareness-signs-karalee"
+   },
+   "INF05429|diamantina boulevard soeed awareness signs|Brassall": {
+    "first_seen": "2026-08-21",
+    "slug": "diamantina-boulevard-soeed-awareness-signs-brassall"
+   },
+   "INF05430|blackwood street kerb ramps|East Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "blackwood-street-kerb-ramps-east-ipswich"
+   },
+   "INF05431|green street kerb 26|Booval": {
+    "first_seen": "2026-08-21",
+    "slug": "green-street-kerb-26-booval"
+   },
+   "INF05432|prospect street north kerb 26|Silkstone": {
+    "first_seen": "2026-08-21",
+    "slug": "prospect-street-north-kerb-26-silkstone"
+   },
+   "INF05433|prospect street south kerb 26|Silkstone": {
+    "first_seen": "2026-08-21",
+    "slug": "prospect-street-south-kerb-26-silkstone"
+   },
+   "INF05436|molloy street kerb 26|Silkstone": {
+    "first_seen": "2026-08-21",
+    "slug": "molloy-street-kerb-26-silkstone"
+   },
+   "INF05454 |regents drive safety improvements|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "regents-drive-safety-improvements-redbank-plains"
+   },
+   "INF05455|gledson street kerb ramps|North Booval": {
+    "first_seen": "2026-08-21",
+    "slug": "gledson-street-kerb-ramps-north-booval"
+   },
+   "INF05456|bertha street guardrail installation|Goodna": {
+    "first_seen": "2026-08-21",
+    "slug": "bertha-street-guardrail-installation-goodna"
+   },
+   "INF05459|lobb street speed awareness signs|Churchill": {
+    "first_seen": "2026-08-21",
+    "slug": "lobb-street-speed-awareness-signs-churchill"
+   },
+   "INF05460|limestone park athletics accessibility upgrade|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "limestone-park-athletics-accessibility-upgrade-ipswich"
+   },
+   "INF05473|bottlebrush drive school crossing|Deebing Heights": {
+    "first_seen": "2026-08-21",
+    "slug": "bottlebrush-drive-school-crossing-deebing-heights"
+   },
+   "INF05474|raceview street footpath upgrade|Raceview": {
+    "first_seen": "2026-09-13",
+    "slug": "raceview-street-footpath-upgrade"
+   },
+   "INF05475|chelmsford avenue footpath upgrade|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "chelmsford-avenue-footpath-upgrade-ipswich"
+   },
+   "INF05482|kevin bull field shelters|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "kevin-bull-field-shelters"
+   },
+   "INF05483|peter phelan memorial field shelters|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "peter-phelan-memorial-field-shelters"
+   },
+   "INF05489|nerima gardens pathway shelters|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "nerima-gardens-pathway-shelters"
+   },
+   "INF05490|nerima gardens fencing and gates works|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "nerima-gardens-fencing-and-gates-works-ipswich"
+   },
+   "INF05491|nerima gardens main entry improvements|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "nerima-gardens-main-entry-improvements"
+   },
+   "INF05492|nerima gardens bridge rehabilitation|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "nerima-gardens-bridge-rehabilitation"
+   },
+   "INF05497|queens park retaining wall kerb extension|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "queens-park-retaining-wall-kerb-extension-ipswich"
+   },
+   "INF05514|middle road culvert replacement|Purga": {
+    "first_seen": "2026-08-21",
+    "slug": "middle-road-culvert-replacement-purga"
+   },
+   "INF05515|avon street bus stop upgrade id312495|Leichhardt": {
+    "first_seen": "2026-09-13",
+    "slug": "avon-street-bus-stop-upgrade-id312495"
+   },
+   "INF05516|josey street bus stop upgrade id312942|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "josey-street-bus-stop-upgrade-id312942"
+   },
+   "INF05517|kruger parade bus stop upgrade id312906|Redbank": {
+    "first_seen": "2026-09-13",
+    "slug": "kruger-parade-bus-stop-upgrade-id312906"
+   },
+   "INF05518|south station road bus stop upgrade id311019|Silkstone": {
+    "first_seen": "2026-08-21",
+    "slug": "south-station-road-bus-stop-upgrade-id311019-silkstone"
+   },
+   "INF05519|whitehill road bus stop upgrade id312748 and id317763|Newtown": {
+    "first_seen": "2026-08-21",
+    "slug": "whitehill-road-bus-stop-upgrade-id312748-and-id317763-newtown"
+   },
+   "INF05521|rosewood aquatic facility flooring renewal|Rosewood": {
+    "first_seen": "2026-08-21",
+    "slug": "rosewood-aquatic-facility-flooring-renewal-rosewood"
+   },
+   "INF05522|queens park dog bowl|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "queens-park-dog-bowl"
+   },
+   "INF05523|railway street kerb ramps reconstruction|Walloon": {
+    "first_seen": "2026-09-13",
+    "slug": "railway-street-kerb-ramps-reconstruction"
+   },
+   "INF05524|tibbits street kerb ramps reconstruction|Bundamba": {
+    "first_seen": "2026-09-13",
+    "slug": "tibbits-street-kerb-ramps-reconstruction"
+   },
+   "INF05544|north ipswich bowls club carpark resurfacing|North Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "north-ipswich-bowls-club-carpark-resurfacing"
+   },
+   "INF05547|queens park caf flooring|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "queens-park-caf\u00e9-flooring-ipswich"
+   },
+   "INF05548|riverview depot carpark pavement rehabilitation|Riverview": {
+    "first_seen": "2026-08-21",
+    "slug": "riverview-depot-carpark-pavement-rehabilitation"
+   },
+   "INF05550|griffiths park playground equipment replacement|Bellbird Park": {
+    "first_seen": "2026-08-21",
+    "slug": "griffiths-park-playground-equipment-replacement"
+   },
+   "INF05552|limestone park bollard replacement works|Ipswich": {
+    "first_seen": "2026-08-21",
+    "slug": "limestone-park-bollard-replacement-works"
+   },
+   "INF05554|robelle domanin lighting|Springfield Central": {
+    "first_seen": "2026-09-13",
+    "slug": "robelle-domanin-lighting"
+   },
+   "INF05555|rotary bicentennial park synthetic softfall installation|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "rotary-bicentennial-park-synthetic-softfall-installation-redbank-plains"
+   },
+   "INF05556|atlantic drive sporting complex footpath replacement|Springfield Lakes": {
+    "first_seen": "2026-08-21",
+    "slug": "atlantic-drive-sporting-complex-footpath-replacement-springfield-lakes"
+   },
+   "INF05557|hume street footpath upgrade|Woodend": {
+    "first_seen": "2026-08-21",
+    "slug": "hume-street-footpath-upgrade-woodend"
+   },
+   "INF05563|lobb street guardrail|Churchill ": {
+    "first_seen": "2026-08-21",
+    "slug": "lobb-street-guardrail"
+   },
+   "INF05564|hunter street kerb ramp improvements|Brassall": {
+    "first_seen": "2026-08-21",
+    "slug": "hunter-street-kerb-ramp-improvements-brassall"
+   },
+   "INF05565|springfield lakes boulevard pedestrian refuge island|Springfield Lakes": {
+    "first_seen": "2026-08-21",
+    "slug": "springfield-lakes-boulevard-pedestrian-refuge-island-springfield-lakes"
+   },
+   "INF05571|mount juillerat drive safety improvements|Redbank Plains": {
+    "first_seen": "2026-08-21",
+    "slug": "mount-juillerat-drive-safety-improvements-redbank-plains"
+   },
+   "INF05573|bundamba swim centre starting blocks refurbishment|Bundamba": {
+    "first_seen": "2026-08-21",
+    "slug": "bundamba-swim-centre-starting-blocks-refurbishment-bundamba"
+   },
+   "INF05591|caledonian park amenities upgrade|Thagoona": {
+    "first_seen": "2026-08-21",
+    "slug": "caledonian-park-amenities-upgrade"
+   },
+   "INF05605|ellenborough street road resurfacing|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "ellenborough-street-road-resurfacing"
+   },
+   "INF05608|augusta parkway road resurfacing| Augustine Heights": {
+    "first_seen": "2026-09-13",
+    "slug": "augusta-parkway-road-resurfacing-augustine-heights"
+   },
+   "INF05608|jones road road resurfacing|Bellbird Park": {
+    "first_seen": "2026-09-13",
+    "slug": "jones-road-road-resurfacing"
+   },
+   "INF05608|kruger parade road resurfacing|Collingwood Park": {
+    "first_seen": "2026-09-13",
+    "slug": "kruger-parade-road-resurfacing"
+   },
+   "INF05608|namatjira drive road resurfacing|Collingwood Park": {
+    "first_seen": "2026-09-13",
+    "slug": "namatjira-drive-road-resurfacing"
+   },
+   "INF05612|albert theaker park bollard rail and gate installation|Willowbank": {
+    "first_seen": "2026-08-21",
+    "slug": "albert-theaker-park-bollard-rail-and-gate-installation"
+   },
+   "INF05615 |stallard park synthetic surface of training nets and repair of damage pitch|Yamanto": {
+    "first_seen": "2026-09-13",
+    "slug": "stallard-park-synthetic-surface-of-training-nets-and-repair-of-damage-pitch"
+   },
+   "INF05616|stallard park multisport goals installation|Yamanto": {
+    "first_seen": "2026-08-21",
+    "slug": "stallard-park-multisport-goals-installation"
+   },
+   "INF05621|marburg community oval basketball netball court resurfacing and netball hoop replacement|Marburg": {
+    "first_seen": "2026-08-21",
+    "slug": "marburg-community-oval-basketball-netball-court-resurfacing-and-netball-hoop-rep"
+   },
+   "INF05622|redbank plains recreation reserve skate park concreting|Redbank Plains": {
+    "first_seen": "2026-09-13",
+    "slug": "redbank-plains-recreation-reserve-skate-park-concreting"
+   },
+   "INF05626|essex street bus stop id 322352|Karalee": {
+    "first_seen": "2026-08-27",
+    "slug": "essex-street-bus-stop-id-322352"
+   },
+   "INF05628|providence parade bus stop id 322346|South Ripley": {
+    "first_seen": "2026-08-28",
+    "slug": "providence-parade-bus-stop-id-322346"
+   },
+   "INF05629|bottlebrush drive bus stop id 319921|Deebing Heights": {
+    "first_seen": "2026-08-28",
+    "slug": "bottlebrush-drive-bus-stop-id-319921"
+   },
+   "INF05631|rawlings road at deebing heights state school id 320554|Deebing Heights": {
+    "first_seen": "2026-09-01",
+    "slug": "rawlings-road-at-deebing-heights-state-school-id-320554"
+   },
+   "INF05632|grampien drive bus stop id322348|Deebing Heights": {
+    "first_seen": "2026-09-03",
+    "slug": "grampien-drive-bus-stop-id322348"
+   },
+   "INF05633|grampien drive bus stop id322342|Deebing Heights": {
+    "first_seen": "2026-09-03",
+    "slug": "grampien-drive-bus-stop-id322342"
+   },
+   "INF05634|parkview parade bus stop id 320575|Ripley": {
+    "first_seen": "2026-09-01",
+    "slug": "parkview-parade-bus-stop-id-320575"
+   },
+   "INF05635|diamantina boulevard bus stop id322684|Brassall": {
+    "first_seen": "2026-09-01",
+    "slug": "diamantina-boulevard-bus-stop-id322684"
+   },
+   "INF05636 |windle road bus stop id322685|Brassall": {
+    "first_seen": "2026-09-01",
+    "slug": "windle-road-bus-stop-id322685"
+   },
+   "INF05637 |dixon street bus stop id320004|Wulkuraka": {
+    "first_seen": "2026-09-01",
+    "slug": "dixon-street-bus-stop-id320004"
+   },
+   "INF05638|diamantina boulevard bus stop id322688|Brassall": {
+    "first_seen": "2026-09-03",
+    "slug": "diamantina-boulevard-bus-stop-id322688"
+   },
+   "LCC00039|rosewood library improvements|Rosewood": {
+    "first_seen": "2026-08-21",
+    "slug": "rosewood-library-improvements-rosewood"
+   },
+   "PRC00007|tallegalla cemetery expansion|Tallegalla": {
+    "first_seen": "2026-09-13",
+    "slug": "tallegalla-cemetery-expansion"
+   },
+   "PRC00009|ipswich cemetery headstone|Ipswich": {
+    "first_seen": "2026-09-13",
+    "slug": "ipswich-cemetery-headstone"
+   },
+   "PRC00011|warrill park lawn cemetery master plan|Willowbank": {
+    "first_seen": "2026-08-21",
+    "slug": "warrill-park-lawn-cemetery-master-plan-willowbank"
+   },
+   "PRC00019|warrill park cemetery road upgrade|Willowbank": {
+    "first_seen": "2026-08-21",
+    "slug": "warrill-park-cemetery-road-upgrade-willowbank"
+   },
+   "PRC0002|warrill park cemetary nursing area|Wilowbank": {
+    "first_seen": "2026-08-21",
+    "slug": "warrill-park-cemetary-nursing-area"
+   },
+   "PRC00033|stone quarry cemetery|Jeebropilly": {
+    "first_seen": "2026-09-13",
+    "slug": "stone-quarry-cemetery"
    }
   }
  },

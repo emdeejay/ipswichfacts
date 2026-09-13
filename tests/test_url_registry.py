@@ -145,6 +145,50 @@ def test_long_colliding_names_terminate_and_disambiguate():
     assert all(0 < len(s) <= 80 for s in slugs), slugs
 
 
+def test_recycled_project_id_does_not_move_a_url():
+    """The map's positional `id` is RECYCLED by Council as projects finish, so
+    project slugs key on the stable composite (ref+name+suburb), not the id.
+    A new project inheriting a recycled id must get its OWN name's URL, never
+    the previous occupant's — the 158-wrong-URLs bug this replaced."""
+    from build.build_site import assign_stable_slugs, _project_registry_key, slugify
+
+    reg = _registry()
+    first = [{"id": 86, "ref": "INF001", "name": "Hiddenvale Road Bridge Replacement",
+              "suburb": "Hiddenvale"}]
+    assign_stable_slugs(reg, "project", first, id_fn=_project_registry_key,
+                        base_fn=lambda p: p["name"], hint_fn=lambda p: [p.get("suburb")])
+    old_slug = first[0]["slug"]
+    assert old_slug.startswith(slugify("Hiddenvale Road Bridge Replacement"))
+
+    # id 86 recycled to a completely different project
+    later = [{"id": 86, "ref": "INF999", "name": "Limestone Park New Dog Off Leash Area",
+              "suburb": "Ipswich"}]
+    assign_stable_slugs(reg, "project", later, id_fn=_project_registry_key,
+                        base_fn=lambda p: p["name"], hint_fn=lambda p: [p.get("suburb")])
+    assert later[0]["slug"] != old_slug
+    assert later[0]["slug"].startswith(slugify("Limestone Park New Dog Off Leash Area"))
+
+
+def test_project_slugs_always_derive_from_the_current_name():
+    """With the composite key, a project's slug is always minted from its own
+    name — so on any project the slug and the name must correspond (a mismatch
+    means the id-recycling bug is back)."""
+    from build.build_site import assign_stable_slugs, _project_registry_key, slugify
+
+    reg = _registry()
+    projects = [
+        {"id": 1, "ref": "A", "name": "Gordon Street Pedestrian Link", "suburb": "Ipswich"},
+        {"id": 1, "ref": "B", "name": "Raceview Street Footpath Upgrade", "suburb": "Raceview"},
+        {"id": 2, "ref": "C", "name": "Redbank Plains Road Resurfacing", "suburb": "Goodna"},
+    ]
+    assign_stable_slugs(reg, "project", projects, id_fn=_project_registry_key,
+                        base_fn=lambda p: p["name"], hint_fn=lambda p: [p.get("suburb")])
+    for p in projects:
+        exp = slugify(p["name"])
+        assert p["slug"] == exp or p["slug"].startswith(exp + "-") or exp.startswith(p["slug"]), \
+            f'{p["name"]!r} -> {p["slug"]!r}'
+
+
 def test_live_registry_has_no_duplicate_slugs():
     """Two entities sharing a URL means one page silently overwrites the other
     — the bug this whole mechanism exists to kill."""
