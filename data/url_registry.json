@@ -23347,6 +23347,10 @@
     "first_seen": "2026-09-13",
     "slug": "whitwood-road-south-historical-landfill-remediation"
    },
+   "INF044003|queens park cableway remediation|Ipswich": {
+    "first_seen": "2026-09-24",
+    "slug": "queens-park-cableway-remediation"
+   },
    "INF04401|castle hill blackstone reserve carpark refurbishment|Blackstone ": {
     "first_seen": "2026-08-21",
     "slug": "castle-hill-blackstone-reserve-carpark-refurbishment-blackstone"
@@ -23694,6 +23698,10 @@
    "INF04783|willow road atap footpath stage 2|Redbank Plains": {
     "first_seen": "2026-08-21",
     "slug": "willow-road-atap-footpath-stage-2-redbank-plains"
+   },
+   "INF04784|keidges road footpath upgrade|Redbank Plains": {
+    "first_seen": "2026-09-24",
+    "slug": "keidges-road-footpath-upgrade"
    },
    "INF04785|mansfield place atap footpath|Ipswich": {
     "first_seen": "2026-08-21",
@@ -24283,6 +24291,10 @@
     "first_seen": "2026-09-13",
     "slug": "collingwood-drive-road-resurfacing"
    },
+   "INF05328|redbank plains road resurfacing keidges road to west street|Redbank Plains": {
+    "first_seen": "2026-09-24",
+    "slug": "redbank-plains-road-resurfacing-keidges-road-to-west-street"
+   },
    "INF05328|redbank plains road road resurfacing|Bellbird Park": {
     "first_seen": "2026-09-13",
     "slug": "redbank-plains-road-road-resurfacing"
@@ -24535,6 +24547,14 @@
     "first_seen": "2026-08-21",
     "slug": "queens-park-retaining-wall-kerb-extension-ipswich"
    },
+   "INF05499|peter tullet memoral park nest swing replacement|Spring Mountain": {
+    "first_seen": "2026-09-24",
+    "slug": "peter-tullet-memoral-park-nest-swing-replacement"
+   },
+   "INF05500|leichardt park spinner replacement|Leichhardt": {
+    "first_seen": "2026-09-24",
+    "slug": "leichardt-park-spinner-replacement"
+   },
    "INF05514|middle road culvert replacement|Purga": {
     "first_seen": "2026-08-21",
     "slug": "middle-road-culvert-replacement-purga"
@@ -24595,9 +24615,17 @@
     "first_seen": "2026-08-21",
     "slug": "griffiths-park-playground-equipment-replacement"
    },
+   "INF05551|leichhardt park swing set replacement|Leichhardt": {
+    "first_seen": "2026-09-24",
+    "slug": "leichhardt-park-swing-set-replacement"
+   },
    "INF05552|limestone park bollard replacement works|Ipswich": {
     "first_seen": "2026-08-21",
     "slug": "limestone-park-bollard-replacement-works"
+   },
+   "INF05553|regatta walk teenage playground replacement|Springfield lakes": {
+    "first_seen": "2026-09-24",
+    "slug": "regatta-walk-teenage-playground-replacement"
    },
    "INF05554|robelle domain lighting|Springfield Central": {
     "first_seen": "2026-09-19",
@@ -24618,6 +24646,10 @@
    "INF05557|hume street footpath upgrade|Woodend": {
     "first_seen": "2026-08-21",
     "slug": "hume-street-footpath-upgrade-woodend"
+   },
+   "INF05558|bob gmaple park shade sails|Ipswich": {
+    "first_seen": "2026-09-24",
+    "slug": "bob-gmaple-park-shade-sails"
    },
    "INF05563|lobb street guardrail|Churchill ": {
     "first_seen": "2026-08-21",
@@ -24683,6 +24715,10 @@
     "first_seen": "2026-09-13",
     "slug": "redbank-plains-recreation-reserve-skate-park-concreting"
    },
+   "INF05622|redbank plains recreation reserve skate park|Redbank Plains": {
+    "first_seen": "2026-09-24",
+    "slug": "redbank-plains-recreation-reserve-skate-park"
+   },
    "INF05625|heit family park digital public messaging sign|Willowbank": {
     "first_seen": "2026-09-23",
     "slug": "heit-family-park-digital-public-messaging-sign"
@@ -24730,6 +24766,10 @@
    "INF05638|diamantina boulevard bus stop id322688|Brassall": {
     "first_seen": "2026-09-03",
     "slug": "diamantina-boulevard-bus-stop-id322688"
+   },
+   "INF05640|bob gamble aquatic centre softfall surface rehabilitation|Ipswich": {
+    "first_seen": "2026-09-24",
+    "slug": "bob-gamble-aquatic-centre-softfall-surface-rehabilitation"
    },
    "LCC00039|rosewood library improvements|Rosewood": {
     "first_seen": "2026-08-21",
