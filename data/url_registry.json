@@ -281,6 +281,10 @@
     "first_seen": "2026-09-18",
     "slug": "sustainable-ipswich-1575"
    },
+   "1585": {
+    "first_seen": "2026-10-01",
+    "slug": "council-divisions"
+   },
    "400": {
     "first_seen": "2026-08-21",
     "slug": "children-youth-families"
@@ -3207,9 +3211,17 @@
     "first_seen": "2026-08-21",
     "slug": "regulation-advisory-committee-2026-08-26"
    },
+   "4220": {
+    "first_seen": "2026-10-01",
+    "slug": "advocacy-advisory-committee-2026-10-06"
+   },
    "4221": {
     "first_seen": "2026-09-10",
     "slug": "multicultural-advisory-committee-2026-09-17"
+   },
+   "4262": {
+    "first_seen": "2026-10-01",
+    "slug": "multicultural-advisory-committee-2026-10-08"
    }
   },
   "news": {
@@ -22728,6 +22740,14 @@
    "88097": {
     "first_seen": "2026-09-30",
     "slug": "check-your-sheds-free-hazardous-waste-disposal-day-is-coming"
+   },
+   "88116": {
+    "first_seen": "2026-10-01",
+    "slug": "visit-this-open-garden-for-clever-ideas-to-bring-habitat-to-your-home"
+   },
+   "88136": {
+    "first_seen": "2026-10-01",
+    "slug": "ipswichs-hardest-hit-suburbs-launch-dedicated-community-flood-guides"
    },
    "8815": {
     "first_seen": "2026-07-16",
