@@ -22753,6 +22753,14 @@
     "first_seen": "2026-07-16",
     "slug": "how-to-measure-the-impact-day-care-provider"
    },
+   "88152": {
+    "first_seen": "2026-10-02",
+    "slug": "council-advocates-for-return-to-10-single-councillor-divisions"
+   },
+   "88159": {
+    "first_seen": "2026-10-02",
+    "slug": "sustainable-ipswich-puts-the-future-in-focus"
+   },
    "8841": {
     "first_seen": "2026-07-16",
     "slug": "teapot-collector-real-home-body"
@@ -23411,6 +23419,10 @@
     "first_seen": "2026-09-13",
     "slug": "limestone-park-top-carpark-lighting-stage-2"
    },
+   "INF04425|limestone park new amenities|Ipswich": {
+    "first_seen": "2026-10-02",
+    "slug": "limestone-park-new-amenities"
+   },
    "INF04425|limestone park new toilets|Ipswich": {
     "first_seen": "2026-08-21",
     "slug": "limestone-park-new-toilets-ipswich"
@@ -23491,6 +23503,10 @@
     "first_seen": "2026-08-21",
     "slug": "smith-street-kerb-and-channel-north-ipswich"
    },
+   "INF04663|brisbane road kerb and channel|Redbank": {
+    "first_seen": "2026-10-02",
+    "slug": "brisbane-road-kerb-and-channel"
+   },
    "INF04668|alfred street kerb and channel|Riverview": {
     "first_seen": "2026-09-13",
     "slug": "alfred-street-kerb-and-channel"
@@ -23542,6 +23558,10 @@
    "INF04685|shenton and ashgrove street drainage rehabilitation|Coalfalls": {
     "first_seen": "2026-09-13",
     "slug": "shenton-and-ashgrove-street-drainage-rehabilitation"
+   },
+   "INF04686|smith street drainage rehabilitation|North Ipswich": {
+    "first_seen": "2026-10-02",
+    "slug": "smith-street-drainage-rehabilitation"
    },
    "INF04688|woodend road drainage rehabilitation|Sadliers Crossing": {
     "first_seen": "2026-09-13",
@@ -24363,6 +24383,14 @@
     "first_seen": "2026-08-21",
     "slug": "langley-park-b-25-camira"
    },
+   "INF05352|clem street footbridge abutment protection|Brassall": {
+    "first_seen": "2026-10-02",
+    "slug": "clem-street-footbridge-abutment-protection"
+   },
+   "INF05353|creek street bridge rehabilitation|Bundamba": {
+    "first_seen": "2026-10-02",
+    "slug": "creek-street-bridge-rehabilitation"
+   },
    "INF05354|mill street footbridge replacement|Rosewood": {
     "first_seen": "2026-09-13",
     "slug": "mill-street-footbridge-replacement"
@@ -24382,6 +24410,10 @@
    "INF05357|warwick road footpath adjustment|Ipswich": {
     "first_seen": "2026-09-13",
     "slug": "warwick-road-footpath-adjustment"
+   },
+   "INF05357|warwick road footpath rehabilitation|Ipswich": {
+    "first_seen": "2026-10-02",
+    "slug": "warwick-road-footpath-rehabilitation"
    },
    "INF05358|134 136 lyndon way drainage rehabilitation|Karalee": {
     "first_seen": "2026-08-21",
@@ -24494,6 +24526,14 @@
    "INF05420 |sarah drive park bmx upgrade|Yamanto": {
     "first_seen": "2026-08-21",
     "slug": "sarah-drive-park-bmx-upgrade-yamanto"
+   },
+   "INF05423|park street drainage rehabilitation|Ipswich": {
+    "first_seen": "2026-10-02",
+    "slug": "park-street-drainage-rehabilitation-ipswich"
+   },
+   "INF05426|park street drainage reconstruction|Ipswich": {
+    "first_seen": "2026-10-02",
+    "slug": "park-street-drainage-reconstruction"
    },
    "INF05426|park street drainage rehabilitation|Ipswich": {
     "first_seen": "2026-09-13",
@@ -24635,6 +24675,22 @@
     "first_seen": "2026-09-13",
     "slug": "tibbits-street-kerb-ramps-reconstruction"
    },
+   "INF05533|lower james street bridge rehabilitation|Goodna": {
+    "first_seen": "2026-10-02",
+    "slug": "lower-james-street-bridge-rehabilitation"
+   },
+   "INF05534|paddington reserve boardwalk rehabilitation|Flinders View": {
+    "first_seen": "2026-10-02",
+    "slug": "paddington-reserve-boardwalk-rehabilitation"
+   },
+   "INF05540|east ipswich catchment drainage rehabilitation stage 4|East Ipswich": {
+    "first_seen": "2026-10-02",
+    "slug": "east-ipswich-catchment-drainage-rehabilitation-stage-4"
+   },
+   "INF05541|ipswich cemetery drainage rehabilitation|Ipswich": {
+    "first_seen": "2026-10-02",
+    "slug": "ipswich-cemetery-drainage-rehabilitation"
+   },
    "INF05543|ipswich motorsport precinct sewer|Willowbank": {
     "first_seen": "2026-09-23",
     "slug": "ipswich-motorsport-precinct-sewer"
@@ -24642,6 +24698,10 @@
    "INF05544|north ipswich bowls club carpark resurfacing|North Ipswich": {
     "first_seen": "2026-08-21",
     "slug": "north-ipswich-bowls-club-carpark-resurfacing"
+   },
+   "INF05545|old woollen mills roof replacement|North Ipswich": {
+    "first_seen": "2026-10-02",
+    "slug": "old-woollen-mills-roof-replacement"
    },
    "INF05547|queens park caf flooring|Ipswich": {
     "first_seen": "2026-08-21",
