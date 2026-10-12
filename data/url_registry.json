@@ -3007,6 +3007,10 @@
     "first_seen": "2026-09-08",
     "slug": "infrastructure-planning-and-assets-committee-2026-09-15"
    },
+   "4042": {
+    "first_seen": "2026-10-12",
+    "slug": "infrastructure-planning-and-assets-committee-2026-10-15"
+   },
    "4045": {
     "first_seen": "2026-07-16",
     "slug": "finance-and-governance-committee-2026-02-17"
@@ -3063,6 +3067,10 @@
     "first_seen": "2026-09-08",
     "slug": "community-and-sport-committee-2026-09-15"
    },
+   "4062": {
+    "first_seen": "2026-10-12",
+    "slug": "community-and-sport-committee-2026-10-15"
+   },
    "4065": {
     "first_seen": "2026-07-16",
     "slug": "economic-and-cultural-development-committee-2026-02-17"
@@ -3091,6 +3099,10 @@
     "first_seen": "2026-09-08",
     "slug": "economic-and-cultural-development-committee-2026-09-15"
    },
+   "4072": {
+    "first_seen": "2026-10-12",
+    "slug": "economic-and-cultural-development-committee-2026-10-15"
+   },
    "4075": {
     "first_seen": "2026-07-16",
     "slug": "environment-and-sustainability-committee-2026-02-17"
@@ -3114,6 +3126,10 @@
    "4081": {
     "first_seen": "2026-09-08",
     "slug": "environment-and-sustainability-committee-2026-09-15"
+   },
+   "4082": {
+    "first_seen": "2026-10-12",
+    "slug": "environment-and-sustainability-committee-2026-10-15"
    },
    "4106": {
     "first_seen": "2026-07-16",
@@ -22765,6 +22781,10 @@
     "first_seen": "2026-10-08",
     "slug": "free-green-waste-disposal-weekends-help-ipswich-residents-get-ready-for-storm-se"
    },
+   "88186": {
+    "first_seen": "2026-10-12",
+    "slug": "works-to-bring-river-heart-parklands-back-to-life-underway"
+   },
    "8841": {
     "first_seen": "2026-07-16",
     "slug": "teapot-collector-real-home-body"
@@ -24810,6 +24830,14 @@
    "INF05616|stallard park multisport goals installation|Yamanto": {
     "first_seen": "2026-08-21",
     "slug": "stallard-park-multisport-goals-installation"
+   },
+   "INF05617|marburg community oval resurfacing and netball hoop replacement|Marburg": {
+    "first_seen": "2026-10-12",
+    "slug": "marburg-community-oval-resurfacing-and-netball-hoop-replacement"
+   },
+   "INF05621|marburg community oval basketball hoop|Marburg": {
+    "first_seen": "2026-10-12",
+    "slug": "marburg-community-oval-basketball-hoop"
    },
    "INF05621|marburg community oval basketball netball court resurfacing and netball hoop replacement|Marburg": {
     "first_seen": "2026-08-21",
