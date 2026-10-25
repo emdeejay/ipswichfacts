@@ -18,22 +18,36 @@ def test_identical_compatible_writes_emit_once(tmp_path):
     assert (out / 'project/synthetic-1/index.html').exists()
 
 
+def meeting(mid, date='2026-01-01'):
+    return dict(slug='synthetic-meet', id=mid, doc_type='MIN', committee=f'Committee {mid}', date=date, items=[])
+
+
 @pytest.mark.parametrize('change', ['body', 'date'])
-def test_conflicting_project_writes_preserve_prior_output(tmp_path, monkeypatch, change):
-    ps = [project(1, 'Synthetic', updated='20260101'), project(2, 'Synthetic', updated='20260101')]
-    ps[1]['slug'] = ps[0]['slug']
+def test_conflicting_page_writes_preserve_prior_output(tmp_path, monkeypatch, change):
+    ms = [meeting('M1'), meeting('M2')]
     if change == 'date':
-        ps[1]['updated'] = '20260102'
-        monkeypatch.setattr(b, 'render_project', lambda *a: 'same body')
+        ms[1]['date'] = '2026-01-02'
+        monkeypatch.setattr(b, 'render_meeting', lambda *a: 'same body')
     out = tmp_path / 'out'
     out.mkdir()
     sentinel = out / 'sentinel'
     sentinel.write_bytes(b'previous successful output\x00')
-    with pytest.raises(ValueError, match='synthetic-1') as e:
-        b.write_site(out, ps, {}, {}, {}, graph(ps), [], [], [])
-    assert '1' in str(e.value) and '2' in str(e.value)
+    with pytest.raises(ValueError, match='synthetic-meet') as e:
+        b.write_site(out, [], {}, {'meetings': ms}, {}, graph(meetings={'meetings': ms}), [], [], [])
+    assert 'M1' in str(e.value) and 'M2' in str(e.value)
     assert sentinel.read_bytes() == b'previous successful output\x00'
     assert list(out.iterdir()) == [sentinel]
+
+
+def test_distinct_project_records_sharing_a_slug_render_one_grouped_page(tmp_path):
+    """Formerly a conflict: distinct records at one pinned URL are now one
+    deliberate grouped page (tests/test_project_groups.py covers the detail)."""
+    ps = [project(1, 'Synthetic', updated='20260101'), project(2, 'Synthetic', updated='20260102')]
+    ps[1]['slug'] = ps[0]['slug']
+    urls = b.write_site(tmp_path / 'out', ps, {}, {}, {}, graph(ps), [], [], [])
+    assert [u for u in urls if u[0] == '/project/synthetic-1/'] == [('/project/synthetic-1/', '2026-01-02')]
+    html = (tmp_path / 'out/project/synthetic-1/index.html').read_text()
+    assert 'id="record-1"' in html and 'id="record-2"' in html
 
 
 def test_global_guard_covers_non_page_files(tmp_path, monkeypatch):
@@ -66,8 +80,7 @@ def test_resolved_output_targets_and_compatible_dates(tmp_path):
 
 
 def test_identical_body_with_unknown_then_known_date_has_one_sitemap_entry(tmp_path, monkeypatch):
-    ps = [project(1, 'Synthetic'), project(2, 'Synthetic', updated='20260101')]
-    ps[1]['slug'] = ps[0]['slug']
-    monkeypatch.setattr(b, 'render_project', lambda *a: 'same body')
-    urls = b.write_site(tmp_path / 'out', ps, {}, {}, {}, graph(ps), [], [], [])
-    assert [u for u in urls if u[0] == '/project/synthetic-1/'] == [('/project/synthetic-1/', '2026-01-01')]
+    ms = [meeting('M1', date=None), meeting('M2')]
+    monkeypatch.setattr(b, 'render_meeting', lambda *a: 'same body')
+    urls = b.write_site(tmp_path / 'out', [], {}, {'meetings': ms}, {}, graph(meetings={'meetings': ms}), [], [], [])
+    assert [u for u in urls if u[0] == '/meeting/synthetic-meet/'] == [('/meeting/synthetic-meet/', '2026-01-01')]

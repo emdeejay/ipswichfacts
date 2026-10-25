@@ -1,0 +1,241 @@
+{
+ "_note": "Synthetic records shaped like the four observed shared-URL groups (4/2/2/2 records) plus one single-record project. Not Council data.",
+ "projects": [
+  {
+   "id": 412,
+   "ref": "SYN-0001",
+   "name": "Synthetic Plains Road- Road Resurfacing",
+   "slug": "synthetic-plains-road-road-resurfacing-303",
+   "suburb": "Synthetic Plains",
+   "divisions": [
+    1
+   ],
+   "phase": "Current Program",
+   "updated": "20260819",
+   "status": "Synthetic status C: design completed; construction in 2026-2027.",
+   "description": "Synthetic description C mentions <b>bold</b> & \"quotes\".",
+   "what_to_expect": null,
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [],
+   "major": false,
+   "published": true,
+   "coords": null
+  },
+  {
+   "id": 303,
+   "ref": "SYN-0001",
+   "name": "Synthetic Plains Road- Road Resurfacing",
+   "slug": "synthetic-plains-road-road-resurfacing-303",
+   "suburb": "Synthetic Plains",
+   "divisions": [
+    1
+   ],
+   "phase": "What's Being Planned",
+   "updated": "20260819",
+   "status": "Synthetic status A: construction anticipated in 2027-2028.",
+   "description": "Synthetic description A. Works on Alpha Street.",
+   "what_to_expect": null,
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [],
+   "major": false,
+   "published": true,
+   "coords": null
+  },
+  {
+   "id": 413,
+   "ref": "SYN-0001",
+   "name": "Synthetic Plains Road- Road Resurfacing",
+   "slug": "synthetic-plains-road-road-resurfacing-303",
+   "suburb": "Synthetic Plains",
+   "divisions": [
+    1
+   ],
+   "phase": "Current Program",
+   "updated": "20260101",
+   "status": "Synthetic status D: design in progress.",
+   "description": "Synthetic description D.",
+   "what_to_expect": "Synthetic expectation D: lane closures.",
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [],
+   "major": false,
+   "published": true,
+   "coords": null
+  },
+  {
+   "id": 304,
+   "ref": "SYN-0001",
+   "name": "Synthetic Plains Road- Road Resurfacing",
+   "slug": "synthetic-plains-road-road-resurfacing-303",
+   "suburb": "Synthetic Plains",
+   "divisions": [
+    1
+   ],
+   "phase": "Current Program",
+   "updated": "20260819",
+   "status": "Synthetic status B: construction anticipated in 2026-2027.",
+   "description": "Synthetic description B. Works on Beta Road.",
+   "what_to_expect": null,
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [
+    {
+     "title": "Synthetic works notice B",
+     "url": "https://example.org/notice-b"
+    }
+   ],
+   "major": false,
+   "published": true,
+   "coords": null
+  },
+  {
+   "id": 270,
+   "ref": "SYN-0002",
+   "name": "Synthetic Street- Road Resurfacing",
+   "slug": "synthetic-street-road-resurfacing-270",
+   "suburb": "Ipswich",
+   "divisions": [
+    1
+   ],
+   "phase": "Historic",
+   "updated": "20260819",
+   "status": "Synthetic identical status: completed.",
+   "description": "Synthetic identical description.",
+   "what_to_expect": null,
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [],
+   "major": false,
+   "published": true,
+   "coords": null
+  },
+  {
+   "id": 268,
+   "ref": "SYN-0002",
+   "name": "Synthetic Street- Road Resurfacing",
+   "slug": "synthetic-street-road-resurfacing-270",
+   "suburb": "Ipswich",
+   "divisions": [
+    1
+   ],
+   "phase": "Historic",
+   "updated": "20260819",
+   "status": "Synthetic identical status: completed.",
+   "description": "Synthetic identical description.",
+   "what_to_expect": null,
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [],
+   "major": false,
+   "published": true,
+   "coords": null
+  },
+  {
+   "id": 294,
+   "ref": "SYN-0003",
+   "name": "Synthetic Avenue- Road Resurfacing",
+   "slug": "synthetic-avenue-road-resurfacing-293",
+   "suburb": "Synthetic Vale",
+   "divisions": [
+    1
+   ],
+   "phase": "Historic",
+   "updated": "20260819",
+   "status": "Synthetic completed status Y.",
+   "description": "Synthetic description Y.",
+   "what_to_expect": null,
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [],
+   "major": false,
+   "published": true,
+   "coords": null
+  },
+  {
+   "id": 293,
+   "ref": "SYN-0003",
+   "name": "Synthetic Avenue- Road Resurfacing",
+   "slug": "synthetic-avenue-road-resurfacing-293",
+   "suburb": "Synthetic Vale",
+   "divisions": [
+    1
+   ],
+   "phase": "Historic",
+   "updated": "20260819",
+   "status": "Synthetic completed status X.",
+   "description": "Synthetic description X.",
+   "what_to_expect": null,
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [],
+   "major": false,
+   "published": true,
+   "coords": null
+  },
+  {
+   "id": 456,
+   "ref": "SYN-0004",
+   "name": "Synthetic Lane Road Safety Improvements",
+   "slug": "synthetic-lane-road-safety-improvements-churchill",
+   "suburb": "Churchill",
+   "divisions": [
+    2
+   ],
+   "phase": "Current Program",
+   "updated": "20261019",
+   "status": "Synthetic later status: design anticipated 2026-2027.",
+   "description": "Synthetic description later.",
+   "what_to_expect": null,
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [],
+   "major": false,
+   "published": true,
+   "coords": null
+  },
+  {
+   "id": 368,
+   "ref": "SYN-0004",
+   "name": "Synthetic Lane Road Safety Improvements",
+   "slug": "synthetic-lane-road-safety-improvements-churchill",
+   "suburb": "Churchill",
+   "divisions": [
+    1
+   ],
+   "phase": "What's Being Planned",
+   "updated": "20260819",
+   "status": "Synthetic earlier status: planning and design.",
+   "description": "Synthetic description earlier.",
+   "what_to_expect": null,
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [],
+   "major": false,
+   "published": true,
+   "coords": null
+  },
+  {
+   "id": 500,
+   "ref": "SYN-0005",
+   "name": "Synthetic Single Footpath",
+   "slug": "synthetic-single-footpath",
+   "suburb": "Synthetic Plains",
+   "divisions": [
+    1
+   ],
+   "phase": "Current Program",
+   "updated": "20260301",
+   "status": "Synthetic single status.",
+   "description": "Synthetic single description on Alpha Street.",
+   "what_to_expect": null,
+   "managed_by": "Synthetic Works Branch",
+   "source_url": "https://example.org/synthetic-civic-projects",
+   "extras": [],
+   "major": false,
+   "published": true,
+   "coords": null
+  }
+ ]
+}
