@@ -3,7 +3,8 @@ page. Synthetic cases; labels reproduce the five observed formatting classes,
 not source records."""
 import copy
 import json
-import re
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -123,14 +124,9 @@ def test_output_is_identical_under_input_order_changes(tmp_path):
            {'meetings': [dict(meetings['meetings'][0], items=list(reversed(meetings['meetings'][0]['items'])))]},
            {'posts': list(reversed(news['posts']))}, list(reversed(cons)), list(reversed(das)))
     g2, out2, urls2 = build(tmp_path, *copy.deepcopy(rev), name='two')
-    path = 'street/tallegalla-two-tree-hill-road/index.html'
-    # Project and road-impact rows follow the feed's own order, as on every
-    # street page; compared as row sets. Everything else is byte-identical.
-    def rows_as_sets(s):
-        return re.sub(r'<tbody>(.*?)</tbody>',
-                      lambda m: '<tbody>' + ''.join(sorted(m.group(1).split('</tr>'))) + '</tbody>', s, flags=re.S)
-    assert rows_as_sets((out1 / path).read_text()) == rows_as_sets((out2 / path).read_text())
-    for f in ['data/streets.json', 'streets/index.html']:
+    # A page gathering several spellings orders every row from the records
+    # themselves, so the whole page is byte-identical.
+    for f in ['street/tallegalla-two-tree-hill-road/index.html', 'data/streets.json', 'streets/index.html']:
         assert (out1 / f).read_bytes() == (out2 / f).read_bytes()
     assert sorted(urls1) == sorted(urls2)
     assert g2['street_labels'] == {'tallegalla two tree hill road': 'Tallegalla Two Tree Hill Road'}
@@ -190,6 +186,46 @@ def test_single_spelling_pages_carry_no_alias_note():
     assert 'differ only in capitalisation' not in b.render_street('Gordon Street', ps, {}, g)
 
 
-def test_search_finds_a_shared_page_by_apostrophe_free_spelling():
-    js = b._WIDGET_JS
-    assert "kind: 'street'" in js and "s.replace(/['\\u2019]/g, '')" in js
+def test_capped_lists_do_not_depend_on_feed_order(tmp_path):
+    # 60 same-date items split across two spellings: the 50 shown on the street
+    # page, and the 15 on a project page naming one spelling, must not move
+    # when only the feed order changes.
+    items = [dict(anchor=f'item-{n:02d}', title=f'{"BRISBANE" if n % 2 else "Brisbane"} Street item {n:02d}',
+                  text='') for n in range(60)]
+    meetings = {'meetings': [dict(slug='m', id='M1', committee='Synthetic', doc_type='MIN',
+                                  date='2026-01-01', items=items)]}
+    ps = [project(1, 'Synthetic', description='Works on BRISBANE Street.'),
+          project(2, 'Synthetic', description='Works on Brisbane Street.')]
+    closures = {'closures': [dict(road_name=n, suburb='Synthetic', event_type='Roadworks', description=n)
+                             for n in ['BRISBANE Street', 'Brisbane Street']]}
+    _, out1, _ = build(tmp_path, copy.deepcopy(ps), copy.deepcopy(closures), copy.deepcopy(meetings),
+                       {}, [], [], 'one')
+    rev = {'meetings': [dict(meetings['meetings'][0], items=list(reversed(items)))]}
+    _, out2, _ = build(tmp_path, list(reversed(ps)), {'closures': list(reversed(closures['closures']))},
+                       copy.deepcopy(rev), {}, [], [], 'two')
+    street = 'street/brisbane-street/index.html'
+    assert 'Showing the 50 most recent of 60 mentions' in (out1 / street).read_text()
+    for f in [street, 'project/synthetic-1/index.html', 'project/synthetic-2/index.html']:
+        assert (out1 / f).read_bytes() == (out2 / f).read_bytes(), f
+
+
+@pytest.mark.skipif(shutil.which('node') is None, reason='Node is required to execute generated search JavaScript')
+@pytest.mark.parametrize('variants', [["AUGUSTINE'S Drive", 'Augustines Drive'],
+                                      ["Augustine's Drive", 'Augustines Drive'],
+                                      ['Augustine\u2019s Drive', 'Augustines Drive']])
+def test_search_finds_a_shared_page_by_any_apostrophe_spelling(tmp_path, variants):
+    ps, closures, meetings, news, cons, das = sources(variants)
+    g, out, _ = build(tmp_path, ps, closures, meetings, news, cons, das)
+    js = (out / 'js/widget.js').read_text()
+    functions = js[js.index('function slugify(s)'):js.index('function mountSearch(')]
+    data = {name: json.loads((out / f'data/{name}.json').read_text())
+            for name in ['projects', 'streets', 'suburbs', 'meetings', 'news', 'consultations']}
+    data['das'] = json.loads((out / 'data/development_applications.json').read_text())
+    queries = [*variants, "augustine's drive", 'augustine\u2019s drive', 'augustines', "augustine's"]
+    result = subprocess.run(['node', '-e', functions + f"""
+const index = buildIndex({json.dumps(data)});
+console.log(JSON.stringify({json.dumps(queries)}.map(q =>
+  searchIndex(index, q.trim().toLowerCase()).filter(i => i.kind === 'street').map(i => i.href))));
+"""], check=True, capture_output=True, text=True)
+    assert json.loads(result.stdout) == [['/street/augustines-drive/']] * len(queries)
+    assert (out / 'street/augustines-drive/index.html').exists()

@@ -1106,8 +1106,12 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
         merged: dict[str, list[dict[str, Any]]] = defaultdict(list)
         for raw in sorted(bucket):
             merged[street_labels[_street_key(raw)]].extend(bucket[raw])
-        # A source item naming two spellings of one street appears once.
-        return {label: _dedupe(refs, identity) if len(street_variants[_street_key(label)]) > 1 else refs
+        # A source item naming two spellings of one street appears once, and
+        # the merged list is ordered by that identity: renderers sort by date
+        # with a stable sort, so ties (and what a capped list shows) don't
+        # depend on feed order. Single-spelling buckets keep source order.
+        return {label: sorted(_dedupe(refs, identity), key=lambda r: json.dumps(identity(r), default=str))
+                if len(street_variants[_street_key(label)]) > 1 else refs
                 for label, refs in merged.items()}
 
     street_meeting_items = by_page(street_meeting_items, lambda r: (r.get("slug"), r.get("anchor")))
@@ -2116,7 +2120,12 @@ def render_street(name, projects, closures, graph) -> str:
 
     # Several source spellings can share this page (capitalisation or
     # apostrophes only); say so, and keep each source's own spelling elsewhere.
+    # Rows gathered from several spellings take their order from the records,
+    # not the feed, like the merged mention lists.
     variants = graph.get("street_variants", {}).get(_street_key(name), [])
+    if len(variants) > 1:
+        matching_projects.sort(key=lambda p: (p.get("name") or "", _record_fingerprint(p)))
+        matching_closures.sort(key=_record_fingerprint)
     variants_html = (
         "<p class=\"meta\">Council's records write this name more than one way: "
         + " · ".join(f"<q>{h(v)}</q>" for v in variants)
@@ -2805,19 +2814,23 @@ def build_project_timeline(p, graph, closures) -> list[dict[str, Any]]:
     # Live closures on this project's streets, where Council's own closure
     # text names the project's street. Only current impacts — these expire.
     p_streets = {_street_label(s, graph) for s in graph.get("project_streets", {}).get(slug, [])}
-    for i, c in enumerate(closures.get("closures", [])):
-        if c.get("status") == "Archived":
-            continue
-        if p_streets & {_street_label(s, graph) for s in graph.get("closure_streets", {}).get(f"c{i}", [])}:
-            start = (c.get("start_time") or "")[:10]
-            events.append({
-                "sort": start,
-                "when": format_ymd(start),
-                "kind": "closure",
-                "what": f"{c.get('event_type') or 'Road impact'}: {c.get('impact') or ''}".strip(": "),
-                "url": "",
-                "source": f"Live traffic dashboard — {c.get('road_name') or ''}".strip(" —"),
-            })
+    matched = [c for i, c in enumerate(closures.get("closures", []))
+               if c.get("status") != "Archived"
+               and p_streets & {_street_label(s, graph) for s in graph.get("closure_streets", {}).get(f"c{i}", [])}]
+    # Impacts gathered through a page with several spellings take their order
+    # from the records, as on that street page, not from the feed.
+    if any(len(graph.get("street_variants", {}).get(_street_key(s), [])) > 1 for s in p_streets):
+        matched.sort(key=_record_fingerprint)
+    for c in matched:
+        start = (c.get("start_time") or "")[:10]
+        events.append({
+            "sort": start,
+            "when": format_ymd(start),
+            "kind": "closure",
+            "what": f"{c.get('event_type') or 'Road impact'}: {c.get('impact') or ''}".strip(": "),
+            "url": "",
+            "source": f"Live traffic dashboard — {c.get('road_name') or ''}".strip(" —"),
+        })
 
     events.sort(key=lambda e: e["sort"], reverse=True)
     return events
@@ -3976,14 +3989,20 @@ function slugify(s) {
 const suburbSlugs = __SUBURB_SLUGS__;
 function suburbSlug(label) { return suburbSlugs[label] || slugify(label); }
 
+// Street pages gather spellings that differ only in apostrophes, so street
+// queries and street haystacks are compared with straight and curly
+// apostrophes removed.
+function bareStreet(s) { return s.replace(/['\u2019]/g, ''); }
+
 function buildIndex(data) {
   const items = [];
   for (const p of data.projects) {
     items.push({ kind: 'project', label: p.name, href: `/project/${p.slug}/`, hay: (p.name + ' ' + (p.description || '') + ' ' + (p.suburb || '')).toLowerCase() });
   }
-  // One entry per street page; the apostrophe-free form finds "Augustine's
-  // Drive" for a reader (or a Council record) writing "Augustines Drive".
-  for (const s of data.streets) items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/`, hay: (s + ' ' + s.replace(/['\u2019]/g, '')).toLowerCase() });
+  // One entry per street page, matched apostrophe-free (see bareStreet) so
+  // "Augustine's Drive", "Augustine\u2019s Drive" and "Augustines Drive" all
+  // find it, whichever spelling the page displays.
+  for (const s of data.streets) items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/`, hay: bareStreet(s.toLowerCase()) });
   for (const s of data.suburbs) items.push({ kind: 'suburb', label: s, href: `/suburb/${suburbSlug(s)}/`, hay: s.toLowerCase() });
   for (const m of data.meetings) {
     const titles = m.items.map(i => i.title).join(' ');
@@ -4005,6 +4024,16 @@ function buildIndex(data) {
     items.push({ kind: 'DA', label, href: `/suburb/${suburbSlug(a.suburb)}/`, hay: ((a.application_number || '') + ' ' + (a.description || '') + ' ' + a.suburb + ' ' + (a.status || '')).toLowerCase() });
   }
   return items;
+}
+
+// q is the trimmed, lowercased query.
+function searchIndex(index, q) {
+  const qBare = bareStreet(q);
+  const needle = i => (i.kind === 'street' ? qBare : q);
+  return index
+    .filter(i => i.hay.includes(needle(i)))
+    .sort((a, b) => a.hay.indexOf(needle(a)) - b.hay.indexOf(needle(b)))
+    .slice(0, 30);
 }
 
 function mountSearch(el, index) {
@@ -4060,10 +4089,7 @@ function mountSearch(el, index) {
       status.textContent = '';
       return;
     }
-    const matches = index
-      .filter(i => i.hay.includes(q))
-      .sort((a, b) => a.hay.indexOf(q) - b.hay.indexOf(q))
-      .slice(0, 30);
+    const matches = searchIndex(index, q);
     results.hidden = matches.length === 0;
     results.innerHTML = matches
       .map(m => `<a href="${m.href}" role="option"><span class="kind">${m.kind}</span> ${m.label}</a>`)
