@@ -178,3 +178,43 @@ def test_duplicate_source_references_are_counted_once():
         assert len(g[name]['blackstone']) == 1
     html = b.render_suburb('Blackstone', [*ps, ps[0].copy()], {}, g)
     assert 'Projects (2)' in html
+
+
+def test_composite_suburb_values_are_not_matched_in_prose():
+    """A SUBURB value listing several suburbs keeps its own page, but prose
+    naming those suburbs (across a line break, too) links the real ones."""
+    ps = [project(1, 'Bellbird Park \nRedbank Plains '), project(2, 'Bellbird Park'),
+          project(3, 'Redbank Plains'), project(4, 'Springfield Central Springfield Lakes'),
+          project(5, 'Springfield Central'), project(6, 'Springfield Lakes'),
+          project(7, 'Collingwood Park \nRedbank Plain')]
+    news = {'posts': [dict(slug='n1', title='Booths', date='2026-01-01', url='https://example.org/n1',
+                           text='Goodna and Bellbird Park\nRedbank Plains Road. Springfield Central Springfield Lakes. '
+                                'Collingwood Park Redbank Plain')]}
+    meetings = {'meetings': [dict(slug='m', date='2026-01-01', items=[
+        dict(anchor='a', title='Bellbird Park Redbank Plains', text='')])]}
+    g = graph(ps, meetings=meetings, news=news)
+    assert b._composite_suburb_keys(g['suburb_variants']) == {
+        'bellbird park redbank plains', 'springfield central springfield lakes', 'collingwood park redbank plain'}
+    assert g['news_suburbs']['n1'] == ['Bellbird Park', 'Redbank Plains', 'Springfield Central', 'Springfield Lakes']
+    assert g['meeting_suburbs']['m'] == ['Bellbird Park', 'Redbank Plains']
+    assert 'bellbird park redbank plains' not in g['suburb_news_items']
+    # The composite still has its page, from the project's own SUBURB field.
+    assert 'Synthetic work 1' in b.render_suburb('Bellbird Park Redbank Plains', ps, {}, g)
+
+
+def test_widget_suburb_slug_map_does_not_depend_on_feed_order(tmp_path):
+    ps = [project(1, ' Blackstone '), project(2, 'Écho'), project(3, 'BLACKSTONE'), project(4, 'Alpha')]
+    das = [dict(application_number='SYN/1', suburb='Zeta ', description='Synthetic')]
+    b.write_site(tmp_path / 'one', ps, {}, {}, {}, graph(ps, das=das), [], [], das)
+    rev = list(reversed(ps))
+    b.write_site(tmp_path / 'two', rev, {}, {}, {}, graph(rev, das=das), [], [], das)
+    assert (tmp_path / 'one/js/widget.js').read_bytes() == (tmp_path / 'two/js/widget.js').read_bytes()
+
+
+def test_suburb_page_lists_distinct_records_that_share_an_id():
+    ps = [project(1, 'Blackstone', status='Stage one'), project(1, 'Blackstone', status='Stage two')]
+    ps[1]['slug'] = ps[0]['slug']
+    g = graph([*ps, dict(ps[0])])
+    html = b.render_suburb('Blackstone', [*ps, dict(ps[0])], {}, g)
+    assert 'Projects (2)' in html
+    assert '/project/synthetic-1/#record-1"' in html and '/project/synthetic-1/#record-1-2"' in html

@@ -162,6 +162,21 @@ def _suburb_catalog(projects, closures, consultations, das):
     return labels, slugs, groups
 
 
+def _composite_suburb_keys(groups) -> set[str]:
+    """Keys whose source label is a list of suburbs, not one: a label written
+    on several lines, or one made entirely of other known suburbs."""
+    keys = set(groups)
+
+    def splits(words, start=0, parts=0):
+        if start == len(words):
+            return parts >= 2
+        return any(" ".join(words[start:end]) in keys and splits(words, end, parts + 1)
+                   for end in range(start + 1, len(words) + 1))
+    return {key for key, variants in groups.items()
+            if any(len([ln for ln in v.splitlines() if ln.strip()]) > 1 for v in variants)
+            or splits(key.split())}
+
+
 def _validate_suburb_paths(graph):
     owners = {}
     for key, variants in graph["suburb_variants"].items():
@@ -925,7 +940,12 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
     # always means the LGA, not the suburb — matching it hung ~5k news items
     # off the Ipswich suburb page. Projects/closures still set it via their
     # explicit suburb field.
-    suburb_ex = Extractor(streets=[], suburbs=[k for k in suburb_labels if k != "ipswich"])
+    # A composite SUBURB value listing several suburbs ("Bellbird Park
+    # \nRedbank Plains ") keeps its page, but isn't a name prose can mention:
+    # with whitespace collapsed it would win over the real suburbs it lists.
+    composites = _composite_suburb_keys(suburb_variants)
+    suburb_ex = Extractor(streets=[], suburbs=[k for k in suburb_labels
+                                               if k != "ipswich" and k not in composites])
 
     def prose_suburbs(blob):
         # Collapse whitespace for matching only; leave stored prose untouched.
@@ -2444,9 +2464,11 @@ def render_suburb(name, projects, closures, graph) -> str:
     key = _suburb_key(name)
     name = graph.get("suburb_labels", {}).get(key, name)
     slug = _suburb_slug(name, graph)
+    # Same identity as the shared project pages: a byte-identical record is one
+    # record, but distinct records that share a Council id are each listed.
     matching_projects = _dedupe(
         [p for p in projects if key and _suburb_key(p.get("suburb")) == key],
-        lambda p: ("id", p["id"]) if p.get("id") is not None else ("occurrence", id(p)))
+        _record_fingerprint)
     matching_closures = [c for i, c in enumerate(closures.get("closures", []))
                          if key in graph.get("closure_suburb_keys", {}).get(f"c{i}", [])]
 
@@ -3688,7 +3710,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         _WIDGET_JS.replace("__ARCHIVE_FROM__", archive_from).replace(
             "__SUBURB_SLUGS__", json.dumps({label: graph["suburb_slugs"][key]
                 for key, labels in graph["suburb_variants"].items()
-                for label in [*labels, graph["suburb_labels"][key]]}))
+                for label in [*labels, graph["suburb_labels"][key]]}, sort_keys=True))
     )
 
     # ---- Sitemap + robots ----
