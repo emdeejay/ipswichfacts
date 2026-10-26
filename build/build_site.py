@@ -174,6 +174,51 @@ def _validate_suburb_paths(graph):
         owners[slug] = key
 
 
+def _street_key(label: str | None) -> str | None:
+    """Comparison only. Capitalisation, apostrophes and spacing are the only
+    differences treated as one street ("BRISBANE Street", "Augustine's Drive");
+    anything else stays distinct, so a real path clash still fails the build."""
+    label = label or ""
+    return (" ".join(label.replace("'", "").replace("’", "").split()).casefold()
+            or label.strip().casefold() or None)
+
+
+def _street_catalog(names):
+    groups = defaultdict(set)
+    for label in names:
+        if key := _street_key(label):
+            groups[key].add(label)
+    # Display label only; source records keep their own spelling. Prefer clean
+    # spacing, capitalised words and the fewest capitals; ties are lexical.
+    labels = {
+        key: min(variants, key=lambda v: (v != " ".join(v.split()),
+                 not all(w[:1].isupper() for w in v.split()),
+                 sum(ch.isupper() for ch in v), v))
+        for key, variants in sorted(groups.items())
+    }
+    slugs = {k: slugify(v) for k, v in labels.items()}
+    return labels, slugs, groups
+
+
+def _street_label(name, graph):
+    """The street page a source label belongs to (its own label if uncatalogued)."""
+    return graph.get("street_labels", {}).get(_street_key(name), name)
+
+
+def _validate_street_paths(graph):
+    owners = {}
+    for key, variants in graph.get("street_variants", {}).items():
+        paths = {slugify(v) for v in variants}
+        if len(paths) != 1:
+            raise ValueError(f"Conflicting street paths for {key!r}: {sorted(paths)!r}")
+        slug = graph["street_slugs"][key]
+        if slug in owners and owners[slug] != key:
+            raise ValueError(f"Conflicting street path /street/{slug}/: "
+                             f"{sorted(graph['street_variants'][owners[slug]])!r} vs {sorted(variants)!r}; "
+                             "prior output preserved")
+        owners[slug] = key
+
+
 def h(s: Any) -> str:
     if s is None:
         return ""
@@ -1052,10 +1097,29 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
     # Gordon St pedestrian-link text names Gordon, Bremer and King Edward
     # Parade). Only projects and closures (the "works" context), not news, which
     # names streets for unrelated reasons.
+    # Spellings differing only in capitalisation/apostrophes share one street
+    # page (see _street_key). Street-keyed buckets are keyed by that page's
+    # label; per-entity lists keep each source's own spelling.
+    street_labels, street_slugs, street_variants = _street_catalog(streets_set)
+
+    def by_page(bucket, identity):
+        merged: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for raw in sorted(bucket):
+            merged[street_labels[_street_key(raw)]].extend(bucket[raw])
+        # A source item naming two spellings of one street appears once.
+        return {label: _dedupe(refs, identity) if len(street_variants[_street_key(label)]) > 1 else refs
+                for label, refs in merged.items()}
+
+    street_meeting_items = by_page(street_meeting_items, lambda r: (r.get("slug"), r.get("anchor")))
+    street_news_items = by_page(street_news_items, lambda r: r.get("slug"))
+    street_consultations = by_page(street_consultations, lambda r: r.get("slug"))
+    street_das = by_page(street_das, lambda r: r.get("application_number"))
+
     related_streets: dict[str, set[str]] = defaultdict(set)
     for group in list(project_record_streets.values()) + list(closure_streets.values()):
-        for a in group:
-            for b in group:
+        pages = {street_labels[_street_key(s)] for s in group}
+        for a in pages:
+            for b in pages:
                 if a != b:
                     related_streets[a].add(b)
 
@@ -1078,7 +1142,10 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
         "closure_suburb_keys": closure_suburb_keys,
         "project_capworks": dict(project_capworks),
         "capworks_match": (capworks_matched, capworks_rows),
-        "streets": sorted(streets_set),
+        "streets": sorted(street_labels.values()),
+        "street_labels": street_labels,
+        "street_slugs": street_slugs,
+        "street_variants": {k: sorted(v) for k, v in street_variants.items()},
         "suburbs": sorted(suburbs_set),
         "suburb_divisions": {s: sorted(v) for s, v in suburb_divisions.items()},
         "project_streets": project_streets,
@@ -1485,7 +1552,7 @@ def _project_linked_html(slug, streets, graph,
     street_refs = []
     seen = set(direct_keys)
     for s in streets:
-        for r in graph.get("street_meeting_items", {}).get(s, []):
+        for r in graph.get("street_meeting_items", {}).get(_street_label(s, graph), []):
             key = (r["slug"], r.get("anchor"))
             if key not in seen:
                 seen.add(key)
@@ -2035,14 +2102,26 @@ def render_consultations_index(consultations) -> str:
 
 
 def render_street(name, projects, closures, graph) -> str:
-    slug = slugify(name)
+    slug = graph.get("street_slugs", {}).get(_street_key(name), slugify(name))
     record_streets = graph.get("project_record_streets", {})
+
+    def on_this_street(labels):
+        return any(_street_label(s, graph) == name for s in labels)
     matching_projects = [p for i, p in enumerate(projects)
-                         if name in record_streets.get(f"p{i}", graph["project_streets"].get(p["slug"], []))]
+                         if on_this_street(record_streets.get(f"p{i}", graph["project_streets"].get(p["slug"], [])))]
     matching_closures = []
     for i, c in enumerate(closures.get("closures", [])):
-        if name in graph["closure_streets"].get(f"c{i}", []):
+        if on_this_street(graph["closure_streets"].get(f"c{i}", [])):
             matching_closures.append(c)
+
+    # Several source spellings can share this page (capitalisation or
+    # apostrophes only); say so, and keep each source's own spelling elsewhere.
+    variants = graph.get("street_variants", {}).get(_street_key(name), [])
+    variants_html = (
+        "<p class=\"meta\">Council's records write this name more than one way: "
+        + " · ".join(f"<q>{h(v)}</q>" for v in variants)
+        + ". They differ only in capitalisation or apostrophes, so this page gathers them.</p>"
+        if len(variants) > 1 else "")
 
     proj_html = ""
     if matching_projects:
@@ -2102,7 +2181,7 @@ def render_street(name, projects, closures, graph) -> str:
 <article>
   <p class="crumbs"><a href="/">Home</a> › <a href="/streets/">Streets</a> › {h(name)}</p>
   <h1>{h(name)}</h1>
-  <p class="meta">Everything Council has published for this street.</p>
+  <p class="meta">Everything Council has published for this street.</p>{variants_html}
   {proj_html}
   {docs_html}
   {clos_html}
@@ -2725,11 +2804,11 @@ def build_project_timeline(p, graph, closures) -> list[dict[str, Any]]:
 
     # Live closures on this project's streets, where Council's own closure
     # text names the project's street. Only current impacts — these expire.
-    p_streets = set(graph.get("project_streets", {}).get(slug, []))
+    p_streets = {_street_label(s, graph) for s in graph.get("project_streets", {}).get(slug, [])}
     for i, c in enumerate(closures.get("closures", [])):
         if c.get("status") == "Archived":
             continue
-        if p_streets & set(graph.get("closure_streets", {}).get(f"c{i}", [])):
+        if p_streets & {_street_label(s, graph) for s in graph.get("closure_streets", {}).get(f"c{i}", [])}:
             start = (c.get("start_time") or "")[:10]
             events.append({
                 "sort": start,
@@ -3373,6 +3452,7 @@ class _OutputPlan:
 def write_site(out: Path, projects, closures, meetings, news, graph, capworks, consultations, das) -> list[tuple[str, str | None]]:
     """Preflight every output before touching the previous successful build."""
     _validate_suburb_paths(graph)
+    _validate_street_paths(graph)
     plan = _OutputPlan(out)
     urls: dict[str, str | None] = {}
 
@@ -3421,7 +3501,8 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
     # Streets
     write("/streets/", render_list("All streets with mentions", "street", graph["streets"]))
     for s in graph["streets"]:
-        write(f"/street/{slugify(s)}/", render_street(s, projects, closures, graph), identity=f"street {s!r}")
+        write(f"/street/{graph.get('street_slugs', {}).get(_street_key(s), slugify(s))}/",
+              render_street(s, projects, closures, graph), identity=f"street {s!r}")
 
     # Meetings
     meetings_list = meetings.get("meetings", [])
@@ -3900,7 +3981,9 @@ function buildIndex(data) {
   for (const p of data.projects) {
     items.push({ kind: 'project', label: p.name, href: `/project/${p.slug}/`, hay: (p.name + ' ' + (p.description || '') + ' ' + (p.suburb || '')).toLowerCase() });
   }
-  for (const s of data.streets) items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/`, hay: s.toLowerCase() });
+  // One entry per street page; the apostrophe-free form finds "Augustine's
+  // Drive" for a reader (or a Council record) writing "Augustines Drive".
+  for (const s of data.streets) items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/`, hay: (s + ' ' + s.replace(/['\u2019]/g, '')).toLowerCase() });
   for (const s of data.suburbs) items.push({ kind: 'suburb', label: s, href: `/suburb/${suburbSlug(s)}/`, hay: s.toLowerCase() });
   for (const m of data.meetings) {
     const titles = m.items.map(i => i.title).join(' ');
