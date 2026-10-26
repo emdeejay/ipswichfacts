@@ -3472,12 +3472,17 @@ class _OutputPlan:
             raise ValueError("Conflicting output writes; prior output preserved:\n  "
                              + "\n  ".join(self.conflicts))
         # Only a fully rendered, conflict-free plan may replace prior output.
+        # Clearing it is best-effort, as before: deletion may fail on read-only
+        # mounts, and then the new files are written over the old in place.
         if self.out.exists():
             for child in self.out.iterdir():
-                if child.is_dir():
-                    shutil.rmtree(child)
-                else:
-                    child.unlink()
+                try:
+                    if child.is_dir():
+                        shutil.rmtree(child)
+                    else:
+                        child.unlink()
+                except OSError:
+                    pass
         self.out.mkdir(parents=True, exist_ok=True)
         for target, (body, _, _) in self.entries.items():
             target.parent.mkdir(parents=True, exist_ok=True)

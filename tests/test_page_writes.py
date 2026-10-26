@@ -84,3 +84,23 @@ def test_identical_body_with_unknown_then_known_date_has_one_sitemap_entry(tmp_p
     monkeypatch.setattr(b, 'render_meeting', lambda *a: 'same body')
     urls = b.write_site(tmp_path / 'out', [], {}, {'meetings': ms}, {}, graph(meetings={'meetings': ms}), [], [], [])
     assert [u for u in urls if u[0] == '/meeting/synthetic-meet/'] == [('/meeting/synthetic-meet/', '2026-01-01')]
+
+
+def test_clearing_prior_output_stays_best_effort(tmp_path, monkeypatch):
+    """A child that can't be deleted (read-only mount) doesn't stop the build:
+    the rest is cleared and the new output is written over it in place."""
+    out = tmp_path / 'out'
+    (out / 'stuck').mkdir(parents=True)
+    (out / 'stale.txt').write_text('old')
+    real_rmtree = b.shutil.rmtree
+
+    def rmtree(path, *a, **k):
+        if Path(path).name == 'stuck':
+            raise PermissionError('read-only')
+        return real_rmtree(path, *a, **k)
+    monkeypatch.setattr(b.shutil, 'rmtree', rmtree)
+    plan = b._OutputPlan(out)
+    plan.add('new/index.html', 'body', 'new')
+    plan.publish()
+    assert (out / 'new/index.html').read_text() == 'body'
+    assert not (out / 'stale.txt').exists() and (out / 'stuck').exists()
