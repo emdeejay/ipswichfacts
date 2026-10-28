@@ -3254,6 +3254,10 @@
    "4262": {
     "first_seen": "2026-10-01",
     "slug": "multicultural-advisory-committee-2026-10-08"
+   },
+   "4279": {
+    "first_seen": "2026-10-28",
+    "slug": "sport-and-recreation-advisory-committee-2026-10-29"
    }
   },
   "news": {
@@ -24959,6 +24963,10 @@
     "first_seen": "2026-10-20",
     "slug": "trevor-street-drainage-rehabilitation"
    },
+   "INF05662|sandalwood drive and deebing creek road kerb ramps|Yamanto": {
+    "first_seen": "2026-10-28",
+    "slug": "sandalwood-drive-and-deebing-creek-road-kerb-ramps"
+   },
    "LCC00039|rosewood library improvements|Rosewood": {
     "first_seen": "2026-08-21",
     "slug": "rosewood-library-improvements-rosewood"
@@ -24986,6 +24994,10 @@
    "PRC00033|stone quarry cemetery|Jeebropilly": {
     "first_seen": "2026-09-13",
     "slug": "stone-quarry-cemetery"
+   },
+   "PRC00053|hardstnad area|West Ipswich": {
+    "first_seen": "2026-10-28",
+    "slug": "hardstnad-area"
    }
   }
  },
