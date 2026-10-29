@@ -218,3 +218,29 @@ def test_suburb_page_lists_distinct_records_that_share_an_id():
     html = b.render_suburb('Blackstone', [*ps, dict(ps[0])], {}, g)
     assert 'Projects (2)' in html
     assert '/project/synthetic-1/#record-1"' in html and '/project/synthetic-1/#record-1-2"' in html
+
+
+@pytest.mark.parametrize('extra', [[], ['Springfield\nLakes']], ids=['clean', 'with-wrapped-variant'])
+def test_line_wrapped_single_suburb_still_matches_prose(extra):
+    """A line break alone isn't evidence of a list: once a source writes the
+    same name on one line, a wrapped copy must not drop prose links to it."""
+    labels = ['Springfield Lakes', *extra, 'Bellbird Park \nRedbank Plains ', 'Bellbird Park', 'Redbank Plains',
+              'Collingwood Park \nNew Chum \nRedbank Plains ']
+    ps = [project(i, s) for i, s in enumerate(labels)]
+    news = {'posts': [dict(slug='n', title='Springfield Lakes update', date='2026-01-01',
+                           url='https://example.org/n', text='Bellbird Park Redbank Plains; Collingwood Park New Chum')]}
+    meetings = {'meetings': [dict(slug='m', committee='Synthetic', date='2026-01-01', items=[
+        dict(anchor='a', title='Springfield Lakes update', text='')])]}
+    for order in (ps, list(reversed(ps))):
+        g = graph(order, meetings=copy.deepcopy(meetings), news=copy.deepcopy(news))
+        assert set(g['suburb_variants']['springfield lakes']) == {'Springfield Lakes', *extra}
+        assert b._composite_suburb_keys(g['suburb_variants']) == {
+            'bellbird park redbank plains', 'collingwood park new chum redbank plains'}
+        assert g['news_suburbs']['n'] == ['Bellbird Park', 'Redbank Plains', 'Springfield Lakes']
+        assert g['meeting_suburbs']['m'] == ['Springfield Lakes']
+        assert len(g['suburb_news_items']['springfield lakes']) == 1
+        assert len(g['suburb_meeting_items']['springfield lakes']) == 1
+        html = b.render_suburb('Springfield Lakes', order, {}, g)
+        assert 'href="/news/n/"' in html and 'href="/meeting/m/#a"' in html
+        div = b.render_division(1, order, {}, g)
+        assert 'href="/news/n/"' in div and 'href="/meeting/m/#a"' in div

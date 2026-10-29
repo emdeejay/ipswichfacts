@@ -163,9 +163,14 @@ def _suburb_catalog(projects, closures, consultations, das):
 
 
 def _composite_suburb_keys(groups) -> set[str]:
-    """Keys whose source label is a list of suburbs, not one: a label written
-    on several lines, or one made entirely of other known suburbs."""
+    """Keys whose source label is a list of suburbs, not one: a label made
+    entirely of other known suburbs, or one only ever written on several lines.
+    A line break alone is just wrapping once any source writes the same name
+    on one line ("Springfield\\nLakes" beside "Springfield Lakes")."""
     keys = set(groups)
+
+    def multiline(v):
+        return len([ln for ln in v.splitlines() if ln.strip()]) > 1
 
     def splits(words, start=0, parts=0):
         if start == len(words):
@@ -173,8 +178,7 @@ def _composite_suburb_keys(groups) -> set[str]:
         return any(" ".join(words[start:end]) in keys and splits(words, end, parts + 1)
                    for end in range(start + 1, len(words) + 1))
     return {key for key, variants in groups.items()
-            if any(len([ln for ln in v.splitlines() if ln.strip()]) > 1 for v in variants)
-            or splits(key.split())}
+            if all(multiline(v) for v in variants) or splits(key.split())}
 
 
 def _validate_suburb_paths(graph):
