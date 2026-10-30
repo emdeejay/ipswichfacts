@@ -127,6 +127,117 @@ def slugify(s: str) -> str:
     return s[:80] or "x"
 
 
+def _suburb_key(label: str | None) -> str | None:
+    """Comparison only: never use this in source records or registry identity."""
+    return " ".join((label or "").split()).casefold() or None
+
+
+def _suburb_slug(label, graph):
+    return graph.get("suburb_slugs", {}).get(_suburb_key(label), slugify(label or ""))
+
+
+def _suburb_link(label, graph):
+    if not _suburb_key(label):
+        return h(label)
+    return f'<a href="/suburb/{_suburb_slug(label, graph)}/">{h(label)}</a>'
+
+
+def _suburb_catalog(projects, closures, consultations, das):
+    raw = [p.get("suburb") for p in projects]
+    raw += [c.get("suburb") for c in closures.get("closures", [])]
+    raw += [s for c in consultations for s in (c.get("suburbs") or [])]
+    raw += [a.get("suburb") for a in das]
+    groups = defaultdict(set)
+    for label in raw:
+        if key := _suburb_key(label):
+            groups[key].add(label)
+    # Prefer a clean, conventionally capitalised source label; ties are lexical.
+    # If no source is clean, normalize whitespace for display only.
+    labels = {}
+    for key, variants in sorted(groups.items()):
+        chosen = min(variants, key=lambda v: (v != " ".join(v.split()),
+                     v != v.title(), v))
+        labels[key] = " ".join(chosen.split())
+    slugs = {k: slugify(v) for k, v in labels.items()}
+    return labels, slugs, groups
+
+
+def _composite_suburb_keys(groups) -> set[str]:
+    """Keys whose source label is a list of suburbs, not one: a label made
+    entirely of other known suburbs, or one only ever written on several lines.
+    A line break alone is just wrapping once any source writes the same name
+    on one line ("Springfield\\nLakes" beside "Springfield Lakes")."""
+    keys = set(groups)
+
+    def multiline(v):
+        return len([ln for ln in v.splitlines() if ln.strip()]) > 1
+
+    def splits(words, start=0, parts=0):
+        if start == len(words):
+            return parts >= 2
+        return any(" ".join(words[start:end]) in keys and splits(words, end, parts + 1)
+                   for end in range(start + 1, len(words) + 1))
+    return {key for key, variants in groups.items()
+            if all(multiline(v) for v in variants) or splits(key.split())}
+
+
+def _validate_suburb_paths(graph):
+    owners = {}
+    for key, variants in graph["suburb_variants"].items():
+        paths = {slugify(v) for v in variants}
+        if len(paths) != 1:
+            raise ValueError(f"Conflicting suburb paths for {key!r}: {sorted(paths)!r}")
+        slug = graph["suburb_slugs"][key]
+        if slug in owners and owners[slug] != key:
+            raise ValueError(f"Conflicting suburb path /suburb/{slug}/: {owners[slug]!r}, {key!r}")
+        owners[slug] = key
+
+
+def _street_key(label: str | None) -> str | None:
+    """Comparison only. Capitalisation, apostrophes and spacing are the only
+    differences treated as one street ("BRISBANE Street", "Augustine's Drive");
+    anything else stays distinct, so a real path clash still fails the build."""
+    label = label or ""
+    return (" ".join(label.replace("'", "").replace("’", "").split()).casefold()
+            or label.strip().casefold() or None)
+
+
+def _street_catalog(names):
+    groups = defaultdict(set)
+    for label in names:
+        if key := _street_key(label):
+            groups[key].add(label)
+    # Display label only; source records keep their own spelling. Prefer clean
+    # spacing, capitalised words and the fewest capitals; ties are lexical.
+    labels = {
+        key: min(variants, key=lambda v: (v != " ".join(v.split()),
+                 not all(w[:1].isupper() for w in v.split()),
+                 sum(ch.isupper() for ch in v), v))
+        for key, variants in sorted(groups.items())
+    }
+    slugs = {k: slugify(v) for k, v in labels.items()}
+    return labels, slugs, groups
+
+
+def _street_label(name, graph):
+    """The street page a source label belongs to (its own label if uncatalogued)."""
+    return graph.get("street_labels", {}).get(_street_key(name), name)
+
+
+def _validate_street_paths(graph):
+    owners = {}
+    for key, variants in graph.get("street_variants", {}).items():
+        paths = {slugify(v) for v in variants}
+        if len(paths) != 1:
+            raise ValueError(f"Conflicting street paths for {key!r}: {sorted(paths)!r}")
+        slug = graph["street_slugs"][key]
+        if slug in owners and owners[slug] != key:
+            raise ValueError(f"Conflicting street path /street/{slug}/: "
+                             f"{sorted(graph['street_variants'][owners[slug]])!r} vs {sorted(variants)!r}; "
+                             "prior output preserved")
+        owners[slug] = key
+
+
 def h(s: Any) -> str:
     if s is None:
         return ""
@@ -465,6 +576,55 @@ def dedupe(items: list[Any], key) -> list[Any]:
     return out
 
 
+# Council's map publishes some distinct works whose registry keys are equal
+# (same ref, name and suburb — e.g. four "Redbank Plains Road- Road
+# Resurfacing" records), so they share one pinned slug. The URL stays; every
+# distinct record is rendered separately on it, in an order and with anchors
+# derived from the records themselves, never from feed position. Byte-for-byte
+# identical rows are one record. See docs/work/6f282fd5-2c55-4b93-91a4-f0009e2fe074.md.
+
+
+def _record_fingerprint(p) -> str:
+    return json.dumps(p, sort_keys=True, default=str)
+
+
+def _record_order(p) -> tuple:
+    rid = p.get("id")
+    return (0, int(rid), "") if isinstance(rid, int) or str(rid).isdigit() else (1, 0, str(rid))
+
+
+def _project_record_groups(projects) -> dict[str, list[dict[str, Any]]]:
+    """slug -> [{"anchor", "record"}], distinct records in stable order."""
+    by_slug: dict[str, dict[str, Any]] = defaultdict(dict)
+    for p in projects:
+        by_slug[p["slug"]].setdefault(_record_fingerprint(p), p)
+    groups = {}
+    for slug, recs in by_slug.items():
+        taken: set[str] = set()
+        group = []
+        for fp, p in sorted(recs.items(), key=lambda kv: (_record_order(kv[1]), kv[0])):
+            base = f"record-{slugify(str(p.get('id'))) or 'unknown'}"
+            anchor, n = base, 2
+            while anchor in taken:
+                anchor, n = f"{base}-{n}", n + 1
+            taken.add(anchor)
+            group.append({"anchor": anchor, "record": p})
+        groups[slug] = group
+    return groups
+
+
+def _project_group_title(group) -> str:
+    """The names Council published for a group — one name when they agree."""
+    return " / ".join(dict.fromkeys(rec["record"].get("name") or "Project" for rec in group))
+
+
+def _project_href(p, graph=None) -> str:
+    """A project's page, or its own section when its URL holds several records."""
+    anchors = (graph or {}).get("project_record_anchors", {}).get(p["slug"])
+    anchor = anchors and anchors.get(_record_fingerprint(p))
+    return f"/project/{p['slug']}/" + (f"#{anchor}" if anchor else "")
+
+
 # ---------------------------------------------------------------------------
 # Load
 
@@ -644,22 +804,40 @@ def _normalise_type(t: str) -> str:
 
 def build_graph(projects, closures, meetings, news, capworks, consultations, das) -> dict[str, Any]:
     streets_set: set[str] = set()
-    suburbs_set: set[str] = set()
+    suburb_labels, suburb_slugs, suburb_variants = _suburb_catalog(projects, closures, consultations, das)
+    suburbs_set = set(suburb_labels.values())
+    # Occurrence keys retain distinct input rows even when project hrefs coincide.
+    project_suburb_keys = {f"p{i}": _suburb_key(p.get("suburb")) for i, p in enumerate(projects)}
+    # List-valued for the traffic follow-up; each current label stays atomic.
+    closure_suburb_keys = {f"c{i}": [key] if (key := _suburb_key(c.get("suburb"))) else []
+                           for i, c in enumerate(closures.get("closures", []))}
 
     # Gather all street mentions from project name + description + status + what_to_expect,
     # and suburb from the SUBURB field.
     project_streets: dict[str, list[str]] = {}
     project_suburbs: dict[str, str] = {}
+    # Several distinct Council records can share one pinned slug (see
+    # _project_record_groups), so streets are kept per record occurrence and
+    # the slug-keyed view is their union, in the group's stable record order.
+    project_record_streets: dict[str, list[str]] = {}
 
-    for p in projects:
+    for i, p in enumerate(projects):
         text_blob = " . ".join(filter(None, [p.get("name"), p.get("description"), p.get("status"), p.get("what_to_expect")]))
         streets = extract_streets_from_text(text_blob)
+        project_record_streets[f"p{i}"] = streets
         project_streets[p["slug"]] = streets
         streets_set.update(streets)
 
-        if p.get("suburb"):
-            project_suburbs[p["slug"]] = p["suburb"]
-            suburbs_set.add(p["suburb"])
+        if key := _suburb_key(p.get("suburb")):
+            project_suburbs[p["slug"]] = suburb_labels[key]
+
+    project_groups = _project_record_groups(projects)
+    for slug, group in project_groups.items():
+        for rec in group:
+            rec["streets"] = extract_streets_from_text(" . ".join(filter(None, [
+                rec["record"].get(f) for f in ("name", "description", "status", "what_to_expect")])))
+        if len(group) > 1:
+            project_streets[slug] = list(dict.fromkeys(s for rec in group for s in rec["streets"]))
 
     # Same for closures: pull road_name/suburb directly.
     closure_streets: dict[str, list[str]] = {}
@@ -673,24 +851,25 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
             streets = [rn.strip()]
         closure_streets[cid] = streets
         streets_set.update(streets)
-        if c.get("suburb"):
-            closure_suburbs[cid] = c["suburb"]
-            suburbs_set.add(c["suburb"])
+        if key := _suburb_key(c.get("suburb")):
+            closure_suburbs[cid] = suburb_labels[key]
 
     # Direct project↔meeting edges: a meeting item that names a project
     # outright (normalised, stage/phase suffix stripped — papers say
     # "Redbank Plains Road Upgrade" for "... – Stage 3"). Sparse (~4% of
     # projects) but high precision, and it's the big projects that match.
+    # Records sharing a slug can carry different names; every eligible name
+    # core is kept, and a match links the shared page once.
     project_cores = {
-        p["slug"]: _name_core(p.get("name"))
-        for p in projects
-        if len(_name_core(p.get("name"))) >= 12
+        slug: cores for slug, group in project_groups.items()
+        if (cores := sorted({c for rec in group
+                             if len(c := _name_core(rec["record"].get("name"))) >= 12}))
     }
     project_meeting_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
     # Inverse edges, so a news/meeting page can link to the projects it's about
     # (not just the street it names). Same normalised-name match, recorded both
     # directions.
-    pname = {p["slug"]: p.get("name") for p in projects}
+    pname = {slug: _project_group_title(group) for slug, group in project_groups.items()}
     meeting_projects: dict[str, list[dict[str, Any]]] = defaultdict(list)
     news_projects: dict[str, list[dict[str, Any]]] = defaultdict(list)
 
@@ -709,7 +888,8 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
 
     for c in consultations:
         cslug = c["slug"]
-        c_suburbs = [s for s in (c.get("suburbs") or []) if s]
+        c_keys = sorted({k for s in (c.get("suburbs") or []) if (k := _suburb_key(s))})
+        c_suburbs = [suburb_labels[k] for k in c_keys]
         blob = " . ".join(filter(None, [c.get("name"), c.get("summary")]))
         c_streets = extract_streets_from_text(blob)
         ref = {
@@ -719,15 +899,14 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
             "date": c.get("date"),
             "url": c.get("url"),
         }
-        for s in c_suburbs:
-            suburb_consultations[s].append(ref)
-            suburbs_set.add(s)
+        for key in c_keys:
+            suburb_consultations[key].append(ref)
         for s in c_streets:
             street_consultations[s].append(ref)
         streets_set.update(c_streets)
         n_blob = _norm(blob)
-        for pslug, core in project_cores.items():
-            if core in n_blob:
+        for pslug, cores in project_cores.items():
+            if any(core in n_blob for core in cores):
                 project_consultations[pslug].append(ref)
         consultation_streets[cslug] = c_streets
         consultation_suburbs[cslug] = c_suburbs
@@ -751,10 +930,9 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
             "url": a.get("source_url"),
             "suburb": a.get("suburb"),
         }
-        sub = a.get("suburb")
+        sub = _suburb_key(a.get("suburb"))
         if sub:
             suburb_das[sub].append(ref)
-            suburbs_set.add(sub)
         for s in extract_streets_from_text(a.get("description")):
             street_das[s].append(ref)
             streets_set.add(s)
@@ -766,7 +944,18 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
     # always means the LGA, not the suburb — matching it hung ~5k news items
     # off the Ipswich suburb page. Projects/closures still set it via their
     # explicit suburb field.
-    suburb_ex = Extractor(streets=[], suburbs=sorted(suburbs_set - {"Ipswich"}))
+    # A composite SUBURB value listing several suburbs ("Bellbird Park
+    # \nRedbank Plains ") keeps its page, but isn't a name prose can mention:
+    # with whitespace collapsed it would win over the real suburbs it lists.
+    composites = _composite_suburb_keys(suburb_variants)
+    suburb_ex = Extractor(streets=[], suburbs=[k for k in suburb_labels
+                                               if k != "ipswich" and k not in composites])
+
+    def prose_suburbs(blob):
+        # Collapse whitespace for matching only; leave stored prose untouched.
+        keys = {_suburb_key(f["value"]) for f in suburb_ex.find(" ".join(blob.split()).casefold())
+                if f["kind"] == "suburb"}
+        return [suburb_labels[k] for k in sorted(keys) if k in suburb_labels and k != "ipswich"]
     meeting_streets: dict[str, list[str]] = {}
     meeting_suburbs: dict[str, list[str]] = {}
     street_meeting_items: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -778,7 +967,7 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
         for item in m.get("items", []):
             blob = " . ".join(filter(None, [item.get("title"), item.get("text")]))
             i_streets = extract_streets_from_text(blob)
-            i_suburbs = [f["value"] for f in suburb_ex.find(blob) if f["kind"] == "suburb"]
+            i_suburbs = prose_suburbs(blob)
             ref = {
                 "slug": m["slug"],
                 "committee": m.get("committee"),
@@ -791,10 +980,10 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
             for s in i_streets:
                 street_meeting_items[s].append(ref)
             for s in i_suburbs:
-                suburb_meeting_items[s].append(ref)
+                suburb_meeting_items[_suburb_key(s)].append(ref)
             n_blob = _norm(blob)
-            for pslug, core in project_cores.items():
-                if core in n_blob:
+            for pslug, cores in project_cores.items():
+                if any(core in n_blob for core in cores):
                     project_meeting_items[pslug].append(ref)
                     meeting_projects[m["slug"]].append({"slug": pslug, "name": pname.get(pslug)})
             item["streets"] = i_streets
@@ -816,7 +1005,7 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
     for post in news.get("posts", []):
         blob = " . ".join(filter(None, [post.get("title"), post.get("text")]))
         p_streets = extract_streets_from_text(blob)
-        p_suburbs = [f["value"] for f in suburb_ex.find(blob) if f["kind"] == "suburb"]
+        p_suburbs = prose_suburbs(blob)
         ref = {
             "slug": post["slug"],
             "date": post.get("date"),
@@ -833,10 +1022,10 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
                 street_news_items[s].append(ref)
         for s in p_suburbs:
             if not listing:
-                suburb_news_items[s].append(ref)
+                suburb_news_items[_suburb_key(s)].append(ref)
         n_blob = _norm(blob)
-        for pslug, core in project_cores.items():
-            if core in n_blob:
+        for pslug, cores in project_cores.items():
+            if any(core in n_blob for core in cores):
                 project_news_items[pslug].append(ref)
                 news_projects[post["slug"]].append({"slug": pslug, "name": pname.get(pslug)})
         news_streets[post["slug"]] = p_streets
@@ -852,10 +1041,13 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
         return m.group(0) if m else None
 
     proj_by_norm: dict[str, str] = {}
-    proj_stage: dict[str, str | None] = {}
+    # Stage tags of every record on a slug, so a shared page with differing
+    # names doesn't keep only the last record's stage.
+    proj_stage: dict[str, set[str]] = defaultdict(set)
     for p in projects:
         proj_by_norm.setdefault(_norm(p.get("name")), p["slug"])
-        proj_stage[p["slug"]] = _stage_tag(p.get("name"))
+        if tag := _stage_tag(p.get("name")):
+            proj_stage[p["slug"]].add(tag)
     core_owners: dict[str, set[str]] = defaultdict(set)
     for p in projects:
         c = _name_core(p.get("name"))
@@ -887,8 +1079,8 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
                     cand = proj_by_core.get(c)
                     if cand:
                         rstage = _stage_tag(row.get("project"))
-                        pstage = proj_stage.get(cand)
-                        if not (rstage and pstage and rstage != pstage):
+                        pstages = proj_stage.get(cand)
+                        if not (rstage and pstages and rstage not in pstages):
                             pslug = cand
                 if not pslug:
                     # Token-set equality: exactly one project shares the row's
@@ -897,8 +1089,8 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
                     cand = proj_by_tokenset.get(_sig_tokens(row.get("project")))
                     if cand:
                         rstage = _stage_tag(row.get("project"))
-                        pstage = proj_stage.get(cand)
-                        if not (rstage and pstage and rstage != pstage):
+                        pstages = proj_stage.get(cand)
+                        if not (rstage and pstages and rstage not in pstages):
                             pslug = cand
                 row["project_slug"] = pslug
                 if pslug:
@@ -920,29 +1112,77 @@ def build_graph(projects, closures, meetings, news, capworks, consultations, das
     # suburb-tagged entities (DAs, consultations, closures, news, meetings).
     suburb_divisions: dict[str, set[int]] = defaultdict(set)
     for p in projects:
-        if p.get("suburb"):
+        if key := _suburb_key(p.get("suburb")):
             for dv in (p.get("divisions") or []):
-                suburb_divisions[p["suburb"]].add(dv)
+                suburb_divisions[key].add(dv)
 
     # Streets that appear together in the same project or road-impact text are
     # connected on the ground — intersections, detours, adjoining works (the
     # Gordon St pedestrian-link text names Gordon, Bremer and King Edward
     # Parade). Only projects and closures (the "works" context), not news, which
     # names streets for unrelated reasons.
+    # Spellings differing only in capitalisation/apostrophes share one street
+    # page (see _street_key). Street-keyed buckets are keyed by that page's
+    # label; per-entity lists keep each source's own spelling.
+    street_labels, street_slugs, street_variants = _street_catalog(streets_set)
+
+    def by_page(bucket, identity):
+        merged: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for raw in sorted(bucket):
+            merged[street_labels[_street_key(raw)]].extend(bucket[raw])
+        # A source item naming two spellings of one street appears once, and
+        # the merged list is ordered by that identity: renderers sort by date
+        # with a stable sort, so ties (and what a capped list shows) don't
+        # depend on feed order. Single-spelling buckets keep source order.
+        return {label: sorted(_dedupe(refs, identity), key=lambda r: json.dumps(identity(r), default=str))
+                if len(street_variants[_street_key(label)]) > 1 else refs
+                for label, refs in merged.items()}
+
+    street_meeting_items = by_page(street_meeting_items, lambda r: (r.get("slug"), r.get("anchor")))
+    street_news_items = by_page(street_news_items, lambda r: r.get("slug"))
+    street_consultations = by_page(street_consultations, lambda r: r.get("slug"))
+    street_das = by_page(street_das, lambda r: r.get("application_number"))
+
     related_streets: dict[str, set[str]] = defaultdict(set)
-    for group in list(project_streets.values()) + list(closure_streets.values()):
-        for a in group:
-            for b in group:
+    for group in list(project_record_streets.values()) + list(closure_streets.values()):
+        pages = {street_labels[_street_key(s)] for s in group}
+        for a in pages:
+            for b in pages:
                 if a != b:
                     related_streets[a].add(b)
 
+    # Each source reference occurs once per canonical bucket. Project rows and
+    # closure occurrences deliberately retain their separate input identities.
+    for buckets, identity in [
+        (suburb_meeting_items, lambda r: (r.get("slug"), r.get("anchor"))),
+        (suburb_news_items, lambda r: r.get("slug")),
+        (suburb_consultations, lambda r: r.get("slug")),
+        (suburb_das, lambda r: r.get("application_number")),
+    ]:
+        for key, refs in buckets.items():
+            buckets[key] = _dedupe(refs, identity)
+
     return {
+        "suburb_labels": suburb_labels,
+        "suburb_slugs": suburb_slugs,
+        "suburb_variants": {k: sorted(v) for k, v in suburb_variants.items()},
+        "project_suburb_keys": project_suburb_keys,
+        "closure_suburb_keys": closure_suburb_keys,
         "project_capworks": dict(project_capworks),
         "capworks_match": (capworks_matched, capworks_rows),
-        "streets": sorted(streets_set),
+        "streets": sorted(street_labels.values()),
+        "street_labels": street_labels,
+        "street_slugs": street_slugs,
+        "street_variants": {k: sorted(v) for k, v in street_variants.items()},
         "suburbs": sorted(suburbs_set),
         "suburb_divisions": {s: sorted(v) for s, v in suburb_divisions.items()},
         "project_streets": project_streets,
+        "project_record_streets": project_record_streets,
+        "project_groups": project_groups,
+        "project_record_anchors": {
+            slug: {_record_fingerprint(rec["record"]): rec["anchor"] for rec in group}
+            for slug, group in project_groups.items() if len(group) > 1
+        },
         "project_suburbs": project_suburbs,
         "closure_streets": closure_streets,
         "closure_suburbs": closure_suburbs,
@@ -1126,7 +1366,7 @@ def render_index(projects, closures, meetings, news, graph, capworks, consultati
         works.sort(key=lambda w: (-w[0], w[2].get("name") or ""))
         rows = "".join(
             f'<tr><td><span class="impact-{sev}">{h(label)}</span></td>'
-            f'<td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
+            f'<td><a href="{_project_href(p, graph)}">{h(p["name"])}</a></td>'
             f'<td>{h(p.get("suburb"))}</td>'
             f'<td>{h(_truncate(p.get("status"), 320))}</td></tr>'
             for sev, label, p in works
@@ -1269,38 +1509,39 @@ def _project_docs_items(p) -> str:
     )
 
 
-def render_project(p, closures, graph) -> str:
-    slug = p["slug"]
-    divisions = p.get("divisions") or []
+def _project_division_html(p, graph) -> str:
     by_div = graph.get("councillors_by_division", {})
-    div_html = ", ".join(
+    return ", ".join(
         f'<a href="/division/{d}/">Division {d}</a>'
         + (f' ({h(" & ".join(c["name"] for c in by_div[d]))})' if by_div.get(d) else "")
-        for d in divisions
+        for d in (p.get("divisions") or [])
     ) or "—"
 
-    extras_html = ""
+
+def _project_extras_html(p) -> str:
     docs_items = _project_docs_items(p)
-    if docs_items:
-        extras_html = (
-            "<h3>Council's notices &amp; documents</h3>"
-            "<p class=\"meta\">Council's own updates and works notices for this "
-            "project — including the notices issued to affected residents. "
-            "Linked to Council's source.</p>"
-            f"<ul>{docs_items}</ul>"
-        )
+    if not docs_items:
+        return ""
+    return (
+        "<h3>Council's notices &amp; documents</h3>"
+        "<p class=\"meta\">Council's own updates and works notices for this "
+        "project — including the notices issued to affected residents. "
+        "Linked to Council's source.</p>"
+        f"<ul>{docs_items}</ul>"
+    )
 
-    streets = graph["project_streets"].get(slug, [])
-    streets_html = ""
-    if streets:
-        items = "".join(f'<li><a href="/street/{slugify(s)}/">{h(s)}</a></li>' for s in streets)
-        streets_html = f"<h3>Streets mentioned</h3><ul>{items}</ul>"
 
-    what = p.get("what_to_expect")
-    what_html = f"<h3>What to expect</h3><p>{h(what)}</p>" if what else ""
+def _project_streets_html(streets) -> str:
+    if not streets:
+        return ""
+    items = "".join(f'<li><a href="/street/{slugify(s)}/">{h(s)}</a></li>' for s in streets)
+    return f"<h3>Streets mentioned</h3><ul>{items}</ul>"
 
-    funding_html = _capworks_funding_html(slug, graph)
 
+def _project_linked_html(slug, streets, graph,
+                         street_heading="Meeting items mentioning this project's streets") -> tuple[str, str, str]:
+    """Meeting and news items matched to the project name, then meeting items
+    matched only through the project's streets."""
     # Direct: meeting items that name this project. Transitive: items that
     # mention this project's streets (capped, deduped against direct).
     direct = graph.get("project_meeting_items", {}).get(slug, [])
@@ -1339,7 +1580,7 @@ def render_project(p, closures, graph) -> str:
     street_refs = []
     seen = set(direct_keys)
     for s in streets:
-        for r in graph.get("street_meeting_items", {}).get(s, []):
+        for r in graph.get("street_meeting_items", {}).get(_street_label(s, graph), []):
             key = (r["slug"], r.get("anchor"))
             if key not in seen:
                 seen.add(key)
@@ -1361,10 +1602,27 @@ def render_project(p, closures, graph) -> str:
             if len(street_refs) > len(shown) else ""
         )
         street_meetings_html = (
-            f"<h3>Meeting items mentioning this project's streets</h3>"
+            f"<h3>{street_heading}</h3>"
             "<table class='data'><thead><tr><th>Item</th><th>Street</th><th>Meeting</th></tr></thead>"
             f"<tbody>{rows}</tbody></table>{more}"
         )
+    return meetings_html, news_html, street_meetings_html
+
+
+def render_project(p, closures, graph) -> str:
+    slug = p["slug"]
+    div_html = _project_division_html(p, graph)
+    extras_html = _project_extras_html(p)
+
+    streets = graph["project_streets"].get(slug, [])
+    streets_html = _project_streets_html(streets)
+
+    what = p.get("what_to_expect")
+    what_html = f"<h3>What to expect</h3><p>{h(what)}</p>" if what else ""
+
+    funding_html = _capworks_funding_html(slug, graph)
+
+    meetings_html, news_html, street_meetings_html = _project_linked_html(slug, streets, graph)
 
     timeline_html = render_timeline_html(build_project_timeline(p, graph, closures))
 
@@ -1374,7 +1632,7 @@ def render_project(p, closures, graph) -> str:
   <h1>{h(p.get("name"))}</h1>
   <p class="meta">
     <span class="{phase_class(p.get('phase'))}">{h(p.get('phase'))}</span>
-    · Suburb: <a href="/suburb/{slugify(p.get('suburb') or '')}/">{h(p.get('suburb'))}</a>
+    · Suburb: {_suburb_link(p.get("suburb"), graph)}
     · Ref: <code>{h(p.get('ref'))}</code>
     · Last updated: {h(format_ymd(p.get('updated')))}
   </p>
@@ -1422,6 +1680,136 @@ def render_project(p, closures, graph) -> str:
     )
 
 
+def _project_record_section(rec, graph) -> str:
+    """One Council record on a shared project page: its own fields only."""
+    p, anchor = rec["record"], rec["anchor"]
+    what = p.get("what_to_expect")
+    what_html = f"<h4>What to expect</h4><p>{h(what)}</p>" if what else ""
+    return f"""
+  <section class="project-record" id="{h(anchor)}">
+    <h2><a href="#{h(anchor)}">Map record {h(p.get('id'))}</a></h2>
+    <p class="meta">
+      <span class="{phase_class(p.get('phase'))}">{h(p.get('phase'))}</span>
+      · Suburb: {_suburb_link(p.get("suburb"), graph)}
+      · Ref: <code>{h(p.get('ref'))}</code>
+      · Last updated: {h(format_ymd(p.get('updated')))}
+    </p>
+    <div class="cols">
+      <div>
+        <h4>Name</h4>
+        <p>{h(p.get("name"))}</p>
+
+        <h4>Description</h4>
+        <p>{h(p.get("description"))}</p>
+
+        <h4>Status</h4>
+        <p>{h(p.get("status"))}</p>
+
+        {what_html}
+
+        {_discrepancy_html(p)}
+      </div>
+      <div class="panel">
+        <h4>Division</h4>
+        <p>{_project_division_html(p, graph)}</p>
+
+        <h4>Managed by</h4>
+        <p>{h(p.get("managed_by"))}</p>
+
+        {_project_extras_html(p)}
+        {_project_streets_html(rec.get("streets", []))}
+      </div>
+    </div>
+    <p class="attribution">Source for this record: <a href="{h(p.get('source_url'))}">Ipswich City Council Civic Projects Map</a> (CC BY 4.0).</p>
+  </section>"""
+
+
+def render_project_group(group, closures, graph) -> str:
+    """A pinned project URL holding several distinct Council records. Each is
+    reproduced separately; nothing here picks a winner or merges their facts."""
+    slug = group[0]["record"]["slug"]
+    title = _project_group_title(group)
+    names = list(dict.fromkeys(rec["record"].get("name") or "Project" for rec in group))
+    quoted = ", ".join(f"“{n}”" for n in names)
+    suburbs = list(dict.fromkeys(rec["record"].get("suburb") for rec in group))
+    streets = graph["project_streets"].get(slug, [])
+    index = "".join(
+        f'<li><a href="#{h(rec["anchor"])}">Map record {h(rec["record"].get("id"))}</a> '
+        f'<span class="{phase_class(rec["record"].get("phase"))}">{h(rec["record"].get("phase"))}</span></li>'
+        for rec in group
+    )
+    funding_html = _capworks_funding_html(slug, graph)
+    meetings_html, news_html, street_meetings_html = _project_linked_html(
+        slug, streets, graph, street_heading="Meeting items mentioning these streets")
+    # The timeline mixes two bases: budget, meeting and news entries matched
+    # to the shared name, and live road impacts matched only by street. Keep
+    # them apart so neither reads as the other, nor as any one record's.
+    events = build_project_timeline(group[0]["record"], graph, closures)
+    name_timeline = render_timeline_html(
+        [e for e in events if e["kind"] != "closure"],
+        heading="Timeline (by project name)",
+        intro="Budget, meeting and news entries matched to the shared project name, "
+              "newest first. Each entry links to its source.")
+    impacts_html = render_timeline_html(
+        [e for e in events if e["kind"] == "closure"],
+        heading="Current road impacts on these streets",
+        intro="Live traffic dashboard entries on a street named in one or more of the "
+              "records above. Matched by street only; they may concern other works.",
+        min_events=1)
+    by_name = "".join([funding_html, name_timeline, meetings_html, news_html])
+    by_street = "".join([impacts_html, street_meetings_html])
+    linked_html = (
+        '<section class="project-linked" id="linked-by-name">'
+        f"<h2>Matched by project name{'s' if len(names) > 1 else ''}</h2>"
+        + ("<p class=\"meta\">This site matched these to the project name shared by the "
+           "records above, so they relate to the name rather than to any one record.</p>"
+           if len(names) == 1 else
+           "<p class=\"meta\">This site matched these to one or more of the names published "
+           "for the records above, so they relate to a name rather than to any one record.</p>")
+        + f"{by_name}</section>"
+    ) if by_name else ""
+    if by_street:
+        linked_html += (
+            '<section class="project-linked" id="linked-by-street">'
+            "<h2>Matched by street</h2>"
+            "<p class=\"meta\">This site matched these only through streets named in one "
+            "or more of the records above (each record lists its own streets), not "
+            "through the project name. They may concern other works on those streets.</p>"
+            f"{by_street}</section>"
+        )
+    intro = (f"Council's Civic Projects Map publishes {len(group)} separate records under this name."
+             if len(names) == 1 else
+             f"This page holds {len(group)} separate records from Council's Civic Projects Map, "
+             f"published under {len(names)} different names: {h(quoted)}.")
+    body = f"""
+<article class="project project-group">
+  <p class="crumbs"><a href="/">Home</a> › <a href="/projects/">Projects</a> › {h(title)}</p>
+  <h1>{h(title)}</h1>
+  <p class="meta">{intro} Each is reproduced below exactly as published, with its own
+  map record ID. This site does not merge them, choose between them or order
+  them in time; they are listed by record ID.</p>
+  <nav aria-label="Records on this page"><ul>{index}</ul></nav>
+  {"".join(_project_record_section(rec, graph) for rec in group)}
+  {linked_html}
+
+  <p class="attribution">Source: <a href="{h(group[0]["record"].get('source_url'))}">Ipswich City Council Civic Projects Map</a> (CC BY 4.0).</p>
+
+</article>
+"""
+    where = f" in {suburbs[0]}" if len(suburbs) == 1 and suburbs[0] else ""
+    return render_layout(
+        title=title,
+        description=(f"{len(group)} separate records that Ipswich City Council's Civic "
+                     f"Projects Map publishes as “{title}”{where}, each shown as published."
+                     if len(names) == 1 else
+                     f"{len(group)} separate records from Ipswich City Council's Civic Projects "
+                     f"Map{where}, published under {len(names)} different names: {quoted}. "
+                     "Each is shown as published."),
+        path=f"/project/{slug}/",
+        body=body,
+    )
+
+
 DOC_TYPE_LABELS = {"MIN": "Minutes", "AGN": "Agenda"}
 
 
@@ -1450,7 +1838,7 @@ def render_meeting(m, graph) -> str:
         mention_links = [
             f'<a href="/street/{slugify(s)}/">{h(s)}</a>' for s in item.get("streets", [])
         ] + [
-            f'<a href="/suburb/{slugify(s)}/">{h(s)}</a>' for s in item.get("suburbs", [])
+            _suburb_link(s, graph) for s in item.get("suburbs", [])
         ]
         mentions_html = (
             f'<p class="muted">Mentions: {" · ".join(mention_links)}</p>' if mention_links else ""
@@ -1535,7 +1923,7 @@ def render_news_post(p, graph) -> str:
         f'<a href="/street/{slugify(s)}/">{h(s)}</a>'
         for s in graph.get("news_streets", {}).get(slug, [])
     ] + [
-        f'<a href="/suburb/{slugify(s)}/">{h(s)}</a>'
+        _suburb_link(s, graph)
         for s in graph.get("news_suburbs", {}).get(slug, [])
     ]
     mentions_html = (
@@ -1634,7 +2022,7 @@ def render_consultation(c, graph) -> str:
     cats_html = f"<h3>Topics</h3><p>{cats}</p>" if cats else ""
 
     suburb_links = [
-        f'<a href="/suburb/{slugify(s)}/">{h(s)}</a>'
+        _suburb_link(s, graph)
         for s in graph.get("consultation_suburbs", {}).get(slug, [])
     ]
     suburbs_html = (
@@ -1742,17 +2130,36 @@ def render_consultations_index(consultations) -> str:
 
 
 def render_street(name, projects, closures, graph) -> str:
-    slug = slugify(name)
-    matching_projects = [p for p in projects if name in graph["project_streets"].get(p["slug"], [])]
+    slug = graph.get("street_slugs", {}).get(_street_key(name), slugify(name))
+    record_streets = graph.get("project_record_streets", {})
+
+    def on_this_street(labels):
+        return any(_street_label(s, graph) == name for s in labels)
+    matching_projects = [p for i, p in enumerate(projects)
+                         if on_this_street(record_streets.get(f"p{i}", graph["project_streets"].get(p["slug"], [])))]
     matching_closures = []
     for i, c in enumerate(closures.get("closures", [])):
-        if name in graph["closure_streets"].get(f"c{i}", []):
+        if on_this_street(graph["closure_streets"].get(f"c{i}", [])):
             matching_closures.append(c)
+
+    # Several source spellings can share this page (capitalisation or
+    # apostrophes only); say so, and keep each source's own spelling elsewhere.
+    # Rows gathered from several spellings take their order from the records,
+    # not the feed, like the merged mention lists.
+    variants = graph.get("street_variants", {}).get(_street_key(name), [])
+    if len(variants) > 1:
+        matching_projects.sort(key=lambda p: (p.get("name") or "", _record_fingerprint(p)))
+        matching_closures.sort(key=_record_fingerprint)
+    variants_html = (
+        "<p class=\"meta\">Council's records write this name more than one way: "
+        + " · ".join(f"<q>{h(v)}</q>" for v in variants)
+        + ". They differ only in capitalisation or apostrophes, so this page gathers them.</p>"
+        if len(variants) > 1 else "")
 
     proj_html = ""
     if matching_projects:
         rows = "".join(
-            f'<tr><td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
+            f'<tr><td><a href="{_project_href(p, graph)}">{h(p["name"])}</a></td>'
             f'<td><span class="{phase_class(p.get("phase"))}">{h(p.get("phase"))}</span></td>'
             f'<td>{h(p.get("suburb"))}</td></tr>'
             for p in matching_projects
@@ -1767,7 +2174,7 @@ def render_street(name, projects, closures, graph) -> str:
     # these, not in the soft map summary.
     docs_html = ""
     docs_blocks = "".join(
-        f'<li><a href="/project/{p["slug"]}/">{h(p["name"])}</a><ul>{items}</ul></li>'
+        f'<li><a href="{_project_href(p, graph)}">{h(p["name"])}</a><ul>{items}</ul></li>'
         for p in matching_projects
         if (items := _project_docs_items(p))
     )
@@ -1807,7 +2214,7 @@ def render_street(name, projects, closures, graph) -> str:
 <article>
   <p class="crumbs"><a href="/">Home</a> › <a href="/streets/">Streets</a> › {h(name)}</p>
   <h1>{h(name)}</h1>
-  <p class="meta">Everything Council has published for this street.</p>
+  <p class="meta">Everything Council has published for this street.</p>{variants_html}
   {proj_html}
   {docs_html}
   {clos_html}
@@ -2058,14 +2465,21 @@ def _connected_streets_html(name, graph) -> str:
 
 
 def render_suburb(name, projects, closures, graph) -> str:
-    slug = slugify(name)
-    matching_projects = [p for p in projects if p.get("suburb") == name]
-    matching_closures = [c for c in closures.get("closures", []) if c.get("suburb") == name]
+    key = _suburb_key(name)
+    name = graph.get("suburb_labels", {}).get(key, name)
+    slug = _suburb_slug(name, graph)
+    # Same identity as the shared project pages: a byte-identical record is one
+    # record, but distinct records that share a Council id are each listed.
+    matching_projects = _dedupe(
+        [p for p in projects if key and _suburb_key(p.get("suburb")) == key],
+        _record_fingerprint)
+    matching_closures = [c for i, c in enumerate(closures.get("closures", []))
+                         if key in graph.get("closure_suburb_keys", {}).get(f"c{i}", [])]
 
     proj_html = ""
     if matching_projects:
         rows = "".join(
-            f'<tr><td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
+            f'<tr><td><a href="{_project_href(p, graph)}">{h(p["name"])}</a></td>'
             f'<td><span class="{phase_class(p.get("phase"))}">{h(p.get("phase"))}</span></td>'
             f'<td>{h(p.get("ref"))}</td></tr>'
             for p in matching_projects
@@ -2087,15 +2501,15 @@ def render_suburb(name, projects, closures, graph) -> str:
             "<tr><th>Road</th><th>Type</th><th>Impact</th></tr></thead>" \
             f"<tbody>{rows}</tbody></table>"
 
-    meet_html = _meeting_mentions_html(graph["suburb_meeting_items"].get(name, []))
-    news_html = _news_mentions_html(graph.get("suburb_news_items", {}).get(name, []))
-    cons_html = _consultation_mentions_html(graph.get("suburb_consultations", {}).get(name, []))
-    da_html = _da_mentions_html(graph.get("suburb_das", {}).get(name, []), name)
+    meet_html = _meeting_mentions_html(graph["suburb_meeting_items"].get(key, []))
+    news_html = _news_mentions_html(graph.get("suburb_news_items", {}).get(key, []))
+    cons_html = _consultation_mentions_html(graph.get("suburb_consultations", {}).get(key, []))
+    da_html = _da_mentions_html(graph.get("suburb_das", {}).get(key, []), name)
     timeline_html = _timeline_html(_timeline_events(
-        graph.get("suburb_meeting_items", {}).get(name, []),
-        graph.get("suburb_news_items", {}).get(name, []),
-        graph.get("suburb_consultations", {}).get(name, []),
-        graph.get("suburb_das", {}).get(name, []),
+        graph.get("suburb_meeting_items", {}).get(key, []),
+        graph.get("suburb_news_items", {}).get(key, []),
+        graph.get("suburb_consultations", {}).get(key, []),
+        graph.get("suburb_das", {}).get(key, []),
     ))
 
     body = f"""
@@ -2120,17 +2534,18 @@ def render_suburb(name, projects, closures, graph) -> str:
     )
 
 
-def render_list(title, kind, items) -> str:
+def render_list(title, kind, items, graph=None) -> str:
     lis = "".join(
-        f'<li><a href="/{kind}/{slugify(n)}/">{h(n)}</a></li>' for n in items
+        (f'<li>{_suburb_link(n, graph or {})}</li>' if kind == "suburb" else
+         f'<li><a href="/{kind}/{slugify(n)}/">{h(n)}</a></li>') for n in items
     )
     body = f"<h1>{h(title)}</h1><ul class='biglist'>{lis}</ul>"
     return render_layout(title=title, description=title, path=f"/{kind}s/", body=body)
 
 
-def render_projects_list(projects) -> str:
+def render_projects_list(projects, graph=None) -> str:
     lis = "".join(
-        f'<li><a href="/project/{p["slug"]}/">{h(p["name"])}</a> '
+        f'<li><a href="{_project_href(p, graph)}">{h(p["name"])}</a> '
         f'<a href="/projects/phase/{slugify(p.get("phase") or "Unknown")}/" '
         f'class="{phase_class(p.get("phase"))}">{h(p.get("phase"))}</a></li>'
         for p in sorted(projects, key=lambda p: (p.get("phase") or "", p.get("name") or ""))
@@ -2139,7 +2554,7 @@ def render_projects_list(projects) -> str:
     return render_layout("All projects", "Every civic project on file.", "/projects/", body)
 
 
-def render_impact_discrepancies(projects) -> str:
+def render_impact_discrepancies(projects, graph=None) -> str:
     """Citywide index: projects whose public summary understates their own
     status wording. The pattern, reproduced not alleged — Council's own words."""
     flagged = [(p, d) for p in projects if (d := impact_discrepancy(p))]
@@ -2160,7 +2575,7 @@ def render_impact_discrepancies(projects) -> str:
                         "matches its status wording.</p>")
     else:
         rows = "".join(
-            f'<tr><td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
+            f'<tr><td><a href="{_project_href(p, graph)}">{h(p["name"])}</a></td>'
             f'<td>{h(d["status_label"])}</td>'
             f'<td>{h(d["expect_label"])}</td>'
             f'<td>{h(p.get("suburb"))}</td></tr>'
@@ -2183,14 +2598,14 @@ def render_impact_discrepancies(projects) -> str:
     )
 
 
-def render_phase_list(phase: str, projects) -> str:
+def render_phase_list(phase: str, projects, graph=None) -> str:
     slug = slugify(phase)
     matching = sorted(
         (p for p in projects if (p.get("phase") or "Unknown") == phase),
         key=lambda p: p.get("name") or "",
     )
     lis = "".join(
-        f'<li><a href="/project/{p["slug"]}/">{h(p["name"])}</a>'
+        f'<li><a href="{_project_href(p, graph)}">{h(p["name"])}</a>'
         + (f' <span class="muted">{h(p.get("suburb"))}</span>' if p.get("suburb") else "")
         for p in matching
     )
@@ -2424,27 +2839,34 @@ def build_project_timeline(p, graph, closures) -> list[dict[str, Any]]:
 
     # Live closures on this project's streets, where Council's own closure
     # text names the project's street. Only current impacts — these expire.
-    p_streets = set(graph.get("project_streets", {}).get(slug, []))
-    for i, c in enumerate(closures.get("closures", [])):
-        if c.get("status") == "Archived":
-            continue
-        if p_streets & set(graph.get("closure_streets", {}).get(f"c{i}", [])):
-            start = (c.get("start_time") or "")[:10]
-            events.append({
-                "sort": start,
-                "when": format_ymd(start),
-                "kind": "closure",
-                "what": f"{c.get('event_type') or 'Road impact'}: {c.get('impact') or ''}".strip(": "),
-                "url": "",
-                "source": f"Live traffic dashboard — {c.get('road_name') or ''}".strip(" —"),
-            })
+    p_streets = {_street_label(s, graph) for s in graph.get("project_streets", {}).get(slug, [])}
+    matched = [c for i, c in enumerate(closures.get("closures", []))
+               if c.get("status") != "Archived"
+               and p_streets & {_street_label(s, graph) for s in graph.get("closure_streets", {}).get(f"c{i}", [])}]
+    # Impacts gathered through a page with several spellings take their order
+    # from the records, as on that street page, not from the feed.
+    if any(len(graph.get("street_variants", {}).get(_street_key(s), [])) > 1 for s in p_streets):
+        matched.sort(key=_record_fingerprint)
+    for c in matched:
+        start = (c.get("start_time") or "")[:10]
+        events.append({
+            "sort": start,
+            "when": format_ymd(start),
+            "kind": "closure",
+            "what": f"{c.get('event_type') or 'Road impact'}: {c.get('impact') or ''}".strip(": "),
+            "url": "",
+            "source": f"Live traffic dashboard — {c.get('road_name') or ''}".strip(" —"),
+        })
 
     events.sort(key=lambda e: e["sort"], reverse=True)
     return events
 
 
-def render_timeline_html(events: list[dict[str, Any]]) -> str:
-    if len(events) < 2:
+def render_timeline_html(events: list[dict[str, Any]], heading="Timeline",
+                         intro="Everything Council has published about this project, "
+                               "newest first. Each entry links to its source.",
+                         min_events=2) -> str:
+    if len(events) < min_events:
         return ""  # a single event is not a story
     items = []
     for e in events:
@@ -2459,9 +2881,8 @@ def render_timeline_html(events: list[dict[str, Any]]) -> str:
             f'<span class="muted">{h(e["source"])}</span></span></li>'
         )
     return (
-        "<h3>Timeline</h3>"
-        '<p class="muted">Everything Council has published about this project, '
-        "newest first. Each entry links to its source.</p>"
+        f"<h3>{heading}</h3>"
+        f'<p class="muted">{intro}</p>'
         f'<ul class="timeline">{"".join(items)}</ul>'
     )
 
@@ -2836,7 +3257,7 @@ def render_division(d: int, projects, closures, graph) -> str:
     proj_html = ""
     if matching:
         rows = "".join(
-            f'<tr><td><a href="/project/{p["slug"]}/">{h(p["name"])}</a></td>'
+            f'<tr><td><a href="{_project_href(p, graph)}">{h(p["name"])}</a></td>'
             f'<td><span class="{phase_class(p.get("phase"))}">{h(p.get("phase"))}</span></td>'
             f'<td>{h(p.get("suburb"))}</td></tr>'
             for p in sorted(matching, key=lambda p: (p.get("phase") or "", p.get("name") or ""))
@@ -2861,7 +3282,8 @@ def render_division(d: int, projects, closures, graph) -> str:
                     lambda x: (x.get("slug"), x.get("anchor")))
     newsx = _dedupe([x for s in div_suburbs for x in graph.get("suburb_news_items", {}).get(s, [])],
                     lambda x: x.get("slug"))
-    clos = [c for c in closures.get("closures", []) if c.get("suburb") in subset]
+    clos = [c for i, c in enumerate(closures.get("closures", []))
+            if subset.intersection(graph.get("closure_suburb_keys", {}).get(f"c{i}", []))]
 
     clos_html = ""
     if clos:
@@ -2884,7 +3306,7 @@ def render_division(d: int, projects, closures, graph) -> str:
 
     subs_html = ""
     if div_suburbs:
-        links = ", ".join(f'<a href="/suburb/{slugify(s)}/">{h(s)}</a>' for s in div_suburbs)
+        links = ", ".join(_suburb_link(graph["suburb_labels"][s], graph) for s in div_suburbs)
         subs_html = (
             "<aside class='seealso'><h3>How this division is assembled</h3>"
             "<p class='meta'>Council tags projects by division; everything else — "
@@ -3025,63 +3447,112 @@ Council or anyone in it.</p>
 # Write
 
 
-def write_site(out: Path, projects, closures, meetings, news, graph, capworks, consultations, das) -> list[str]:
-    """Write all pages. Returns the list of URL paths for sitemap."""
-    # Best-effort clean (overwrites are always fine; deletion may fail on
-    # read-only mounts, in which case we just overwrite in place).
-    if out.exists():
-        for child in out.iterdir():
-            try:
-                if child.is_dir():
-                    shutil.rmtree(child)
-                else:
-                    child.unlink()
-            except (PermissionError, OSError):
-                pass
-    else:
-        out.mkdir(parents=True)
-    (out / "data").mkdir(parents=True, exist_ok=True)
-    (out / "css").mkdir(exist_ok=True)
-    (out / "js").mkdir(exist_ok=True)
+class _OutputPlan:
+    """One body and compatible date per resolved target, across all entity types."""
 
-    # (path, lastmod) — lastmod is a real entity date or None. A missing
-    # lastmod tells Google "unknown", which is honest; a fabricated one (e.g.
-    # build time on every page) just trains it to ignore the field.
-    urls: list[tuple[str, str | None]] = []
+    def __init__(self, out):
+        self.out = out.resolve()
+        self.entries = {}
+        self.conflicts = []
 
-    def write(path: str, body: str, lastmod: str | None = None) -> None:
-        target = out / path.strip("/") / "index.html" if path != "/" else out / "index.html"
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(body)
-        urls.append((path, lastmod if lastmod and re.fullmatch(r"\d{4}-\d{2}-\d{2}", lastmod) else None))
+    def add(self, relative, body, identity, date=None):
+        target = (self.out / relative).resolve()
+        if not target.is_relative_to(self.out):
+            raise ValueError(f"Output target escapes destination: {relative!r}")
+        data = body.encode("utf-8") if isinstance(body, str) else body
+        if target in self.entries:
+            old_data, old_date, old_identity = self.entries[target]
+            if data != old_data or (old_date and date and old_date != date):
+                self.conflicts.append(
+                    f"{target.relative_to(self.out)}: {old_identity} vs {identity} "
+                    f"(body differs={data != old_data}, dates={old_date!r}/{date!r})")
+            else:
+                self.entries[target] = (data, old_date or date, old_identity)
+        else:
+            self.entries[target] = (data, date, identity)
+
+    def publish(self):
+        if self.conflicts:
+            raise ValueError("Conflicting output writes; prior output preserved:\n  "
+                             + "\n  ".join(self.conflicts))
+        # Only a fully rendered, conflict-free plan may replace prior output.
+        # Clearing it is best-effort, as before: deletion may fail on read-only
+        # mounts, and then the new files are written over the old in place.
+        if self.out.exists():
+            for child in self.out.iterdir():
+                try:
+                    if child.is_dir():
+                        shutil.rmtree(child)
+                    else:
+                        child.unlink()
+                except OSError:
+                    pass
+        self.out.mkdir(parents=True, exist_ok=True)
+        for target, (body, _, _) in self.entries.items():
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(body)
+
+
+def write_site(out: Path, projects, closures, meetings, news, graph, capworks, consultations, das) -> list[tuple[str, str | None]]:
+    """Preflight every output before touching the previous successful build."""
+    _validate_suburb_paths(graph)
+    _validate_street_paths(graph)
+    plan = _OutputPlan(out)
+    urls: dict[str, str | None] = {}
+
+    def emit_file(path, body, identity=None):
+        plan.add(path, body, identity or path)
+
+    def write(path: str, body: str, lastmod: str | None = None, identity=None) -> None:
+        target = path.strip("/") + "/index.html" if path != "/" else "index.html"
+        date = lastmod if lastmod and re.fullmatch(r"\d{4}-\d{2}-\d{2}", lastmod) else None
+        plan.add(target, body, identity or path, date)
+        urls[path] = urls.get(path) or date
 
     # Landing
     write("/", render_index(projects, closures, meetings, news, graph, capworks, consultations, das))
 
     # Projects
-    write("/projects/", render_projects_list(projects))
-    write("/road-impact-wording/", render_impact_discrepancies(projects))
+    write("/projects/", render_projects_list(projects, graph))
+    write("/road-impact-wording/", render_impact_discrepancies(projects, graph))
     for phase in sorted({p.get("phase") or "Unknown" for p in projects}):
-        write(f"/projects/phase/{slugify(phase)}/", render_phase_list(phase, projects))
-    for p in projects:
-        write(f"/project/{p['slug']}/", render_project(p, closures, graph),
-              lastmod=format_ymd(p.get("updated")))
+        write(f"/projects/phase/{slugify(phase)}/", render_phase_list(phase, projects, graph), identity=f"phase {phase!r}")
+    # Each pinned project URL is rendered once, from all of its distinct
+    # records. Only this deliberate grouping shares a path; any other
+    # duplicate write still trips the output plan's conflict check.
+    groups = graph.get("project_groups") or _project_record_groups(projects)
+    for slug in dict.fromkeys(p["slug"] for p in projects):
+        group = groups[slug]
+        if len(group) == 1:
+            p = group[0]["record"]
+            write(f"/project/{slug}/", render_project(p, closures, graph),
+                  lastmod=format_ymd(p.get("updated")),
+                  identity=f"project id={p.get('id')!r} ref={p.get('ref')!r} suburb={p.get('suburb')!r}")
+            continue
+        # Page modification date only (the latest record update); the page
+        # itself never states a combined date for the group.
+        dates = [d for rec in group
+                 if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d := format_ymd(rec["record"].get("updated")))]
+        write(f"/project/{slug}/", render_project_group(group, closures, graph),
+              lastmod=max(dates, default=None),
+              identity=f"project group {slug!r} ids={[rec['record'].get('id') for rec in group]!r}")
 
     # Suburbs
-    write("/suburbs/", render_list("All suburbs", "suburb", graph["suburbs"]))
+    write("/suburbs/", render_list("All suburbs", "suburb", graph["suburbs"], graph))
     for s in graph["suburbs"]:
-        write(f"/suburb/{slugify(s)}/", render_suburb(s, projects, closures, graph))
+        write(f"/suburb/{_suburb_slug(s, graph)}/", render_suburb(s, projects, closures, graph), identity=f"suburb {s!r}")
 
     # Streets
     write("/streets/", render_list("All streets with mentions", "street", graph["streets"]))
     for s in graph["streets"]:
-        write(f"/street/{slugify(s)}/", render_street(s, projects, closures, graph))
+        write(f"/street/{graph.get('street_slugs', {}).get(_street_key(s), slugify(s))}/",
+              render_street(s, projects, closures, graph), identity=f"street {s!r}")
 
     # Meetings
     meetings_list = meetings.get("meetings", [])
     write("/meetings/", render_meetings_index(meetings_list))
     for m in meetings_list:
-        write(f"/meeting/{m['slug']}/", render_meeting(m, graph), lastmod=m.get("date"))
+        write(f"/meeting/{m['slug']}/", render_meeting(m, graph), lastmod=m.get("date"), identity=f"meeting {m.get('slug')!r} id={m.get('id')!r}")
 
     # News. The /news/ index lists the two most recent years and links to
     # per-year index pages for the rest.
@@ -3095,7 +3566,8 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         write(f"/news/{y}/", render_news_year(y, news_posts))
     for p in news_posts:
         write(f"/news/{p['slug']}/", render_news_post(p, graph),
-              lastmod=(p.get("modified") or p.get("date") or "")[:10] or None)
+              lastmod=(p.get("modified") or p.get("date") or "")[:10] or None,
+              identity=f"news {p.get('slug')!r} id={p.get('id')!r}")
 
     # Consultations (Shape Your Ipswich). One index plus one page per project,
     # open and closed alike.
@@ -3103,7 +3575,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         write("/consultations/", render_consultations_index(consultations))
         for c in consultations:
             write(f"/consultation/{c['slug']}/", render_consultation(c, graph),
-                  lastmod=c.get("date"))
+                  lastmod=c.get("date"), identity=f"consultation {c.get('slug')!r} id={c.get('id')!r}")
 
     # Capital works: one index page plus one page per budget cycle. The data
     # is committed (refreshed once a year), so these always build.
@@ -3124,10 +3596,10 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
     write("/about/", render_about())
 
     # ---- Client-side data files ----
-    (out / "data" / "projects.json").write_text(json.dumps(projects))
-    (out / "data" / "closures.json").write_text(json.dumps(closures))
-    (out / "data" / "streets.json").write_text(json.dumps(graph["streets"]))
-    (out / "data" / "suburbs.json").write_text(json.dumps(graph["suburbs"]))
+    emit_file("data/projects.json", json.dumps(projects))
+    emit_file("data/closures.json", json.dumps(closures))
+    emit_file("data/streets.json", json.dumps(graph["streets"]))
+    emit_file("data/suburbs.json", json.dumps(graph["suburbs"]))
     # Slim per-meeting chunks for the widget — item titles only, never text,
     # and only the two most recent years so the search payload stays small.
     # Older meetings are still fully served as static pages and sitemapped;
@@ -3146,7 +3618,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         for m in meetings_list
         if (m.get("date") or "")[:4] in recent_years
     ]
-    (out / "data" / "meetings.json").write_text(json.dumps(slim_meetings))
+    emit_file("data/meetings.json", json.dumps(slim_meetings))
     # Everything older, in a file the widget only fetches if the reader asks
     # for it. Default search stays small; the history is one click away rather
     # than a tax on every visitor.
@@ -3163,7 +3635,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         for m in meetings_list
         if (m.get("date") or "")[:4] not in recent_years
     ]
-    (out / "data" / "meetings-archive.json").write_text(json.dumps(archive_meetings))
+    emit_file("data/meetings-archive.json", json.dumps(archive_meetings))
     # Slim per-post news chunks, same recent-years rule as meetings: slug,
     # title and date only — full text is only ever in the static pages.
     slim_news = [
@@ -3171,13 +3643,13 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         for p in news_posts
         if (p.get("date") or "")[:4] in news_recent_years
     ]
-    (out / "data" / "news.json").write_text(json.dumps(slim_news))
+    emit_file("data/news.json", json.dumps(slim_news))
     archive_news = [
         {"slug": p["slug"], "title": p.get("title"), "date": p.get("date")}
         for p in news_posts
         if (p.get("date") or "")[:4] not in news_recent_years
     ]
-    (out / "data" / "news-archive.json").write_text(json.dumps(archive_news))
+    emit_file("data/news-archive.json", json.dumps(archive_news))
     # Consultations: small enough (~120) to index in full, no archive split.
     # Slug, name, status and date only — the summary lives in the static page.
     slim_consultations = [
@@ -3190,7 +3662,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         }
         for c in consultations
     ]
-    (out / "data" / "consultations.json").write_text(json.dumps(slim_consultations))
+    emit_file("data/consultations.json", json.dumps(slim_consultations))
     # Development applications: slim search chunk — application number,
     # description, suburb and the Council detail link only. Whitelisted upstream,
     # so no excluded field can appear here. DAs have no own-page on this site (a
@@ -3205,7 +3677,7 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         }
         for a in das
     ]
-    (out / "data" / "development_applications.json").write_text(json.dumps(slim_das))
+    emit_file("data/development_applications.json", json.dumps(slim_das))
     slim_news_slugs = {p["slug"] for p in slim_news}
     mentions = {
         "project_streets": graph["project_streets"],
@@ -3224,16 +3696,16 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
             s: v for s, v in graph["news_suburbs"].items() if s in slim_news_slugs
         },
     }
-    (out / "data" / "mentions.json").write_text(json.dumps(mentions))
+    emit_file("data/mentions.json", json.dumps(mentions))
 
     # ---- Static assets (committed, copied verbatim) ----
     assets_dir = Path(__file__).resolve().parent.parent / "assets"
     og = assets_dir / "og-image.png"
     if og.exists():
-        shutil.copyfile(og, out / "og-image.png")
+        emit_file("og-image.png", og.read_bytes())
 
     # ---- CSS / JS ----
-    (out / "css" / "site.css").write_text(_CSS)
+    emit_file("css/site.css", _CSS)
     # Label the archive button with the actual span of what it loads.
     archive_years = sorted(
         {(m.get("date") or "")[:4] for m in archive_meetings}
@@ -3243,16 +3715,19 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
         f"{archive_years[0]}\u2013{archive_years[-1]}" if len(archive_years) > 1
         else (archive_years[0] if archive_years else "older")
     )
-    (out / "js" / "widget.js").write_text(
-        _WIDGET_JS.replace("__ARCHIVE_FROM__", archive_from)
+    emit_file("js/widget.js",
+        _WIDGET_JS.replace("__ARCHIVE_FROM__", archive_from).replace(
+            "__SUBURB_SLUGS__", json.dumps({label: graph["suburb_slugs"][key]
+                for key, labels in graph["suburb_variants"].items()
+                for label in [*labels, graph["suburb_labels"][key]]}, sort_keys=True))
     )
 
     # ---- Sitemap + robots ----
-    (out / "sitemap.xml").write_text(_sitemap(urls))
-    # 404: written directly, not via write() — it must not enter the sitemap.
-    (out / "404.html").write_text(render_404())
+    emit_file("sitemap.xml", _sitemap(list(urls.items())))
+    # 404 is preflighted with other files but must not enter the sitemap.
+    emit_file("404.html", render_404())
 
-    (out / "robots.txt").write_text(
+    emit_file("robots.txt",
         f"User-agent: *\nAllow: /\nSitemap: {BASE_URL}/sitemap.xml\n"
     )
 
@@ -3261,14 +3736,15 @@ def write_site(out: Path, projects, closures, meetings, news, graph, capworks, c
     # verbatim data linked to source — is also what makes it good to reason
     # over, so point models straight at the data and carry the invariants in as
     # boundaries. Like robots.txt, a root file; deliberately NOT in the sitemap.
-    (out / "llms.txt").write_text(_llms_txt())
+    emit_file("llms.txt", _llms_txt())
 
     # IndexNow ownership proof: a file at the site root whose name is the key
     # and whose body is the key. The deploy workflow pings IndexNow, and the
     # engines fetch this to confirm we own the host before trusting the ping.
     if INDEXNOW_KEY:
-        (out / f"{INDEXNOW_KEY}.txt").write_text(INDEXNOW_KEY + "\n")
-    return urls
+        emit_file(f"{INDEXNOW_KEY}.txt", INDEXNOW_KEY + "\n", "IndexNow ownership proof")
+    plan.publish()
+    return list(urls.items())
 
 
 def _sitemap(urls: list[tuple[str, str | None]]) -> str:
@@ -3541,13 +4017,24 @@ function slugify(s) {
   return s.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
 }
 
+const suburbSlugs = __SUBURB_SLUGS__;
+function suburbSlug(label) { return suburbSlugs[label] || slugify(label); }
+
+// Street pages gather spellings that differ only in apostrophes, so street
+// queries and street haystacks are compared with straight and curly
+// apostrophes removed.
+function bareStreet(s) { return s.replace(/['\u2019]/g, ''); }
+
 function buildIndex(data) {
   const items = [];
   for (const p of data.projects) {
     items.push({ kind: 'project', label: p.name, href: `/project/${p.slug}/`, hay: (p.name + ' ' + (p.description || '') + ' ' + (p.suburb || '')).toLowerCase() });
   }
-  for (const s of data.streets) items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/`, hay: s.toLowerCase() });
-  for (const s of data.suburbs) items.push({ kind: 'suburb', label: s, href: `/suburb/${slugify(s)}/`, hay: s.toLowerCase() });
+  // One entry per street page, matched apostrophe-free (see bareStreet) so
+  // "Augustine's Drive", "Augustine\u2019s Drive" and "Augustines Drive" all
+  // find it, whichever spelling the page displays.
+  for (const s of data.streets) items.push({ kind: 'street', label: s, href: `/street/${slugify(s)}/`, hay: bareStreet(s.toLowerCase()) });
+  for (const s of data.suburbs) items.push({ kind: 'suburb', label: s, href: `/suburb/${suburbSlug(s)}/`, hay: s.toLowerCase() });
   for (const m of data.meetings) {
     const titles = m.items.map(i => i.title).join(' ');
     items.push({ kind: 'meeting', label: `${m.committee} — ${m.date}`, href: `/meeting/${m.slug}/`, hay: (m.committee + ' ' + m.date + ' ' + titles).toLowerCase() });
@@ -3563,11 +4050,21 @@ function buildIndex(data) {
   // Council's register, not a replacement), so a match lands on the suburb page
   // where it's listed with a link back to Council's Development.i detail.
   for (const a of data.das || []) {
-    if (!a.suburb) continue;
+    if (!a.suburb || !a.suburb.trim()) continue;
     const label = `${a.application_number} — ${a.description || a.suburb}`;
-    items.push({ kind: 'DA', label, href: `/suburb/${slugify(a.suburb)}/`, hay: ((a.application_number || '') + ' ' + (a.description || '') + ' ' + a.suburb + ' ' + (a.status || '')).toLowerCase() });
+    items.push({ kind: 'DA', label, href: `/suburb/${suburbSlug(a.suburb)}/`, hay: ((a.application_number || '') + ' ' + (a.description || '') + ' ' + a.suburb + ' ' + (a.status || '')).toLowerCase() });
   }
   return items;
+}
+
+// q is the trimmed, lowercased query.
+function searchIndex(index, q) {
+  const qBare = bareStreet(q);
+  const needle = i => (i.kind === 'street' ? qBare : q);
+  return index
+    .filter(i => i.hay.includes(needle(i)))
+    .sort((a, b) => a.hay.indexOf(needle(a)) - b.hay.indexOf(needle(b)))
+    .slice(0, 30);
 }
 
 function mountSearch(el, index) {
@@ -3623,10 +4120,7 @@ function mountSearch(el, index) {
       status.textContent = '';
       return;
     }
-    const matches = index
-      .filter(i => i.hay.includes(q))
-      .sort((a, b) => a.hay.indexOf(q) - b.hay.indexOf(q))
-      .slice(0, 30);
+    const matches = searchIndex(index, q);
     results.hidden = matches.length === 0;
     results.innerHTML = matches
       .map(m => `<a href="${m.href}" role="option"><span class="kind">${m.kind}</span> ${m.label}</a>`)
