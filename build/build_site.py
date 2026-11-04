@@ -1429,7 +1429,10 @@ def _council_item_url(m, item_or_ref) -> str:
     """Deep link into Council's own paper document at this item's anchor.
     Falls back to the frameset page for records scraped before paper_url
     existed."""
-    paper = m.get("paper_url") if isinstance(m, dict) else None
+    # A supplementary item carries its own paper_url (a different Council doc
+    # from the main meeting); prefer it so the deep link lands in the right one.
+    paper = (item_or_ref.get("paper_url") if isinstance(item_or_ref, dict) else None) \
+        or (m.get("paper_url") if isinstance(m, dict) else None)
     anchor = item_or_ref.get("anchor")
     if paper and anchor:
         return f"{paper}#{anchor}"
@@ -1455,13 +1458,16 @@ def render_meeting(m, graph) -> str:
         mentions_html = (
             f'<p class="muted">Mentions: {" · ".join(mention_links)}</p>' if mention_links else ""
         )
+        supp = item.get("supplementary")
+        badge = ' <span class="supp-badge">Supplementary</span>' if supp else ""
+        link_label = "supplementary agenda" if supp else doc_label.lower()
         sections.append(f"""
-  <section class="meeting-item" id="{h(item.get('anchor'))}">
-    <h2><a href="#{h(item.get('anchor'))}">{h(item.get('title'))}</a></h2>
+  <section class="meeting-item{' supplementary' if supp else ''}" id="{h(item.get('anchor'))}">
+    <h2><a href="#{h(item.get('anchor'))}">{h(item.get('title'))}</a>{badge}</h2>
     {res_html}
     {paras}
     {mentions_html}
-    <p class="muted"><a href="{h(_council_item_url(m, item))}" rel="noopener">View this item in the Council {h(doc_label.lower())}</a></p>
+    <p class="muted"><a href="{h(_council_item_url(m, item))}" rel="noopener">View this item in the Council {h(link_label)}</a></p>
   </section>""")
 
     mproj = _dedupe(graph.get("meeting_projects", {}).get(slug, []), lambda x: x["slug"])
@@ -3460,6 +3466,10 @@ ol.timeline time { color: var(--muted); font-variant-numeric: tabular-nums; marg
 .tl-consultation { background: #ab47bc; } .tl-DA { background: #b5651d; }
 .hero .div-jump { margin-top: 0.9rem; font-size: 0.95rem; color: var(--muted); }
 .hero .div-jump a { white-space: nowrap; }
+.supp-badge { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em;
+              background: #8a6d3b; color: #fff; border-radius: 3px; padding: 0.1rem 0.4rem;
+              margin-left: 0.4rem; vertical-align: middle; }
+.meeting-item.supplementary { border-left: 3px solid #8a6d3b; padding-left: 0.6rem; }
 .disclaimer { border: 1px solid #e6ddc4; background: #fffdf5; border-radius: 6px;
               padding: 0.75rem 1rem; margin: 1.25rem 0; font-size: 0.85rem;
               color: #4a4433; max-width: none; }

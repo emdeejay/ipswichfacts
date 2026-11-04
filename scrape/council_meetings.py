@@ -48,7 +48,7 @@ REQUEST_DELAY = 1.0  # seconds between requests — project invariant, keep it.
 MAX_ITEM_TEXT = 8000
 
 DOC_RE = re.compile(
-    r"(Open/\d{4}/\d{2}/([A-Z]+)_(\d{8})_(AGN|MIN)_(\d+)((?:_[A-Z]+)*)_WEB\.htm)"
+    r"(Open/\d{4}/\d{2}/([A-Z]+)_(\d{8})_(AGN|MIN)_(\d+)((?:_[A-Z]+)*)\.([A-Za-z]+))"
 )
 ROW_SPLIT_RE = re.compile(r'<tr class="bpsGridMenu(?:Alt)?Item">')
 COMMITTEE_CELL_RE = re.compile(r'class="bpsGridCommittee">([^<]+)<')
@@ -88,19 +88,26 @@ def _clean(s: str) -> str:
 
 
 def parse_index(index_html: str) -> list[dict[str, Any]]:
-    """Parse the meeting index into one record per meeting.
+    """Parse the meeting index into one record per meeting, grouped by
+    (committee code, date, doc id) — supplementary papers share the meeting's
+    id, so they fold into the same record.
 
-    Groups AGN/MIN docs by (committee code, date, id); prefers MIN.
-    Skips MAT/ATT (attachments) and _SUP (supplementary) docs.
+    Per record:
+    - `docs`: the main HTML frameset by type (AGN/MIN); MIN preferred later.
+    - `supplementary`: HTML frameset URLs for _SUP papers (late-added items on
+      the SAME meeting — e.g. "Council Supplementary"). Previously skipped;
+      they carry real Council business.
+    - `pdf`: AGN/MIN published only as PDF (no `_WEB.htm` frameset, e.g. a
+      Councillor Briefing whose minutes are a bare PDF). The HTML scraper can't
+      read a PDF, but we keep the link so the meeting surfaces as a pointer to
+      Council rather than vanishing.
     """
     meetings: dict[tuple[str, str, str], dict[str, Any]] = {}
     for row in ROW_SPLIT_RE.split(index_html)[1:]:
         cm = COMMITTEE_CELL_RE.search(row)
         committee = _clean(cm.group(1)) if cm else ""
         for m in DOC_RE.finditer(row):
-            path, code, ymd, doc_type, doc_id, suffixes = m.groups()
-            if "_SUP" in suffixes:
-                continue
+            path, code, ymd, doc_type, doc_id, suffixes, ext = m.groups()
             key = (code, ymd, doc_id)
             rec = meetings.setdefault(
                 key,
@@ -110,16 +117,38 @@ def parse_index(index_html: str) -> list[dict[str, Any]]:
                     "committee": committee,
                     "date": f"{ymd[:4]}-{ymd[4:6]}-{ymd[6:8]}",
                     "docs": {},
+                    "supplementary": [],
+                    "pdf": {},
                 },
             )
-            rec["docs"].setdefault(doc_type, BASE_URL + path)
-            # Prefer the row that actually carried this doc for the name
-            # (supplementary rows say e.g. "... Supplementary").
-            if committee and not rec["committee"]:
+            url = BASE_URL + path
+            is_web = "_WEB" in suffixes and ext.lower() == "htm"
+            if is_web and "_SUP" in suffixes:
+                if url not in rec["supplementary"]:
+                    rec["supplementary"].append(url)
+            elif is_web:
+                rec["docs"].setdefault(doc_type, url)
+            elif ext.lower() == "pdf" and "_SUP" not in suffixes:
+                rec["pdf"].setdefault(doc_type, url)
+            # Prefer the clean committee name from the main row, never the
+            # supplementary row's "... Supplementary".
+            if committee and "Supplementary" not in committee:
                 rec["committee"] = committee
     out = list(meetings.values())
     out.sort(key=lambda r: (r["date"], r["id"]), reverse=True)
     return out
+
+
+def _parse_meeting_doc(client, source_url, delay):
+    """Fetch a *_WEB.htm frameset and return (items, paper_url)."""
+    frameset = _fetch(client, source_url, delay)
+    nav_src, paper_src = parse_frameset(frameset)
+    if not nav_src or not paper_src:
+        raise ValueError("frameset missing Navigation/Paper frames")
+    base = source_url.rsplit("/", 1)[0] + "/"
+    bmk_html = _fetch(client, base + nav_src, delay)
+    paper_html = _fetch(client, base + paper_src, delay)
+    return parse_items(bmk_html, paper_html), base + paper_src
 
 
 def parse_frameset(frameset_html: str) -> tuple[str | None, str | None]:
@@ -201,21 +230,44 @@ def scrape(limit: int = 0, year: int | None = None, delay: float = REQUEST_DELAY
 
         meetings = []
         for rec in candidates:
-            doc_type = "MIN" if "MIN" in rec["docs"] else "AGN"
-            source_url = rec["docs"].get(doc_type)
-            if not source_url:
-                continue
-            try:
-                frameset = _fetch(client, source_url, delay)
-                nav_src, paper_src = parse_frameset(frameset)
-                if not nav_src or not paper_src:
-                    raise ValueError("frameset missing Navigation/Paper frames")
-                base = source_url.rsplit("/", 1)[0] + "/"
-                bmk_html = _fetch(client, base + nav_src, delay)
-                paper_html = _fetch(client, base + paper_src, delay)
-                items = parse_items(bmk_html, paper_html)
-            except Exception as e:  # noqa: BLE001 — skip one meeting, never die
-                print(f"skip {source_url}: {e}", file=sys.stderr)
+            items: list[dict[str, Any]] = []
+            doc_type = source_url = paper_url = None
+
+            # Primary: the main HTML frameset, minutes preferred over agenda.
+            main_type = "MIN" if "MIN" in rec["docs"] else ("AGN" if "AGN" in rec["docs"] else None)
+            if main_type:
+                src = rec["docs"][main_type]
+                try:
+                    items, paper_url = _parse_meeting_doc(client, src, delay)
+                    doc_type, source_url = main_type, src
+                except Exception as e:  # noqa: BLE001 — skip one doc, never die
+                    print(f"skip {src}: {e}", file=sys.stderr)
+
+            # Supplementary papers: same meeting, late-added items. Each keeps
+            # its own paper_url so its deep links point to the right document.
+            for sup_url in rec["supplementary"]:
+                try:
+                    s_items, s_paper = _parse_meeting_doc(client, sup_url, delay)
+                    for it in s_items:
+                        it["supplementary"] = True
+                        it["paper_url"] = s_paper
+                    items.extend(s_items)
+                    if source_url is None:  # supplementary-only meeting
+                        doc_type, source_url, paper_url = "AGN", sup_url, s_paper
+                        for it in items:
+                            it.pop("supplementary", None)
+                except Exception as e:  # noqa: BLE001
+                    print(f"skip supplementary {sup_url}: {e}", file=sys.stderr)
+
+            # PDF-only fallback: Council published no HTML frameset (e.g. a
+            # briefing whose minutes are a bare PDF). We can't parse the PDF,
+            # but surface the meeting as a pointer to Council's own document
+            # rather than dropping it entirely.
+            if source_url is None and rec["pdf"]:
+                doc_type = "MIN" if "MIN" in rec["pdf"] else "AGN"
+                source_url = paper_url = rec["pdf"][doc_type]
+
+            if source_url is None:
                 continue
             meetings.append(
                 {
@@ -228,7 +280,7 @@ def scrape(limit: int = 0, year: int | None = None, delay: float = REQUEST_DELAY
                     # The paper frame accepts the item anchors directly
                     # (the frameset URL doesn't), enabling deep links like
                     # {paper_url}#PDF2_ReportName_123 into Council's own doc.
-                    "paper_url": base + paper_src,
+                    "paper_url": paper_url,
                     "items": items,
                 }
             )

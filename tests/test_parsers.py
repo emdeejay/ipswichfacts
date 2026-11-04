@@ -57,17 +57,48 @@ def test_parse_index_finds_meetings_with_committee_names():
     for m in meetings:
         assert m["committee_code"].isupper()
         assert len(m["date"]) == 10 and m["date"][4] == "-"
-        assert m["docs"], f"{m['id']} has no AGN/MIN docs"
+        # A meeting must have *something* usable: a frameset, a supplementary
+        # paper, or at least a PDF to point at.
+        assert m["docs"] or m["supplementary"] or m["pdf"], f"{m['id']} has no docs"
     # Committee full names come from the row, not a hardcoded map.
     assert any(m["committee"] for m in meetings)
 
 
-def test_parse_index_prefers_minutes_and_skips_supplementary():
+def test_parse_index_captures_supplementary_separately():
+    """Supplementary papers used to be skipped entirely. Now they fold into the
+    meeting they belong to, kept apart from the main docs so the main AGN/MIN is
+    still preferred — but no longer dropped (they carry real late-added items)."""
     meetings = parse_index(fixture("infocouncil_index.html"))
     for m in meetings:
         for doc_type, url in m["docs"].items():
             assert doc_type in ("AGN", "MIN")
-            assert "_SUP" not in url
+            assert "_SUP" not in url, "supplementary leaked into the main docs"
+            assert url.lower().endswith(".htm"), "a PDF leaked into the framesets"
+    withsupp = [m for m in meetings if m["supplementary"]]
+    assert withsupp, "the fixture has a supplementary paper that wasn't captured"
+    for m in withsupp:
+        for url in m["supplementary"]:
+            assert "_SUP" in url and url.lower().endswith(".htm")
+    # the supplementary shares its meeting's id (same committee row group),
+    # it does not spawn a second meeting record
+    assert withsupp[0]["committee"] and "Supplementary" not in withsupp[0]["committee"]
+
+
+def test_parse_index_pdf_only_meeting_surfaces_as_pointer():
+    """A meeting published with no HTML frameset (minutes as a bare PDF, as a
+    Councillor Briefing occasionally is) must still appear, as a PDF pointer —
+    not silently vanish."""
+    row = (
+        '<tr class="bpsGridMenuItem">'
+        '<td class="bpsGridCommittee">Councillor Briefing and Workshop Session</td>'
+        '<td><a href="x?URL=Open/2026/09/CBWS_20260908_MIN_4026.PDF">Minutes</a>'
+        '<a href="x?URL=Open/2026/09/CBWS_20260908_MAT_4026_WEB.htm">Attach</a></td></tr>'
+    )
+    recs = parse_index(row)
+    assert len(recs) == 1
+    r = recs[0]
+    assert not r["docs"] and not r["supplementary"]
+    assert r["pdf"].get("MIN", "").endswith("CBWS_20260908_MIN_4026.PDF")
 
 
 def test_parse_frameset_returns_both_frames():
