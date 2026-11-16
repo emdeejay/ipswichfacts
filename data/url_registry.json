@@ -293,6 +293,10 @@
     "first_seen": "2026-10-01",
     "slug": "council-divisions"
    },
+   "1587": {
+    "first_seen": "2026-11-16",
+    "slug": "rosewood-aquatic-centre-upgrade"
+   },
    "400": {
     "first_seen": "2026-08-21",
     "slug": "children-youth-families"
@@ -3294,6 +3298,10 @@
    "4263": {
     "first_seen": "2026-11-10",
     "slug": "economic-and-cultural-development-committee-2026-11-17"
+   },
+   "4278": {
+    "first_seen": "2026-11-16",
+    "slug": "advocacy-advisory-committee-2026-11-23"
    },
    "4279": {
     "first_seen": "2026-10-28",
@@ -23258,6 +23266,10 @@
    "IDM01002|marie street embankment stabilisation|Goodna": {
     "first_seen": "2026-08-21",
     "slug": "marie-street-embankment-stabilisation-goodna"
+   },
+   "IDM20172|robelle domain desilt project|Springfield Central": {
+    "first_seen": "2026-11-16",
+    "slug": "robelle-domain-desilt-project"
    },
    "IEE20000 10.01|stone quarry cemetery master planning|Jeebropilly": {
     "first_seen": "2026-08-21",
